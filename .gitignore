@@ -1,0 +1,9 @@
+.Rproj.user
+.Rhistory
+.RData
+
+.httr-oauth
+
+.httr-oauth-SUSPENDED
+
+.Rbuildignore

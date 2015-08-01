@@ -1,0 +1,9 @@
+Package: SearchConsoleR
+Title: R interface with Google Search Console API
+Version: 0.1
+Authors@R: person("Mark", "Edmondson", email = "m@sunholo.com",
+                  role = c("aut", "cre"))
+Description: Provides an interface with the Google Search Console v3 API, formally called Google Webmaster Tools. 
+Depends: R (>= 3.2.0)
+License: MIT
+LazyData: true
