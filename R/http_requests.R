@@ -3,14 +3,12 @@
 #' Make GET request to Search Console API.
 #'
 #' @param url the url of the page to retrieve
-#' @param to_xml whether to convert response contents to an \code{xml_doc} or
+#' @param to_json whether to convert response contents to JSON or
 #'   leave as character string
 #' @param use_auth logical; indicates if authorization should be used, defaults
 #'   to \code{FALSE} if \code{url} implies public visibility and \code{TRUE}
 #'   otherwise
-#' @param ... optional; further named parameters, such as \code{query},
-#'   \code{path}, etc, passed on to \code{\link[httr]{modify_url}}. Unnamed
-#'   parameters will be combined with \code{\link[httr]{config}}.
+#' @param params A named character vector of other parameters to add to request.
 #'
 #' @keywords internal
 searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
@@ -73,10 +71,8 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
     
   } else {
     shiny_token <- .state$token
-    
 
-    
-    message('param_string: ', param_string)
+    # message('param_string: ', param_string)
     url <- paste(url,
                  '?access_token=', 
                  shiny_token$access_token, 
@@ -104,6 +100,7 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
 #'
 #' @param url the url of the page to retrieve
 #' @param the_body body of POST request
+#' @param params A named character vector of other parameters to add to request.
 #'
 #' @keywords internal
 searchconsole_POST <- function(url, the_body, params=NULL) {
@@ -111,10 +108,6 @@ searchconsole_POST <- function(url, the_body, params=NULL) {
   req <- doHttrRequest(url, "POST", the_body = the_body, params = params)
     
   req$content <- httr::content(req, encoding = "UTF-8")
-  
-#   if(!is.null(req$content)) {
-#     req$content <- req$content %>% xml2::read_xml()
-#   }
   
   req
     
@@ -125,7 +118,7 @@ searchconsole_POST <- function(url, the_body, params=NULL) {
 #' Make DELETE request to Search Console API.
 #'
 #' @param url the url of the page to retrieve
-#'
+#' @param params A named character vector of other parameters to add to request.
 #' @keywords internal
 searchconsole_DELETE <- function(url, params=NULL) {
   
@@ -140,7 +133,8 @@ searchconsole_DELETE <- function(url, params=NULL) {
 #'
 #' @param url the url of the page to retrieve
 #' @param the_body body of PUT request
-#'
+#' @param params A named character vector of other parameters to add to request.
+#' 
 #' @keywords internal
 searchconsole_PUT <- function(url, the_body, params=NULL) {
   

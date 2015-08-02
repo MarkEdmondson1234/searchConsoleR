@@ -1,11 +1,11 @@
 # environment to store credentials
 .state <- new.env(parent = emptyenv())
 
-#' Authorize \code{SearchConsoleR}
+#' Authorize \code{searchConsoleR}
 #'
-#' Authorize \code{SearchConsoleR} to access your Google user data. You will be
+#' Authorize \code{searchConsoleR} to access your Google user data. You will be
 #' directed to a web browser, asked to sign in to your Google account, and to
-#' grant \code{SearchConsoleR} access to user data for Google Search Console. These user credentials are cached in a file named
+#' grant \code{searchConsoleR} access to user data for Google Search Console. These user credentials are cached in a file named
 #' \code{.httr-oauth} in the current working directory, from where they can be
 #' automatically refreshed, as necessary.
 #'
@@ -28,24 +28,24 @@
 #' In a call to \code{scr_auth}, the user can provide the token, app key and
 #' secret explicitly and can dictate whether credentials will be cached in
 #' \code{.httr_oauth}. If unspecified, these arguments are controlled via
-#' options, which, if undefined at the time \code{SearchConsoleR} is loaded, are
+#' options, which, if undefined at the time \code{searchConsoleR} is loaded, are
 #' defined like so:
 #'
 #' \describe{
-#'   \item{key}{Set to option \code{SearchConsoleR.client_id}, which defaults to
+#'   \item{key}{Set to option \code{searchConsoleR.client_id}, which defaults to
 #'   a client ID that ships with the package}
-#'   \item{secret}{Set to option \code{SearchConsoleR.client_secret}, which
+#'   \item{secret}{Set to option \code{searchConsoleR.client_secret}, which
 #'   defaults to a client secret that ships with the package}
-#'   \item{cache}{Set to option \code{SearchConsoleR.httr_oauth_cache}, which
+#'   \item{cache}{Set to option \code{searchConsoleR.httr_oauth_cache}, which
 #'   defaults to TRUE}
 #' }
 #'
 #' To override these defaults in persistent way, predefine one or more of
 #' them with lines like this in a \code{.Rprofile} file:
 #' \preformatted{
-#' options(SearchConsoleR.client_id = "FOO",
-#'         SearchConsoleR.client_secret = "BAR",
-#'         SearchConsoleR.httr_oauth_cache = FALSE)
+#' options(searchConsoleR.client_id = "FOO",
+#'         searchConsoleR.client_secret = "BAR",
+#'         searchConsoleR.httr_oauth_cache = FALSE)
 #' }
 #' See \code{\link[base]{Startup}} for possible locations for this file and the
 #' implications thereof.
@@ -64,12 +64,11 @@
 #'   Google account. This deletes the \code{.httr-oauth} file in current working
 #'   directory.
 #' @param key,secret the "Client ID" and "Client secret" for the application;
-#'   defaults to the ID and secret built into the \code{SearchConsoleR} package
-#' @param cache logical indicating if \code{SearchConsoleR} should cache
+#'   defaults to the ID and secret built into the \code{searchConsoleR} package
+#' @param cache logical indicating if \code{searchConsoleR} should cache
 #'   credentials in the default cache file \code{.httr-oauth}
 #'   
 #' @param shiny_session Set to shiny session object if authentication needed in a Shiny application.
-#' @template verbose
 #'
 #' @return an OAuth token object, specifically a
 #'   \code{\link[=Token-class]{Token2.0}}, invisibly or if shiny_session is a Shiny object, a list.
@@ -77,9 +76,9 @@
 #' @export
 scr_auth <- function(token = NULL,
                     new_user = FALSE,
-                    key = getOption("SearchConsoleR.client_id"),
-                    secret = getOption("SearchConsoleR.client_secret"),
-                    cache = getOption("SearchConsoleR.httr_oauth_cache"),
+                    key = getOption("searchConsoleR.client_id"),
+                    secret = getOption("searchConsoleR.client_secret"),
+                    cache = getOption("searchConsoleR.httr_oauth_cache"),
                     verbose = TRUE,
                     shiny_session = NULL) {
   
@@ -103,7 +102,7 @@ scr_auth <- function(token = NULL,
       
       google_token <- httr::oauth2.0_token(endpoint = endpoint, 
                                            app = app,
-                                           scope = getOption("SearchConsoleR.scope"), 
+                                           scope = getOption("searchConsoleR.scope"), 
                                            cache = cache)   
       
       
@@ -137,7 +136,7 @@ scr_auth <- function(token = NULL,
       
     } else { ## shiny online web authentication flow needed
           ## random each Shiny run
-          sec_code <- getOption("SearchConsoleR.securitycode") 
+          sec_code <- getOption("searchConsoleR.securitycode") 
           ## session is from parent shiny environment
           return_code <- authReturnCode(shiny_session, sec_code)
           app_url <- getShinyURL(shiny_session) 
@@ -231,7 +230,7 @@ scr_auth_suspend <- function(disable_httr_oauth = TRUE, verbose = TRUE) {
   
   if(!is.null(.state$token)) {
     if(verbose) {
-      message(paste("Removing google token stashed in SearchConsoleR's",
+      message(paste("Removing google token stashed in searchConsoleR's",
                     "internal environment"))
     }
     rm("token", envir = .state)

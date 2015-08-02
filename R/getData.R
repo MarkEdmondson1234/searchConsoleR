@@ -80,7 +80,7 @@ delete_website <- function(siteURL) {
 #' 
 #' See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps 
 #' 
-#' @param siteURL The URL of the website to delete. Must include protocol (http://).
+#' @param siteURL The URL of the website to get sitemap information from. Must include protocol (http://).
 #'
 #' @return A list of two dataframes: $sitemap with general info and $contents with sitemap info.
 #'
@@ -167,8 +167,8 @@ add_sitemap <- function(siteURL, feedpath) {
 #' 
 #' See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps/delete
 #' 
-#' @param siteURL The URL of the website to delete. Must include protocol (http://).
-#' @param feedpath The URL of the sitemap to submit. Must include protocol (http://).
+#' @param siteURL The URL of the website you are deleting the sitemap from. Must include protocol (http://).
+#' @param feedpath The URL of the sitemap to delete. Must include protocol (http://).
 #'
 #' @return TRUE if successful.
 #'
@@ -211,9 +211,10 @@ delete_sitemap <- function(siteURL, feedpath) {
   
 }
 
-#' Gets time-series of crawl errors
+#' Fetch a time-series of Googlebot crawl errors.
 #' 
 #' @description 
+#' Get a list of errors detected by Googlebot over time.
 #' See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorscounts/query
 #' 
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
@@ -223,7 +224,12 @@ delete_sitemap <- function(siteURL, feedpath) {
 #' 
 #' @return Dataframe of errors
 #'
-#' @details The timestamp is converted to as.Date without the time.
+#' @details The timestamp is converted to a date as they are only available daily.
+#' 
+#' Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
+#'   other, roboted, serverError, soft404.
+#'   
+#'   Platform is one of: mobile, smartphoneOnly or web.
 #' 
 #' @export
 crawl_errors <- function(siteURL, 
@@ -328,21 +334,21 @@ RFC_convert <- function(RFC, drop_time=FALSE){
 
 #' Lists a site's sample URLs for crawl errors.
 #' 
-#' See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples 
+#' @description Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
+#'   other, roboted, serverError, soft404.
+#'   
+#'   Platform is one of: mobile, smartphoneOnly or web.
 #' 
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param category Crawl error category. Default 'notFound'.
 #' @param platform User agent type. Default 'web'. 
 #'
-#' @return A dataframe of $pageUrl, $last_crawled, $first_detected, $response
+#' @details
+#' See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples 
 #' 
-#' @description Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
-#'   other, roboted, serverError, soft404.
-#'   
-#'   Platform is one of: mobile, smartphoneOnly or web.
+#' @return A dataframe of $pageUrl, $last_crawled, $first_detected, $response
 #'
 #' @export
-
 list_crawl_error_samples <- function(siteURL,
                                      category="notFound",
                                      platform="web") {
