@@ -8,6 +8,7 @@ app <- shinyApp(
   ui = fluidPage(
     h3("Search Console Websites"),
     DT::dataTableOutput("websites"),
+    textOutput("selected_url"),
     h3("Crawl Errors - Not Found"),
     plotOutput("crawl_errors"),
     h3("URL parameters"),
@@ -33,19 +34,36 @@ app <- shinyApp(
       
     })
     
-    output$crawl_errors <- renderPlot({
-      
+    selected_www <- reactive({
       a <- auth()
       www <- list_websites()
       selected_row <- input$websites_rows_selected
       
-      # www <- www[www$permissionLevel %in% c('siteFullUser', 'siteOwner'),]
+      ## pick the last click
+      selected_row <- selected_row[length(selected_row)]
       
-      www <- www[selected_row,]
+      www <- www[selected_row,]    
       
-      ce <- crawl_errors(www[1,'siteUrl'], category = "notFound", platform = "web")
+    })
+    
+    output$selected_url <- renderText({
+      www <- selected_www()
       
-      plot(ce$timecount, ce$count, type="l")
+      www$siteUrl
+      
+    })
+    
+    output$crawl_errors <- renderPlot({
+      
+      www <- selected_www()
+      
+      if(!is.null(www)){
+        
+        ce <- crawl_errors(www[,'siteUrl'], category = "notFound", platform = "web")
+        
+        plot(ce$timecount, ce$count, type="l")        
+        
+      }
       
     })
 
