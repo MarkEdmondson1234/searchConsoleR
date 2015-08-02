@@ -72,7 +72,7 @@
 #' @template verbose
 #'
 #' @return an OAuth token object, specifically a
-#'   \code{\link[=Token-class]{Token2.0}}, invisibly or if shiny_session is a Shiny object, a list including
+#'   \code{\link[=Token-class]{Token2.0}}, invisibly or if shiny_session is a Shiny object, a list.
 #'
 #' @export
 scr_auth <- function(token = NULL,

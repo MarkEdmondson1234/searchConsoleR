@@ -16,7 +16,7 @@ list_websites <- function() {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -43,7 +43,7 @@ add_website <- function(siteURL) {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -56,7 +56,6 @@ add_website <- function(siteURL) {
 #' @return TRUE if successful.
 #'
 #' @export
-
 delete_website <- function(siteURL) {
   
   ## require pre-existing token, to avoid recursion
@@ -71,7 +70,7 @@ delete_website <- function(siteURL) {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -110,7 +109,7 @@ list_sitemaps <- function(siteURL) {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -158,7 +157,7 @@ add_sitemap <- function(siteURL, feedpath) {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -206,7 +205,7 @@ delete_sitemap <- function(siteURL, feedpath) {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -259,11 +258,11 @@ crawl_errors <- function(siteURL,
                  'web')
   
   if(!category %in% categories) {
-    stop("Incorrect category.  Must be one of ", categories)
+    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
   }
   
   if(!platform %in% platforms){
-    stop("Incorrect platform. Must be one of ", platforms)
+    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
   }
   
   ## require pre-existing token, to avoid recursion
@@ -297,16 +296,289 @@ crawl_errors <- function(siteURL,
     ldf$platform <- as.character(ldf$platform)
     ldf$category <- as.character(ldf$category)
     ldf$count <- as.numeric(as.character(ldf$count))
-    ldf$timecount <- as.Date(strptime(as.character(ldf$timecount), 
-                              tz="UTC", 
-                              "%Y-%m-%dT%H:%M:%OSZ"))
+    ldf$timecount <- RFC_convert(ldf$timecount, drop_time = TRUE)
     
     ldf
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
 }
+
+#' Converts RFC3339 to as.Date
+#' 
+#' @keywords internal
+RFC_convert <- function(RFC, drop_time=FALSE){
+  
+  if(drop_time){
+    d <-   as.Date(strptime(as.character(RFC), 
+                            tz="UTC", 
+                            "%Y-%m-%dT%H:%M:%OSZ"))
+  } else {
+    d <- strptime(as.character(RFC), 
+                  tz="UTC", 
+                  "%Y-%m-%dT%H:%M:%OSZ")
+  }
+  
+  return(d)
+}
+
+#' Lists a site's sample URLs for crawl errors.
+#' 
+#' See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples 
+#' 
+#' @param siteURL The URL of the website to delete. Must include protocol (http://).
+#' @param category Crawl error category. Default 'notFound'.
+#' @param platform User agent type. Default 'web'. 
+#'
+#' @return A dataframe of $pageUrl, $last_crawled, $first_detected, $response
+#' 
+#' @description Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
+#'   other, roboted, serverError, soft404.
+#'   
+#'   Platform is one of: mobile, smartphoneOnly or web.
+#'
+#' @export
+
+list_crawl_error_samples <- function(siteURL,
+                                     category="notFound",
+                                     platform="web") {
+  
+  if(!grepl("http",siteURL)){
+    stop("siteURL must include protocol, e.g. http://example.com") 
+  }
+  
+  if(!grepl("%3A%2F%2F", siteURL)){
+    siteURL <- URLencode(siteURL, reserved=T)
+    message("Encoding URL to ", siteURL)
+  }
+  
+  categories <- c('authPermissions', 
+                  'manyToOneRedirect',
+                  'notFollowed',
+                  'notFound',
+                  'other',
+                  'roboted',
+                  'serverError',
+                  'soft404')
+  
+  platforms <- c('mobile',
+                 'smartphoneOnly',
+                 'web')
+  
+  if(!category %in% categories) {
+    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
+  }
+  
+  if(!platform %in% platforms){
+    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
+  }
+  
+  ## require pre-existing token, to avoid recursion
+  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+    
+    ## docs here
+    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
+    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL,"/urlCrawlErrorsSamples")
+    
+    param_vector <- c('category'=category,
+                      'platform'=platform)
+    
+    req <- searchconsole_GET(req_url, params = param_vector)
+    
+    errs <- req$content$urlCrawlErrorSample
+    
+    errs$last_crawled <- RFC_convert(errs$last_crawled)
+    errs$first_detected <- RFC_convert(errs$first_detected)
+    
+    errs
+    
+  } else {
+    
+    stop("Invalid Token")
+    
+  }
+  
+}
+
+#' Shows details of errors for individual sample URLs
+#' 
+#' See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/get 
+#' 
+#' @param siteURL The URL of the website to delete. Must include protocol (http://).
+#' @param pageURL A PageUrl taken from list_crawl_error_samples.
+#' @param category Crawl error category. Default 'notFound'.
+#' @param platform User agent type. Default 'web'. 
+#'
+#' @return A list of $pageUrl, $last_crawled, $first_detected and a $urlDetails sub-list.
+#' 
+#' @description 
+#' pageURL is the relative path (without the site) of the sample URL. 
+#' It must be one of the URLs returned by list_crawl_error_samples. 
+#' For example, for the URL https://www.example.com/pagename on the site https://www.example.com/, 
+#' the url value is pagename (string)
+#' 
+#' Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
+#'   other, roboted, serverError, soft404.
+#'   
+#'   Platform is one of: mobile, smartphoneOnly or web.
+#'
+#' @export
+error_sample_url <- function(siteURL,
+                                pageURL,
+                                category="notFound",
+                                platform="web") {
+  
+  if(!grepl("http",siteURL)){
+    stop("siteURL must include protocol, e.g. http://example.com") 
+  }
+  
+  if(!grepl("%3A%2F%2F", siteURL)){
+    siteURL <- URLencode(siteURL, reserved=T)
+    message("Encoding URL to ", siteURL)
+  }
+  
+  pageURL <- URLencode(pageURL, reserved = T)
+  message("Encoding sampleURL to ", pageURL)
+  
+  categories <- c('authPermissions', 
+                  'manyToOneRedirect',
+                  'notFollowed',
+                  'notFound',
+                  'other',
+                  'roboted',
+                  'serverError',
+                  'soft404')
+  
+  platforms <- c('mobile',
+                 'smartphoneOnly',
+                 'web')
+  
+  if(!category %in% categories) {
+    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
+  }
+  
+  if(!platform %in% platforms){
+    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
+  }
+  
+  ## require pre-existing token, to avoid recursion
+  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+    
+    ## docs here
+    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
+    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
+                      siteURL,
+                      "/urlCrawlErrorsSamples/",
+                      pageURL)
+    
+    param_vector <- c('category'=category,
+                      'platform'=platform)
+    
+    req <- searchconsole_GET(req_url, params = param_vector)
+    
+    details <- req$content
+    
+    details$last_crawled <- RFC_convert(details$last_crawled)
+    details$first_detected <- RFC_convert(details$first_detected)
+    
+    details
+    
+  } else {
+    
+    stop("Invalid Token")
+    
+  }
+  
+}
+
+#' Mark As Fixed the individual sample URLs
+#' 
+#' See here for details: 
+#' https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/markAsFixed
+#' 
+#' @param siteURL The URL of the website to delete. Must include protocol (http://).
+#' @param pageURL A PageUrl taken from list_crawl_error_samples.
+#' @param category Crawl error category. Default 'notFound'.
+#' @param platform User agent type. Default 'web'. 
+#'
+#' @return TRUE if successful.
+#' 
+#' @description 
+#' pageURL is the relative path (without the site) of the sample URL. 
+#' It must be one of the URLs returned by list_crawl_error_samples. 
+#' For example, for the URL https://www.example.com/pagename on the site https://www.example.com/, 
+#' the url value is pagename (string)
+#' 
+#' Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
+#'   other, roboted, serverError, soft404.
+#'   
+#'   Platform is one of: mobile, smartphoneOnly or web.
+#'
+#' @export
+fix_sample_url <- function(siteURL,
+                           pageURL,
+                           category="notFound",
+                           platform="web") {
+  
+  if(!grepl("http",siteURL)){
+    stop("siteURL must include protocol, e.g. http://example.com") 
+  }
+  
+  if(!grepl("%3A%2F%2F", siteURL)){
+    siteURL <- URLencode(siteURL, reserved=T)
+    message("Encoding URL to ", siteURL)
+  }
+  
+  pageURL <- URLencode(pageURL, reserved = T)
+  message("Encoding sampleURL to ", pageURL)
+  
+  categories <- c('authPermissions', 
+                  'manyToOneRedirect',
+                  'notFollowed',
+                  'notFound',
+                  'other',
+                  'roboted',
+                  'serverError',
+                  'soft404')
+  
+  platforms <- c('mobile',
+                 'smartphoneOnly',
+                 'web')
+  
+  if(!category %in% categories) {
+    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
+  }
+  
+  if(!platform %in% platforms){
+    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
+  }
+  
+  ## require pre-existing token, to avoid recursion
+  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+    
+    ## docs here
+    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/markAsFixed
+    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
+                      siteURL,
+                      "/urlCrawlErrorsSamples/",
+                      pageURL)
+    
+    param_vector <- c('category'=category,
+                      'platform'=platform)
+    
+    req <- searchconsole_DELETE(req_url, params = param_vector)
+    
+    req
+    
+  } else {
+    
+    stop("Invalid Token")
+    
+  }
+  
+}
+
