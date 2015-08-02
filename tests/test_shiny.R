@@ -56,6 +56,7 @@ app <- shinyApp(
       w <- web()
       
       message(str(w))
+      message(str(w$access_token))
       
       ww <- .state$websites
       

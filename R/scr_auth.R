@@ -83,6 +83,8 @@ scr_auth <- function(token = NULL,
                     verbose = TRUE,
                     shiny_session = FALSE) {
   
+  .state$shiny <- FALSE
+  
   if(new_user && file.exists(".httr-oauth")) {
     if(verbose) message("Removing old credentials ...")
     file.remove(".httr-oauth")
@@ -129,7 +131,7 @@ scr_auth <- function(token = NULL,
         }
       }
       .state$token <- google_token
-      .state$shiny <- FALSE
+
       }
    
       
@@ -152,14 +154,11 @@ scr_auth <- function(token = NULL,
             
             shiny_token <- shinygaGetToken(return_code,
                                            app_url )
-            message("Shiny token: ", shiny_token)
             .state$token <- shiny_token
             .state$shiny <- TRUE
             
         }
     }
-    
-  
   
   .state$websites <- list_websites()
   
@@ -249,29 +248,38 @@ scr_auth_suspend <- function(disable_httr_oauth = TRUE, verbose = TRUE) {
 #' @keywords internal
 is_legit_token <- function(x, verbose = FALSE) {
   
-  return(TRUE)
-  
-  
-  if(!inherits(x, "Token2.0")) {
-    if(verbose) message("Not a Token2.0 object.")
-    return(FALSE)
-  }
-  
-  if("invalid_client" %in% unlist(x$credentials)) {
-    # check for validity so error is found before making requests
-    # shouldn't happen if id and secret don't change
-    if(verbose) {
-      message("Authorization error. Please check client_id and client_secret.")
+  if(!.state$shiny){
+    if(!inherits(x, "Token2.0")) {
+      if(verbose) message("Not a Token2.0 object.")
+      return(FALSE)
     }
-    return(FALSE)
+    
+    if("invalid_client" %in% unlist(x$credentials)) {
+      # check for validity so error is found before making requests
+      # shouldn't happen if id and secret don't change
+      if(verbose) {
+        message("Authorization error. Please check client_id and client_secret.")
+      }
+      return(FALSE)
+    }
+    
+    if("invalid_request" %in% unlist(x$credentials)) {
+      # known example: if user clicks "Cancel" instead of "Accept" when OAuth2
+      # flow kicks to browser
+      if(verbose) message("Authorization error. No access token obtained.")
+      return(FALSE)
+    }    
+
+  } else {
+     ## is shiny session
+    shiny_token <- .state$token
+    if(is.null(shiny_token$access_token)){
+      if(verbose) message("No Shiny Auth token found")
+      return(FALSE)
+    }
+    
   }
-  
-  if("invalid_request" %in% unlist(x$credentials)) {
-    # known example: if user clicks "Cancel" instead of "Accept" when OAuth2
-    # flow kicks to browser
-    if(verbose) message("Authorization error. No access token obtained.")
-    return(FALSE)
-  }
+
   
   TRUE
   

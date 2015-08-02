@@ -14,8 +14,7 @@ is.error <- function(test_me){
 #' Returns the authentication parameter "code" in redirected URLs
 #' 
 #' @keywords internal
-authReturnCode <- function(session, securityCode){    
-  message("AuthReturnCode")
+authReturnCode <- function(session, securityCode){
 
   pars <- shiny::parseQueryString(session$clientData$url_search)
   
@@ -30,10 +29,8 @@ authReturnCode <- function(session, securityCode){
   }
   
   if(!is.null(pars$code)){
-    message("Returning code: ", pars$code)
     return(pars$code)
   } else {
-    message("No code found")
     NULL
   }
 }
@@ -74,7 +71,6 @@ shinygaGetTokenURL <-
 #' only works in reactive shiny enironment
 #' @keywords internal
 getShinyURL <- function(session){
-  message("GetShinyURL")
   
   if(!is.null(session)){
     pathname <- session$clientData$url_pathname
@@ -127,11 +123,6 @@ shinygaGetToken <- function(code,
   token.data <- httr::content(raw.data)
   now        <- as.numeric(Sys.time())
   token      <- c(token.data, timestamp = c('first'=now, 'refresh'=now))
-  
-  # environment to store credentials
-  # a better way, integrate with future integrations
-  .state <- new.env(parent = emptyenv())
-  .state$token <- token
   
   return(token)
 }

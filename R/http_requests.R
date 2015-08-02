@@ -13,47 +13,66 @@
 #'   parameters will be combined with \code{\link[httr]{config}}.
 #'
 #' @keywords internal
-searchconsole_GET <- function(url, 
-                              to_json = TRUE, ...) {
+searchconsole_GET <- function(url, to_json = TRUE) {
+    
+  req <- doHttrRequest(url, "GET")
+
+  ok_content_types <- c("application/json; charset=UTF-8")
+  if(!(req$headers$`content-type` %in% ok_content_types)) {
+    
+    stop(sprintf(paste("Not expecting content-type to be:\n%s"),
+                 req$headers[["content-type"]]))
+
+  }
+  
+  if(to_json) {
+    req$content <- req %>%
+      httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
+      jsonlite::fromJSON()
+  }
+  
+  req
+    
+}
+
+#' Get URL content based on if its Shiny or local
+#' 
+#' This changes the auth type depending on if its local or on Shiny
+#' 
+#' @param url the url of the page to retrieve
+#' @param request_type the type of httr request function: GET, POST, PUT, DELETE etc.
+#' @param the_body body of POST request
+#' 
+#' @keywords internal
+doHttrRequest <- function(url, request_type="GET", the_body=NULL){
   
   if(!.state$shiny){
-    req <- httr::GET(url, get_google_token(), ...)
     
-    httr::stop_for_status(req)
-    ## TO DO: interpret some common problems for user? for example, a well-formed
-    ## ws_feed for a non-existent spreadsheet will trigger "client error: (400)
-    ## Bad Request" ... can we confidently say what the problem is?    
+    arg_list <- list(url = url, 
+                     config = get_google_token(), 
+                     body = the_body)
     
   } else {
     shiny_token <- .state$token
-    req_url <- paste(url,'?access_token=', shiny_token$access_token, sep='', collapse='')
-    req <- httr::GET(req_url, ...)
-  }
+    url <- paste(url,
+                 '?access_token=', 
+                 shiny_token$access_token, 
+                 sep='', collapse='')
     
-  message("Req URL: ", req_url)
+    arg_list <- list(url = url, 
+                     config = list(), 
+                     body = the_body)
 
-    
-    ok_content_types <- c("application/json; charset=UTF-8")
-    if(!(req$headers$`content-type` %in% ok_content_types)) {
-      stop(sprintf(paste("Not expecting content-type to be:\n%s"),
-                   req$headers[["content-type"]]))
-      # usually when the content-type is unexpectedly binary, it means we need to
-      # refresh the token ... we should have a better message or do something
-      # constructive when this happens ... sort of waiting til I can review all
-      # the auth stuff
-    }
-    
-    if(to_json) {
-      req$content <- req %>%
-        httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
-        jsonlite::fromJSON()
-      
-      message("req$content: ", req$content)
-    }
-    
-    req
-    
   }
+  
+  req <- do.call(request_type, 
+                 args = arg_list,
+                 envir = asNamespace("httr"))
+  httr::stop_for_status(req)
+  
+  req
+}
+
 
 #' Create POST request
 #'
@@ -65,28 +84,16 @@ searchconsole_GET <- function(url,
 #' @keywords internal
 searchconsole_POST <- function(url, the_body) {
   
-  token <- get_google_token()
+  req <- doHttrRequest(url, "POST", the_body = the_body)
+    
+  req$content <- httr::content(req, encoding = "UTF-8")
   
-  if(is.null(token)) {
-    stop("Must be authorized user in order to perform request")
-  } else {
+#   if(!is.null(req$content)) {
+#     req$content <- req$content %>% xml2::read_xml()
+#   }
+  
+  req
     
-    req <-
-      httr::POST(url,
-                 encode="form",
-                 body = the_body)
-    httr::stop_for_status(req)
-    
-    req$content <- httr::content(req, encoding = "UTF-8")
-    
-    if(!is.null(req$content)) {
-      ## known example of this: POST request triggered by gs_ws_new()
-      req$content <- req$content %>% xml2::read_xml()
-    }
-    
-    req
-    
-  }
 }
 
 #' Create DELETE request
@@ -97,10 +104,9 @@ searchconsole_POST <- function(url, the_body) {
 #'
 #' @keywords internal
 searchconsole_DELETE <- function(url) {
-  req <- httr::DELETE(url, get_google_token())
-  httr::stop_for_status(req)
-  ## I haven't found any use yet for this return value, but adding for symmetry
-  ## with other http functions
+  
+  req <- doHttrRequest(url, "DELETE")
+
   req
 }
 
@@ -114,24 +120,7 @@ searchconsole_DELETE <- function(url) {
 #' @keywords internal
 searchconsole_PUT <- function(url, the_body) {
   
-  token <- get_google_token()
-  
-  if(is.null(token)) {
-    stop("Must be authorized in order to perform request")
-  }
-  
-  req <-
-    httr::PUT(url,
-              config = token,
-              body = the_body)
-  
-  httr::stop_for_status(req)
-  
-  req$content <- httr::content(req, type = "text/xml")
-  if(!is.null(req$content)) {
-    ## known example of this: POST request triggered by gs_ws_new()
-    req$content <- XML::xmlToList(req$content)
-  }
+  req <- doHttrRequest(url, "PUT", the_body = the_body)
   
   req
   
