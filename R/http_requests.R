@@ -13,9 +13,9 @@
 #'   parameters will be combined with \code{\link[httr]{config}}.
 #'
 #' @keywords internal
-searchconsole_GET <- function(url, to_json = TRUE) {
+searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
     
-  req <- doHttrRequest(url, "GET")
+  req <- doHttrRequest(url, request_type = "GET", params = params)
 
   ok_content_types <- c("application/json; charset=UTF-8")
   if(!(req$headers$`content-type` %in% ok_content_types)) {
@@ -29,6 +29,8 @@ searchconsole_GET <- function(url, to_json = TRUE) {
     req$content <- req %>%
       httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
       jsonlite::fromJSON()
+    
+    message("DEBUG: req$content: ",req$content)
   }
   
   req
@@ -37,16 +39,33 @@ searchconsole_GET <- function(url, to_json = TRUE) {
 
 #' Get URL content based on if its Shiny or local
 #' 
+#' @description
 #' This changes the auth type depending on if its local or on Shiny
 #' 
 #' @param url the url of the page to retrieve
 #' @param request_type the type of httr request function: GET, POST, PUT, DELETE etc.
 #' @param the_body body of POST request
+#' @param params A named character vector of other parameters to add to request.
+#' 
+#' @details Example of params: c(param1="foo", param2="bar")
+#' 
 #' 
 #' @keywords internal
-doHttrRequest <- function(url, request_type="GET", the_body=NULL){
+doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
+  
+  ## add any other params
+  ## expects named character e.g. c(param1="foo", param2="bar")
+  if(!is.null(params)){
+    message("Adding params: ", params)
+    param_string <- paste(names(params), params, 
+                          sep='=', collapse='&')
+  } else {
+    param_string <- ''
+  }
   
   if(!.state$shiny){
+    
+    url <- paste0(url, '?',param_string)
     
     arg_list <- list(url = url, 
                      config = get_google_token(), 
@@ -54,9 +73,14 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL){
     
   } else {
     shiny_token <- .state$token
+    
+
+    
+    message('param_string: ', param_string)
     url <- paste(url,
                  '?access_token=', 
                  shiny_token$access_token, 
+                 param_string,
                  sep='', collapse='')
     
     arg_list <- list(url = url, 
@@ -64,7 +88,7 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL){
                      body = the_body)
 
   }
-  
+  message("Fetching: ", url)
   req <- do.call(request_type, 
                  args = arg_list,
                  envir = asNamespace("httr"))
@@ -82,9 +106,9 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL){
 #' @param the_body body of POST request
 #'
 #' @keywords internal
-searchconsole_POST <- function(url, the_body) {
+searchconsole_POST <- function(url, the_body, params=NULL) {
   
-  req <- doHttrRequest(url, "POST", the_body = the_body)
+  req <- doHttrRequest(url, "POST", the_body = the_body, params = params)
     
   req$content <- httr::content(req, encoding = "UTF-8")
   
@@ -103,9 +127,9 @@ searchconsole_POST <- function(url, the_body) {
 #' @param url the url of the page to retrieve
 #'
 #' @keywords internal
-searchconsole_DELETE <- function(url) {
+searchconsole_DELETE <- function(url, params=NULL) {
   
-  req <- doHttrRequest(url, "DELETE")
+  req <- doHttrRequest(url, "DELETE", params = params)
 
   req
 }
@@ -118,9 +142,9 @@ searchconsole_DELETE <- function(url) {
 #' @param the_body body of PUT request
 #'
 #' @keywords internal
-searchconsole_PUT <- function(url, the_body) {
+searchconsole_PUT <- function(url, the_body, params=NULL) {
   
-  req <- doHttrRequest(url, "PUT", the_body = the_body)
+  req <- doHttrRequest(url, "PUT", the_body = the_body, params = params)
   
   req
   

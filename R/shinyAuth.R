@@ -1,5 +1,10 @@
 #' Creates a random character code
 #' 
+#' @param seed random seed.
+#' @param num number of characters the code should be.
+#' 
+#' @return a string of random digits and letters.
+#' 
 #' @keywords internal
 createCode <- function(seed=NULL, num=20){
   if (!is.null(seed)) set.seed(seed)
@@ -7,11 +12,27 @@ createCode <- function(seed=NULL, num=20){
   paste0(sample(c(1:9, LETTERS, letters), num, replace = T), collapse='')
 } 
 
+#' Is this a try error?
+#' 
+#' Utility to test errors
+#' 
+#' @param test_me an object created with try()
+#' 
+#' @return Boolean
+#' 
+#' @keywords internal
 is.error <- function(test_me){
   inherits(test_me, "try-error")
 }
 
 #' Returns the authentication parameter "code" in redirected URLs
+#' 
+#' Checks the URL of the Shiny app to get the state and code URL parameters.
+#' 
+#' @param session A shiny session object
+#' @param securityCode A random string to check the auth comes form the same origin.
+#' 
+#' @return The Google auth token in the code URL parameter.
 #' 
 #' @keywords internal
 authReturnCode <- function(session, securityCode){
@@ -35,13 +56,31 @@ authReturnCode <- function(session, securityCode){
   }
 }
 
-## valid shiny session object?
+#' Is this a valid shiny session object?
+#' 
+#' Checks that a valid Shiny session object has been passed.
+#' 
+#' @param shiny_session a Shiny session object.
+#' 
+#' @return Boolean
+#' 
+#' @keywords internal
 is_shiny <- function(shiny_session){
   inherits(shiny_session, "ShinySession")
 }
 
 
-#' Returns the authentication URL
+#' Returns the Google authentication URL
+#' 
+#' The URL a user authenticates the Shiny app on.
+#' 
+#' @param state A random string used to check auth is from same origin.
+#' @param redirect.uri Where a user will go after authentication.
+#' @param client.id From the Google API console.
+#' @param client.secret From the Google API console.
+#' @param scope What Google API service to get authentication for.
+#' 
+#' @return The URL for authentication.
 #' 
 #' @keywords internal
 shinygaGetTokenURL <- 
@@ -66,9 +105,14 @@ shinygaGetTokenURL <-
   }
 
 
-#' get the apps URL as default
+#' Get the Shiny Apps URL.
 #' 
-#' only works in reactive shiny enironment
+#' Needed to for the redirect URL in Google Auth
+#' 
+#' @param session The shiny session object.
+#' 
+#' @return The URL of the Shiny App its called from.
+#' 
 #' @keywords internal
 getShinyURL <- function(session){
   
@@ -99,11 +143,18 @@ getShinyURL <- function(session){
 }
 
 
-#' Returns the authentication Token
+#' Returns the authentication Token.
 #' 
 #' Once a user browses to ShinyGetTokenURL and is redirected back with request
 #' shinygaGetToken takes that code and returns a token needed for Google APIs
-#' Uses the same client.id and client.secret as ShinyGetTokenURL
+#' Uses the same client.id and client.secret as ShinyGetTokenURL.
+#' 
+#' @param code The code returned from a successful Google authentication.
+#' @param redirect.uri Where a user will go after authentication.
+#' @param client.id From the Google API console.
+#' @param client.secret From the Google API console.
+#' 
+#' @return A list including the token needed for Google API requests.
 #' 
 #' @keywords internal
 shinygaGetToken <- function(code,

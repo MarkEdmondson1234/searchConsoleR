@@ -7,14 +7,12 @@ source('~/dev/R/SearchConsoleR/R/http_requests.R')
 # The object can be passed to runApp()
 app <- shinyApp(
   ui = fluidPage(
-    numericInput("n", "n", 1),
-    plotOutput("plot"),
     shiny::dataTableOutput("websites"),
     textOutput("url_pars"),
-    textOutput("queryText")
+    textOutput("queryText"),
+    textOutput("summary")
   ),
   server = function(input, output, session) {
-    output$plot <- renderPlot( plot(head(cars, input$n)) )
     
     # Print out clientData, which is a reactiveValues object.
     # This object is list-like, but it is not a list.

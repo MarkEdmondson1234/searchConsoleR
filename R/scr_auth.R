@@ -68,11 +68,11 @@
 #' @param cache logical indicating if \code{SearchConsoleR} should cache
 #'   credentials in the default cache file \code{.httr-oauth}
 #'   
-#' @param shiny Set to shiny session object if authentication needed in a Shiny application.
+#' @param shiny_session Set to shiny session object if authentication needed in a Shiny application.
 #' @template verbose
 #'
 #' @return an OAuth token object, specifically a
-#'   \code{\link[=Token-class]{Token2.0}}, invisibly
+#'   \code{\link[=Token-class]{Token2.0}}, invisibly or if shiny_session is a Shiny object, a list including
 #'
 #' @export
 scr_auth <- function(token = NULL,
@@ -81,7 +81,7 @@ scr_auth <- function(token = NULL,
                     secret = getOption("SearchConsoleR.client_secret"),
                     cache = getOption("SearchConsoleR.httr_oauth_cache"),
                     verbose = TRUE,
-                    shiny_session = FALSE) {
+                    shiny_session = NULL) {
   
   .state$shiny <- FALSE
   
