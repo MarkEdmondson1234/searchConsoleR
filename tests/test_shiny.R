@@ -1,5 +1,8 @@
 library(shiny)
+library(magrittr)
 source('~/dev/R/SearchConsoleR/R/scr_auth.R')
+source('~/dev/R/SearchConsoleR/R/getData.R')
+source('~/dev/R/SearchConsoleR/R/http_requests.R')
 
 # The object can be passed to runApp()
 app <- shinyApp(
@@ -43,12 +46,26 @@ app <- shinyApp(
 
     web <- reactive({
       
-      scr_auth(shiny=session)
+      s <- scr_auth(shiny=session)
+      
+      s
     })
     
     output$websites <- renderDataTable({
   
-      web()
+      w <- web()
+      
+      message(str(w))
+      
+      ww <- .state$websites
+      
+      message(str(ww))
+      
+      www <- list_websites()
+      
+      message(str(www))
+      
+      www
       
     })
   }

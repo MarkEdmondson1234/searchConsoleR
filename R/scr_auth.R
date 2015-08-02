@@ -129,6 +129,7 @@ scr_auth <- function(token = NULL,
         }
       }
       .state$token <- google_token
+      .state$shiny <- FALSE
       }
    
       
@@ -153,6 +154,7 @@ scr_auth <- function(token = NULL,
                                            app_url )
             message("Shiny token: ", shiny_token)
             .state$token <- shiny_token
+            .state$shiny <- TRUE
             
         }
     }

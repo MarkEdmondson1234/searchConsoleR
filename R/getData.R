@@ -9,6 +9,7 @@ list_websites <- function() {
   ## gdrive_GET() called scr_auth()
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
     
+    message("Token found and legit")
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/list
     req <- searchconsole_GET("https://www.googleapis.com/webmasters/v3/sites")

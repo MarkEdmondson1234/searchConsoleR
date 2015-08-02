@@ -15,14 +15,23 @@
 #' @keywords internal
 searchconsole_GET <- function(url, 
                               to_json = TRUE, ...) {
-    
-
+  
+  if(!.state$shiny){
     req <- httr::GET(url, get_google_token(), ...)
-
+    
     httr::stop_for_status(req)
     ## TO DO: interpret some common problems for user? for example, a well-formed
     ## ws_feed for a non-existent spreadsheet will trigger "client error: (400)
-    ## Bad Request" ... can we confidently say what the problem is?
+    ## Bad Request" ... can we confidently say what the problem is?    
+    
+  } else {
+    shiny_token <- .state$token
+    req_url <- paste(url,'?access_token=', shiny_token$access_token, sep='', collapse='')
+    req <- httr::GET(req_url, ...)
+  }
+    
+  message("Req URL: ", req_url)
+
     
     ok_content_types <- c("application/json; charset=UTF-8")
     if(!(req$headers$`content-type` %in% ok_content_types)) {
@@ -34,12 +43,12 @@ searchconsole_GET <- function(url,
       # the auth stuff
     }
     
-    # This is only FALSE when calling gs_ws_modify() where we are using regex
-    # substitution, waiting for xml2 to support XML editing
     if(to_json) {
       req$content <- req %>%
         httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
         jsonlite::fromJSON()
+      
+      message("req$content: ", req$content)
     }
     
     req
