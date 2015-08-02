@@ -1,19 +1,54 @@
 library(shiny)
 library(magrittr)
-source('~/dev/R/SearchConsoleR/R/scr_auth.R')
-source('~/dev/R/SearchConsoleR/R/getData.R')
-source('~/dev/R/SearchConsoleR/R/http_requests.R')
+library(searchConsoleR)
 
 # The object can be passed to runApp()
 app <- shinyApp(
+  
   ui = fluidPage(
-    shiny::dataTableOutput("websites"),
-    textOutput("url_pars"),
+    h3("Search Console Websites"),
+    DT::dataTableOutput("websites"),
+    h3("Crawl Errors - Not Found"),
+    plotOutput("crawl_errors"),
+    h3("URL parameters"),
     textOutput("queryText"),
+    h3("shiny session data"),
     textOutput("summary")
   ),
   server = function(input, output, session) {
     
+    auth <- reactive({
+      
+      a <- scr_auth(shiny_session = session)
+      
+    })
+    
+    output$websites <- DT::renderDataTable({
+      
+      a <- auth()
+      
+      www <- list_websites()
+      
+      DT::datatable(www, selection = 'single')
+      
+    })
+    
+    output$crawl_errors <- renderPlot({
+      
+      a <- auth()
+      www <- list_websites()
+      selected_row <- input$websites_rows_selected
+      
+      # www <- www[www$permissionLevel %in% c('siteFullUser', 'siteOwner'),]
+      
+      www <- www[selected_row,]
+      
+      ce <- crawl_errors(www[1,'siteUrl'], category = "notFound", platform = "web")
+      
+      plot(ce$timecount, ce$count, type="l")
+      
+    })
+
     # Print out clientData, which is a reactiveValues object.
     # This object is list-like, but it is not a list.
     output$summary <- renderText({
@@ -42,31 +77,7 @@ app <- shinyApp(
       paste(names(query), query, sep = "=", collapse=", ")
     })
 
-    web <- reactive({
-      
-      s <- scr_auth(shiny=session)
-      
-      s
-    })
-    
-    output$websites <- renderDataTable({
-  
-      w <- web()
-      
-      message(str(w))
-      message(str(w$access_token))
-      
-      ww <- .state$websites
-      
-      message(str(ww))
-      
-      www <- list_websites()
-      
-      message(str(www))
-      
-      www
-      
-    })
+
   }
 )
 

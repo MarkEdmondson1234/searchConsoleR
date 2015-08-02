@@ -1,4 +1,5 @@
-# environment to store credentials
+# environment to store credentials - 
+# not sure this is best place, but it doesn't work in scr_auth() or .onLoad()
 .state <- new.env(parent = emptyenv())
 
 #' Authorize \code{searchConsoleR}
@@ -81,7 +82,7 @@ scr_auth <- function(token = NULL,
                     cache = getOption("searchConsoleR.httr_oauth_cache"),
                     verbose = TRUE,
                     shiny_session = NULL) {
-  
+
   .state$shiny <- FALSE
   
   if(new_user && file.exists(".httr-oauth")) {

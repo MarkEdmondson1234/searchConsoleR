@@ -16,7 +16,7 @@ list_websites <- function() {
     
   } else {
     
-    stop("Invalid Token")
+    NULL
     
   }
   
@@ -222,7 +222,7 @@ delete_sitemap <- function(siteURL, feedpath) {
 #' @param platform The user agent type. 'all', 'mobile', 'smartphoneOnly' or 'web'.
 #' @param latestCountsOnly Default FALSE. Only the latest crawl error counts returned if TRUE.
 #' 
-#' @return Dataframe of errors
+#' @return dataframe of errors with $platform $category $count and $timecount.
 #'
 #' @details The timestamp is converted to a date as they are only available daily.
 #' 

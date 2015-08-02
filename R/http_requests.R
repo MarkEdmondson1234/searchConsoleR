@@ -54,9 +54,11 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
   ## add any other params
   ## expects named character e.g. c(param1="foo", param2="bar")
   if(!is.null(params)){
-    message("Adding params: ", params)
+
     param_string <- paste(names(params), params, 
                           sep='=', collapse='&')
+    message("Adding params: ", param_string)
+    
   } else {
     param_string <- ''
   }
@@ -72,11 +74,10 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
   } else {
     shiny_token <- .state$token
 
-    # message('param_string: ', param_string)
     url <- paste(url,
                  '?access_token=', 
                  shiny_token$access_token, 
-                 param_string,
+                 '&',param_string,
                  sep='', collapse='')
     
     arg_list <- list(url = url, 
