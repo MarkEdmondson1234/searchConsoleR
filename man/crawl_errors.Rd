@@ -17,7 +17,7 @@ crawl_errors(siteURL, category = "all", platform = "all",
 \item{latestCountsOnly}{Default FALSE. Only the latest crawl error counts returned if TRUE.}
 }
 \value{
-Dataframe of errors
+dataframe of errors with $platform $category $count and $timecount.
 }
 \description{
 Get a list of errors detected by Googlebot over time.

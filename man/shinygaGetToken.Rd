@@ -5,8 +5,8 @@
 \title{Returns the authentication Token.}
 \usage{
 shinygaGetToken(code, redirect.uri,
-  client.id = getOption("SearchConsoleR.webapp.client_id"),
-  client.secret = getOption("SearchConsoleR.webapp.client_secret"))
+  client.id = getOption("searchConsoleR.webapp.client_id"),
+  client.secret = getOption("searchConsoleR.webapp.client_secret"))
 }
 \arguments{
 \item{code}{The code returned from a successful Google authentication.}

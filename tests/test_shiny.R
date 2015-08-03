@@ -7,10 +7,10 @@ library(searchConsoleR)
 app <- shinyApp(
   
   ui = fluidPage(
-    h3("Search Console Websites"),
+    h1("Search Console Websites"),
     DT::dataTableOutput("websites"),
     textOutput("selected_url"),
-    h3("Crawl Errors"),
+    h1("Crawl Errors"),
     selectInput("errors", 
                 "Error Type",
                 choices = c("Not Found" = "notFound",
@@ -27,6 +27,10 @@ app <- shinyApp(
                             "Mobile" = "mobile")
                             ),
     plotOutput("crawl_errors"),
+    h2('Sample Errors'),
+    DT::dataTableOutput("crawl_error_samples"),
+    h3('Error Details'),
+    DT::dataTableOutput("error_detail"),
     h3("URL parameters"),
     textOutput("queryText"),
     h3("shiny session data"),
@@ -102,6 +106,83 @@ app <- shinyApp(
       }
       
     })
+    
+    crawl_error_df <- reactive({
+      www <- selected_www()
+      errors <- input$errors
+      platform <- input$platform
+      
+      if(!is.null(www)){
+        
+        error_df <- try(list_crawl_error_samples(www$siteUrl, 
+                                                 category = errors, 
+                                                 platform = platform))
+        if(!is.error(error_df)){
+          
+#           error_df$last_crawled <- as.Date(error_df$last_crawled)
+#           error_df$first_detected <- as.Date(error_df$first_detected)
+          
+          e <- error_df
+          
+        } else {
+          message("Problem fetching data for:", www$siteUrl,"; ", errors,"; ", platform)
+          e <- NULL
+        }
+        
+        return(e)
+      }      
+      
+      
+    })
+    
+    output$crawl_error_samples <- DT::renderDataTable({
+      
+      crawl_error_df()
+      
+    }, selection = 'single')
+    
+    sample_error_url <- reactive({
+      crawl_error_df <- crawl_error_df()
+      errors <- input$errors
+      platform <- input$platform
+      sample_detail <- input$crawl_error_samples_rows_selected
+      
+      if(!is.null(sample_detail)){
+        
+        crawl_error_df <- crawl_error_df[sample_detail,] 
+
+      }      
+      
+      crawl_error_df$pageUrl
+      
+    })
+    
+    sample_error_url_details <- reactive({
+      siteUrl <- selected_www()$siteUrl
+      sample_error_url <- sample_error_url()
+      errors <- input$errors
+      platform <- input$platform      
+      
+      list_err <- error_sample_url(siteUrl, 
+                                   sample_error_url, 
+                                   category = errors, 
+                                   platform = platform)
+      
+      details <- Reduce(rbind, list_err$urlDetails)
+      message("str(details)", str(details))
+      message("names(details)",names(details))
+      
+      detail_df <- data.frame(linkedFrom=details, 
+                              last_crawled=list_err$last_crawled,
+                              first_detected=list_err$first_detected,
+                              pageUrl=list_err$pageUrl)
+    })
+    
+    output$error_detail <- DT::renderDataTable({
+      
+      sample_error_url_details()
+      
+    }, selection ='single')
 
     # Print out clientData, which is a reactiveValues object.
     # This object is list-like, but it is not a list.

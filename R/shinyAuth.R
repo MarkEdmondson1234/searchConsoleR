@@ -74,18 +74,19 @@ is_shiny <- function(shiny_session){
 #' 
 #' The URL a user authenticates the Shiny app on.
 #' 
+#' @param redirect.uri App URL, from getShinyURL(session)
 #' @param state A random string used to check auth is from same origin.
-#' @param redirect.uri Where a user will go after authentication.
 #' @param client.id From the Google API console.
 #' @param client.secret From the Google API console.
 #' @param scope What Google API service to get authentication for.
 #' 
 #' @return The URL for authentication.
 #' 
-#' @keywords internal
+#' @family Shiny Authentication
+#' @export
 shinygaGetTokenURL <- 
-  function(state,
-           redirect.uri,
+  function(redirect.uri = getShinyURL(session),
+           state = getOption("searchConsoleR.securitycode"),
            client.id     = getOption("searchConsoleR.webapp.client_id"),
            client.secret = getOption("searchConsoleR.webapp.client_secret"),
            scope         = getOption("searchConsoleR.scope")) {
@@ -107,13 +108,14 @@ shinygaGetTokenURL <-
 
 #' Get the Shiny Apps URL.
 #' 
-#' Needed to for the redirect URL in Google Auth
+#' Needed for the redirect URL in Google Auth flow
 #' 
 #' @param session The shiny session object.
 #' 
 #' @return The URL of the Shiny App its called from.
 #' 
-#' @keywords internal
+#' @family Shiny Authentication
+#' @export
 getShinyURL <- function(session){
   
   if(!is.null(session)){

@@ -8,6 +8,8 @@ searchconsole_DELETE(url, params = NULL)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}
+
+\item{params}{A named character vector of other parameters to add to request.}
 }
 \description{
 Make DELETE request to Search Console API.

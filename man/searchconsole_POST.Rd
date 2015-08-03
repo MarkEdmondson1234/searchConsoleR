@@ -10,6 +10,8 @@ searchconsole_POST(url, the_body, params = NULL)
 \item{url}{the url of the page to retrieve}
 
 \item{the_body}{body of POST request}
+
+\item{params}{A named character vector of other parameters to add to request.}
 }
 \description{
 Make POST request to Search Console API.

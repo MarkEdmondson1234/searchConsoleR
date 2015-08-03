@@ -10,6 +10,8 @@ searchconsole_PUT(url, the_body, params = NULL)
 \item{url}{the url of the page to retrieve}
 
 \item{the_body}{body of PUT request}
+
+\item{params}{A named character vector of other parameters to add to request.}
 }
 \description{
 Make PUT request to Search Console API.

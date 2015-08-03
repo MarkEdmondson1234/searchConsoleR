@@ -4,15 +4,16 @@
 \alias{shinygaGetTokenURL}
 \title{Returns the Google authentication URL}
 \usage{
-shinygaGetTokenURL(state, redirect.uri,
-  client.id = getOption("SearchConsoleR.webapp.client_id"),
-  client.secret = getOption("SearchConsoleR.webapp.client_secret"),
-  scope = getOption("SearchConsoleR.scope"))
+shinygaGetTokenURL(redirect.uri = getShinyURL(session),
+  state = getOption("searchConsoleR.securitycode"),
+  client.id = getOption("searchConsoleR.webapp.client_id"),
+  client.secret = getOption("searchConsoleR.webapp.client_secret"),
+  scope = getOption("searchConsoleR.scope"))
 }
 \arguments{
-\item{state}{A random string used to check auth is from same origin.}
+\item{redirect.uri}{App URL, from getShinyURL(session)}
 
-\item{redirect.uri}{Where a user will go after authentication.}
+\item{state}{A random string used to check auth is from same origin.}
 
 \item{client.id}{From the Google API console.}
 
@@ -26,5 +27,7 @@ The URL for authentication.
 \description{
 The URL a user authenticates the Shiny app on.
 }
-\keyword{internal}
+\seealso{
+Other Shiny.Authentication: \code{\link{getShinyURL}}
+}
 

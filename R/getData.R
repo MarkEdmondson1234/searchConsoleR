@@ -447,7 +447,7 @@ error_sample_url <- function(siteURL,
     message("Encoding URL to ", siteURL)
   }
   
-  pageURL <- URLencode(pageURL, reserved = T)
+  pageURL <- URLencode(pageURL, reserved = T, repeated = T)
   message("Encoding sampleURL to ", pageURL)
   
   categories <- c('authPermissions', 

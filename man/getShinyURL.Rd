@@ -13,7 +13,9 @@ getShinyURL(session)
 The URL of the Shiny App its called from.
 }
 \description{
-Needed to for the redirect URL in Google Auth
+Needed for the redirect URL in Google Auth flow
 }
-\keyword{internal}
+\seealso{
+Other Shiny.Authentication: \code{\link{shinygaGetTokenURL}}
+}
 

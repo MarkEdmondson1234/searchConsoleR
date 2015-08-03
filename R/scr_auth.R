@@ -142,7 +142,7 @@ scr_auth <- function(token = NULL,
           return_code <- authReturnCode(shiny_session, sec_code)
           app_url <- getShinyURL(shiny_session) 
 
-          ## code in URL only if they are back from browsing URL
+          ## ?code= in URL only if they are back from browsing URL
           if(is.null(return_code)){
             
             req_url <- shinygaGetTokenURL(state = sec_code,

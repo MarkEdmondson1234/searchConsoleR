@@ -9,16 +9,14 @@ searchconsole_GET(url, to_json = TRUE, params = NULL)
 \arguments{
 \item{url}{the url of the page to retrieve}
 
-\item{to_xml}{whether to convert response contents to an \code{xml_doc} or
+\item{to_json}{whether to convert response contents to JSON or
 leave as character string}
+
+\item{params}{A named character vector of other parameters to add to request.}
 
 \item{use_auth}{logical; indicates if authorization should be used, defaults
 to \code{FALSE} if \code{url} implies public visibility and \code{TRUE}
 otherwise}
-
-\item{...}{optional; further named parameters, such as \code{query},
-  \code{path}, etc, passed on to \code{\link[httr]{modify_url}}. Unnamed
-  parameters will be combined with \code{\link[httr]{config}}.}
 }
 \description{
 Make GET request to Search Console API.
