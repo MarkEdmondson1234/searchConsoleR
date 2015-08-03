@@ -1,4 +1,5 @@
 library(shiny)
+library(DT)
 library(magrittr)
 library(searchConsoleR)
 
@@ -9,7 +10,22 @@ app <- shinyApp(
     h3("Search Console Websites"),
     DT::dataTableOutput("websites"),
     textOutput("selected_url"),
-    h3("Crawl Errors - Not Found"),
+    h3("Crawl Errors"),
+    selectInput("errors", 
+                "Error Type",
+                choices = c("Not Found" = "notFound",
+                            "Soft 404" = "soft404",
+                            "Auth Permissions" = "authPermissions",
+                            "Many To One Redirect" = "manyToOneRedirect",
+                            "Not Followed" = "notFollowed",
+                            "Roboted" = "roboted",
+                            "Server Error" = "serverError")),
+    selectInput("platform",
+                "Googlebot User Agent",
+                choices = c("Web" = "web",
+                            "SmartPhone" = "smartphoneOnly",
+                            "Mobile" = "mobile")
+                            ),
     plotOutput("crawl_errors"),
     h3("URL parameters"),
     textOutput("queryText"),
@@ -19,50 +35,70 @@ app <- shinyApp(
   server = function(input, output, session) {
     
     auth <- reactive({
-      
+
       a <- scr_auth(shiny_session = session)
       
+      a
+      
+    })
+    
+    website_df <- reactive({
+      a <- auth()
+      www <- list_websites()
     })
     
     output$websites <- DT::renderDataTable({
       
-      a <- auth()
+      website_df()
       
-      www <- list_websites()
-      
-      DT::datatable(www, selection = 'single')
-      
-    })
+    }, selection = 'single')
     
     selected_www <- reactive({
       a <- auth()
-      www <- list_websites()
+      www <- website_df()
       selected_row <- input$websites_rows_selected
       
-      ## pick the last click
-      selected_row <- selected_row[length(selected_row)]
-      
-      www <- www[selected_row,]    
-      
+      if(!is.null(selected_row)){
+        www <- www[selected_row,] 
+        
+        if(www[selected_row, 'permissionLevel'] %in% c('siteUnverifiedUser')){
+          
+          www$siteUrl <- paste(www$siteUrl, "- No Access")
+          
+        }
+        
+        www
+      }
+
     })
     
     output$selected_url <- renderText({
+      
       www <- selected_www()
       
-      www$siteUrl
+      if(!is.null(www)){
+        s <- www$siteUrl     
+      } else {
+        s <- "Select a website in table above."
+      }
       
+      s
+        
     })
     
     output$crawl_errors <- renderPlot({
       
       www <- selected_www()
+      errors <- input$errors
+      platform <- input$platform
       
       if(!is.null(www)){
+ 
+        ce <- try(crawl_errors(www$siteUrl, category = errors, platform = platform))
         
-        ce <- crawl_errors(www[,'siteUrl'], category = "notFound", platform = "web")
-        
-        plot(ce$timecount, ce$count, type="l")        
-        
+        if(!is.error(ce)){
+          plot(ce$timecount, ce$count, type="l")                 
+        }
       }
       
     })
@@ -107,6 +143,10 @@ list_to_string <- function(obj, listname) {
     paste(listname, "$", names(obj), " = ", obj,
           sep = "", collapse = "\n")
   }
+}
+
+is.error <- function(test_me){
+  inherits(test_me, "try-error")
 }
 
 runApp(app, port=4624)

@@ -86,9 +86,9 @@ is_shiny <- function(shiny_session){
 shinygaGetTokenURL <- 
   function(state,
            redirect.uri,
-           client.id     = getOption("SearchConsoleR.webapp.client_id"),
-           client.secret = getOption("SearchConsoleR.webapp.client_secret"),
-           scope         = getOption("SearchConsoleR.scope")) {
+           client.id     = getOption("searchConsoleR.webapp.client_id"),
+           client.secret = getOption("searchConsoleR.webapp.client_secret"),
+           scope         = getOption("searchConsoleR.scope")) {
     
     scopeEnc <- sapply(scope, URLencode, reserved=TRUE)
     scopeEnc <- paste(scopeEnc, sep='', collapse='+')
@@ -159,8 +159,8 @@ getShinyURL <- function(session){
 #' @keywords internal
 shinygaGetToken <- function(code,
                             redirect.uri,
-                            client.id     = getOption("SearchConsoleR.webapp.client_id"),
-                            client.secret = getOption("SearchConsoleR.webapp.client_secret")){
+                            client.id     = getOption("searchConsoleR.webapp.client_id"),
+                            client.secret = getOption("searchConsoleR.webapp.client_secret")){
   
   raw.data <- httr::POST('https://accounts.google.com/o/oauth2/token',
                          encode = "form",
