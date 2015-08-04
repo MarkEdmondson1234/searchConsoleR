@@ -117,7 +117,7 @@ scr_auth <- function(token = NULL,
         google_token <- token
       } else {
         google_token <- try(suppressWarnings(readRDS(token)), silent = TRUE)
-        if(inherits(google_token, "try-error")) {
+        if(is.error(google_token)) {
           if(verbose) {
             message(sprintf("Cannot read token from alleged .rds file:\n%s",
                             token))
@@ -138,16 +138,17 @@ scr_auth <- function(token = NULL,
     } else { ## shiny online web authentication flow needed
           ## random each Shiny run
           sec_code <- getOption("searchConsoleR.securitycode") 
-          ## session is from parent shiny environment
+          ## shiny_session is from parent shiny environment
           return_code <- authReturnCode(shiny_session, sec_code)
-          app_url <- getShinyURL(shiny_session) 
+          app_url     <- getShinyURL(shiny_session) 
 
           ## ?code= in URL only if they are back from browsing URL
           if(is.null(return_code)){
             
             req_url <- shinygaGetTokenURL(state = sec_code,
                                           redirect.uri = app_url)
-        
+            
+            ## this may not work on shinyapps.io due to iframe
             browseURL(req_url)
             
           } else { ## we're back from browsing above
@@ -248,7 +249,6 @@ scr_auth_suspend <- function(disable_httr_oauth = TRUE, verbose = TRUE) {
 #' @keywords internal
 is_legit_token <- function(x, verbose = FALSE) {
   
-  if(!.state$shiny){
     if(!inherits(x, "Token2.0")) {
       if(verbose) message("Not a Token2.0 object.")
       return(FALSE)
@@ -268,19 +268,8 @@ is_legit_token <- function(x, verbose = FALSE) {
       # flow kicks to browser
       if(verbose) message("Authorization error. No access token obtained.")
       return(FALSE)
-    }    
-
-  } else {
-     ## is shiny session
-    shiny_token <- .state$token
-    if(is.null(shiny_token$access_token)){
-      if(verbose) message("No Shiny Auth token found")
-      return(FALSE)
     }
-    
-  }
 
-  
   TRUE
   
 }

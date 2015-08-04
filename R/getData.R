@@ -419,7 +419,7 @@ list_crawl_error_samples <- function(siteURL,
 #' @param category Crawl error category. Default 'notFound'.
 #' @param platform User agent type. Default 'web'. 
 #'
-#' @return A list of $pageUrl, $last_crawled, $first_detected and a $urlDetails sub-list.
+#' @return Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
 #' 
 #' @description 
 #' pageURL is the relative path (without the site) of the sample URL. 
@@ -434,9 +434,9 @@ list_crawl_error_samples <- function(siteURL,
 #'
 #' @export
 error_sample_url <- function(siteURL,
-                                pageURL,
-                                category="notFound",
-                                platform="web") {
+                             pageURL,
+                             category="notFound",
+                             platform="web") {
   
   if(!grepl("http",siteURL)){
     stop("siteURL must include protocol, e.g. http://example.com") 
@@ -486,12 +486,17 @@ error_sample_url <- function(siteURL,
     
     req <- searchconsole_GET(req_url, params = param_vector)
     
-    details <- req$content
+    raw_details <- req$content
     
-    details$last_crawled <- RFC_convert(details$last_crawled)
-    details$first_detected <- RFC_convert(details$first_detected)
+    raw_details$last_crawled <- RFC_convert(raw_details$last_crawled)
+    raw_details$first_detected <- RFC_convert(raw_details$first_detected)
     
-    details
+    inner_details <- Reduce(rbind, raw_details$urlDetails)
+ 
+    detail_df <- data.frame(linkedFrom=inner_details, 
+                            last_crawled=raw_details$last_crawled,
+                            first_detected=raw_details$first_detected,
+                            pageUrl=raw_details$pageUrl) 
     
   } else {
     

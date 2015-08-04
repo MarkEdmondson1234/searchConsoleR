@@ -7,6 +7,7 @@ library(searchConsoleR)
 app <- shinyApp(
   
   ui = fluidPage(
+    # uiOutput("loginButton"),
     h1("Search Console Websites"),
     DT::dataTableOutput("websites"),
     textOutput("selected_url"),
@@ -37,6 +38,16 @@ app <- shinyApp(
     textOutput("summary")
   ),
   server = function(input, output, session) {
+    
+#     output$loginButton <- renderUI({
+#       if(is.null(isolate(auth()))) {
+#         actionButton("loginButton",
+#                      label = a("Authorize App",
+#                                href = shinygaGetTokenURL()))
+#       } else {
+#         return()
+#       }
+#     })
     
     auth <- reactive({
 
@@ -119,8 +130,8 @@ app <- shinyApp(
                                                  platform = platform))
         if(!is.error(error_df)){
           
-#           error_df$last_crawled <- as.Date(error_df$last_crawled)
-#           error_df$first_detected <- as.Date(error_df$first_detected)
+          error_df$last_crawled <- as.Date(error_df$last_crawled)
+          error_df$first_detected <- as.Date(error_df$first_detected)
           
           e <- error_df
           
@@ -163,19 +174,16 @@ app <- shinyApp(
       errors <- input$errors
       platform <- input$platform      
       
-      list_err <- error_sample_url(siteUrl, 
-                                   sample_error_url, 
-                                   category = errors, 
-                                   platform = platform)
-      
-      details <- Reduce(rbind, list_err$urlDetails)
-      message("str(details)", str(details))
-      message("names(details)",names(details))
-      
-      detail_df <- data.frame(linkedFrom=details, 
-                              last_crawled=list_err$last_crawled,
-                              first_detected=list_err$first_detected,
-                              pageUrl=list_err$pageUrl)
+      if(!is.null(siteUrl)){
+        df_err <- error_sample_url(siteUrl, 
+                                     sample_error_url, 
+                                     category = errors, 
+                                     platform = platform)
+        
+        df_err
+        
+      }
+
     })
     
     output$error_detail <- DT::renderDataTable({

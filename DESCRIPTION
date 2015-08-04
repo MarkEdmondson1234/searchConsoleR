@@ -1,8 +1,9 @@
 Package: searchConsoleR
 Title: R interface for Google Search Console API v3
 Version: 0.0.0.9000
-Authors@R: person("Mark", "Edmondson", email = "scr@sunholo.com",
-                  role = c("aut", "cre"))
+Authors@R: c(person("Mark", "Edmondson",email = "scr@sunholo.com",
+                  role = c("aut", "cre")),
+           person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
 Description: Provides an interface with the Google Search Console API v3, 
     formally called Google Webmaster Tools. 
 URL: http://www.google.com/webmasters/tools/, https://developers.google.com/webmaster-tools/

@@ -91,18 +91,31 @@ shinygaGetTokenURL <-
            client.secret = getOption("searchConsoleR.webapp.client_secret"),
            scope         = getOption("searchConsoleR.scope")) {
     
-    scopeEnc <- sapply(scope, URLencode, reserved=TRUE)
-    scopeEnc <- paste(scopeEnc, sep='', collapse='+')
+#     scopeEnc <- sapply(scope, URLencode, reserved=TRUE)
+#     scopeEnc <- paste(scopeEnc, sep='', collapse='+')
     
-    url <- paste('https://accounts.google.com/o/oauth2/auth?',
-                 'scope=',scopeEnc,'&',
-                 'state=',state,'&',
-                 'redirect_uri=', redirect.uri, '&',
-                 'response_type=code&',
-                 'client_id=', client.id, '&',
-                 'approval_prompt=auto&',
-                 'access_type=online', sep='', collapse='');
-    return(url)
+#     url <- paste('https://accounts.google.com/o/oauth2/auth?',
+#                  'scope=',scopeEnc,'&',
+#                  'state=',state,'&',
+#                  'redirect_uri=', redirect.uri, '&',
+#                  'response_type=code&',
+#                  'client_id=', client.id, '&',
+#                  'approval_prompt=auto&',
+#                  'access_type=online', sep='', collapse='');
+#     return(url)
+    
+    ## httr friendly version
+    url <- httr::modify_url(
+      httr::oauth_endpoints("google")$authorize,
+      query = list(response_type = "code",
+                   client_id = client.id,
+                   redirect_uri = redirect.uri,
+                   scope = scope,
+                   state = state,
+                   access_type = "online",
+                   approval_prompt = "auto"))
+    
+    url
   }
 
 
@@ -160,23 +173,53 @@ getShinyURL <- function(session){
 #' 
 #' @keywords internal
 shinygaGetToken <- function(code,
-                            redirect.uri,
+                            redirect.uri  = getShinyURL(session),
                             client.id     = getOption("searchConsoleR.webapp.client_id"),
                             client.secret = getOption("searchConsoleR.webapp.client_secret")){
   
-  raw.data <- httr::POST('https://accounts.google.com/o/oauth2/token',
-                         encode = "form",
-                         body = list(code = code,
-                                     client_id = client.id,
-                                     client_secret = client.secret,
-                                     redirect_uri = redirect.uri,
-                                     grant_type = 'authorization_code')
-  )
+#   raw.data <- httr::POST('https://accounts.google.com/o/oauth2/token',
+#                          encode = "form",
+#                          body = list(code = code,
+#                                      client_id = client.id,
+#                                      client_secret = client.secret,
+#                                      redirect_uri = redirect.uri,
+#                                      grant_type = 'authorization_code')
+#   )
+#   
+#   token.data <- httr::content(raw.data)
+#   now        <- as.numeric(Sys.time())
+#   token      <- c(token.data, timestamp = c('first'=now, 'refresh'=now))
+#   
+#   return(token)
+  scr_app <- httr::oauth_app("google", key = client.id, secret = client.secret)
   
-  token.data <- httr::content(raw.data)
-  now        <- as.numeric(Sys.time())
-  token      <- c(token.data, timestamp = c('first'=now, 'refresh'=now))
+  scope_list <- getOption("searchConsoleR.scope")
   
-  return(token)
+  req <-
+    httr::POST("https://accounts.google.com/o/oauth2/token",
+               body = list(code = code,
+                           client_id = client.id,
+                           client_secret = client.secret,
+                           redirect_uri = redirect.uri,
+                           grant_type = "authorization_code"), verbose = TRUE)
+  stopifnot(identical(httr::headers(req)$`content-type`,
+                      "application/json; charset=utf-8"))
+  # content of req will contain access_token, token_type, expires_in
+  token <- httr::content(req, type = "application/json")
+  
+  # Create a Token2.0 object consistent with the token obtained from scr_auth()
+  token_formatted <-
+    httr::Token2.0$new(app = scr_app,
+                       endpoint = httr::oauth_endpoints("google"),
+                       credentials = list(access_token = token$access_token,
+                                          token_type = token$token_type,
+                                          expires_in = token$expires_in,
+                                          refresh_token = token$refresh_token),
+                       params = list(scope = scope_list, type = NULL,
+                                     use_oob = FALSE, as_header = TRUE),
+                       cache_path = FALSE)
+  
+  .state$token <- token_formatted
+  .state$token
 }
 
