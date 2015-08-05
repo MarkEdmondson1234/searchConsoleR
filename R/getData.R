@@ -307,6 +307,7 @@ list_crawl_error_samples <- function(siteURL,
       
       errs      
     } else {
+      message("No error samples available.")
       NULL
     }
 
@@ -370,16 +371,20 @@ error_sample_url <- function(siteURL,
     
     raw_details <- req$content
     
-    raw_details$last_crawled <- RFC_convert(raw_details$last_crawled)
-    raw_details$first_detected <- RFC_convert(raw_details$first_detected)
+    message("str(raw_details)", str(raw_details))
     
-    inner_details <- Reduce(rbind, raw_details$urlDetails)
- 
-    detail_df <- data.frame(linkedFrom=inner_details, 
-                            last_crawled=raw_details$last_crawled,
-                            first_detected=raw_details$first_detected,
-                            pageUrl=raw_details$pageUrl) 
-    
+    if(all(c('last_crawled', 'first_detected') %in% names(raw_details))){
+      raw_details$last_crawled <- RFC_convert(raw_details$last_crawled)
+      raw_details$first_detected <- RFC_convert(raw_details$first_detected)
+      inner_details <- Reduce(rbind, raw_details$urlDetails)
+      
+      detail_df <- data.frame(linkedFrom=inner_details, 
+                              last_crawled=raw_details$last_crawled,
+                              first_detected=raw_details$first_detected,
+                              pageUrl=raw_details$pageUrl) 
+      
+    }
+
   } else {
     
     stop("Invalid Token")

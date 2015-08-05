@@ -33,8 +33,15 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
   req <- do.call(request_type, 
                  args = arg_list,
                  envir = asNamespace("httr"))
-  httr::stop_for_status(req)
   
+  ##Google supplied error message
+  if(!is.null(req$error$message)) {
+    message("JSON fetch error: ",req$error$message)
+  }
+  
+    httr::stop_for_status(req)
+  
+
   req
 }
 
