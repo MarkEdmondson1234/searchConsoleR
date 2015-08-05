@@ -16,7 +16,7 @@ error_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 \item{platform}{User agent type. Default 'web'.}
 }
 \value{
-A list of $pageUrl, $last_crawled, $first_detected and a $urlDetails sub-list.
+Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
 }
 \description{
 pageURL is the relative path (without the site) of the sample URL.

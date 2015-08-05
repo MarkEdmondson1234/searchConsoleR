@@ -1,3 +1,65 @@
+#' Helper function for the query dimension filters
+#' 
+#' Saves the need for 3 parameters when you just have one
+#' 
+#' @param dfe A string of form: dimension operator expression e.g. country!~GBR
+#' 
+#' @details dimension = c('country','device','page','query')
+#'   operator = c(`~~` = 'contains',
+#'                `==` = 'equals',
+#'                `!~` = 'notContains',
+#'                 `!=` = 'notEquals)
+#'  
+#'  expression = country: an ISO 3166-1 alpha-3 country code.
+#'               device: 'DESKTOP','MOBILE','TABLET'
+#'               page: not checked
+#'               query: not checked
+#'          
+#' @keywords internal
+parseDimFilterGroup <- function(dfe){
+  
+  ## get lookup data
+  country.codes <- ISO_3166_1$Alpha_3
+  devices <- c('DESKTOP','MOBILE','TABLET')
+  op_symbol <-  c("~~" = 'contains',
+                  "==" = 'equals',
+                  "!~" = 'notContains',
+                  "!=" = 'notEquals')
+  
+  ## remove whitespace
+  dfe <- stringr::str_replace_all(dfe, " ","")
+  
+  ## extract variables needed
+  operator <- stringr::str_extract(dfe, "[\\!=~]{2}")
+  dim_ex <- stringr::str_split_fixed(dfe, "[\\!=~]{2}", n=2)
+  
+  ## check variables
+  
+  if(!op_symbol[operator] %in% op_symbol){
+    stop("Operator not one of ~~, ==, !~ or !=.")
+  }
+  
+  if(is.na(operator) || nchar(dim_ex[2]) == 0){
+    stop("Incorrect format of filter: Need 'dimension' 'operator' 'expression'. e.g. 'country!~GBR' or 'device==MOBILE'. Got this:   ", dfe)
+  }
+  
+  if(dim_ex[1] == "country" && !dim_ex[2] %in% country.codes ){
+    stop("country dimension indicated, but country code not an ISO 3166-1 alpha-3 type. e.g. GBR = United Kingdom. Got this:   ", dim_ex[2])
+  }
+  
+  if(dim_ex[1] == "device" && !dim_ex[2] %in% devices ){
+    stop("device dimension indicated, but device not one of DESKTOP, MOBILE or TABLET (no quotes). Got this:   ", dim_ex[2])
+  }
+  
+  ## need to make non-box version
+  ## https://github.com/hadley/httr/issues/159
+  list(dimension = dim_ex[1],
+       operator  = unname(op_symbol[operator]),
+       expression = dim_ex[2])
+}
+
+
+
 #' Is this a valid shiny session object?
 #' 
 #' Checks that a valid Shiny session object has been passed.

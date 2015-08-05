@@ -10,7 +10,7 @@ delete_website(siteURL)
 \item{siteURL}{The URL of the website to delete.}
 }
 \value{
-TRUE if successful.
+TRUE if successful, raises an error if not.
 }
 \description{
 Deletes website in Search Console

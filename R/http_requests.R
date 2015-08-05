@@ -12,7 +12,7 @@
 #' 
 #' 
 #' @keywords internal
-doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
+doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL, ...){
   
   ## add any other params
   ## expects named character e.g. c(param1="foo", param2="bar")
@@ -20,7 +20,7 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
     
     param_string <- paste(names(params), params, 
                           sep='=', collapse='&')
-    message("DEBUG: Adding params: ", param_string)
+
     url <- paste0(url, '?',param_string)
 
   }
@@ -28,19 +28,25 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
   arg_list <- list(url = url, 
                    config = get_google_token(), 
                    body = the_body)
-  
-  message("DEBUG: Fetching: ", url)
+  if(!is.null(list(...))){
+    arg_list <- c(arg_list, list(...))    
+  }
+
   req <- do.call(request_type, 
                  args = arg_list,
                  envir = asNamespace("httr"))
   
-  ##Google supplied error message
-  if(!is.null(req$error$message)) {
-    message("JSON fetch error: ",req$error$message)
+  ok_content_types <- c("application/json; charset=UTF-8")
+  if(!(req$headers$`content-type` %in% ok_content_types)) {
+    
+    stop(sprintf(paste("Not expecting content-type to be:\n%s"),
+                 req$headers[["content-type"]]))
+    
   }
   
-    httr::stop_for_status(req)
+  httr::stop_for_status(req)
   
+  message("DEBUG:: str(req)::", str(req))
 
   req
 }
@@ -61,21 +67,13 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL){
 searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
     
   req <- doHttrRequest(url, request_type = "GET", params = params)
-
-  ok_content_types <- c("application/json; charset=UTF-8")
-  if(!(req$headers$`content-type` %in% ok_content_types)) {
-    
-    stop(sprintf(paste("Not expecting content-type to be:\n%s"),
-                 req$headers[["content-type"]]))
-
-  }
   
   if(to_json) {
     req$content <- req %>%
       httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
       jsonlite::fromJSON()
     
-    message("DEBUG: req$content: ",req$content)
+    message("DEBUG1: req$content: ",req$content)
   }
   
   req
@@ -91,11 +89,17 @@ searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
 #' @param params A named character vector of other parameters to add to request.
 #'
 #' @keywords internal
-searchconsole_POST <- function(url, the_body, params=NULL) {
+searchconsole_POST <- function(url, the_body, params=NULL, ...) {
   
-  req <- doHttrRequest(url, "POST", the_body = the_body, params = params)
+  req <- doHttrRequest(url, "POST", 
+                       the_body = the_body, 
+                       params = params, encode = "json", ...)
     
-  req$content <- httr::content(req, encoding = "UTF-8")
+  req$content <- req %>%
+    httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
+    jsonlite::fromJSON()
+  
+  message("DEBUG3: req$content: ",req$content)
   
   req
     

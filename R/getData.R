@@ -1,3 +1,117 @@
+#' Query search traffic keyword data
+#' 
+#' @description Download your Google keyword SEO data.
+#' 
+#' @param siteURL The URL of the website you have auth access to.
+#' @param startDate Start date of requested range, in YYYY-MM-DD.
+#' @param endDate End date of the requested date range, in YYYY-MM-DD.
+#' @param dimensions Zero or more dimensions to group results by. "country, "device", "page" or "query"
+#' @param searchType Search type filter, default 'web'.
+#' @param dimensionFilterExp A character vector of expressions to filter. e.g. c("device==TABLET", "country~~GBR")
+#' @param aggregationType How data is aggregated.
+#' @param rowLimit How many rows, maximum is 5000.
+#' 
+#' @seealso Guide to Search Analytics: https://support.google.com/webmasters/answer/6155685
+#'   API docs: https://developers.google.com/webmaster-tools/v3/searchanalytics/query 
+#' @export
+#' 
+#' @details 
+#'  Start date of the requested date range, in YYYY-MM-DD format, 
+#'    in PST time (UTC - 8:00). Must be less than or equal to the end date. 
+#'    This value is included in the range.
+#'  End date of the requested date range, in YYYY-MM-DD format, 
+#'    in PST time (UTC - 8:00). Must be greater than or equal to the start date. 
+#'    This value is included in the range.
+#'  [Optional] Zero or more dimensions to group results by. 
+#'  Results are grouped in the order that you supply these dimensions. 
+#'  dimension = c('country','device','page','query')
+#'   operator = c(`~~` = 'contains',
+#'                `==` = 'equals',
+#'                `!~` = 'notContains',
+#'                 `!=` = 'notEquals)
+#'  
+#'  expression = country: an ISO 3166-1 alpha-3 country code.
+#'               device: 'DESKTOP','MOBILE','TABLET'
+#'               page: not checked
+#'               query: not checked
+#'               
+#'  dimensionFilterExp expects a character vector of expressions in the form:
+#'   ("device==TABLET", "country~~GBR")
+#'  
+#'  The grouping dimension values are combined to create a unique key 
+#'    for each result row. If no dimensions are specified, 
+#'    all values will be combined into a single row. 
+#'    There is no limit to the number of dimensions that you can group by, 
+#'    but you cannot group by the same dimension twice. Example: c(country, device)
+#'  [Optional] The search type to filter for. Acceptable values are:
+#'    "image": Image search results
+#'    "video": Video search results
+#'    "web": [Default] Web search results
+#'    [Optional] How data is aggregated. 
+#'    If aggregated by property, all data for the same property is aggregated; if aggregated by page, all data is aggregated by canonical URI. 
+#'    If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; see the help documentation to learn how data is calculated differently by site versus by page. 
+#'    Note: If you group or filter by page, you cannot aggregate by property.
+#'    If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. The API will never change your aggregation type if the requested type is invalid.
+#'    Acceptable values are:
+#'    "auto": [Default] Let the service decide the appropriate aggregation type.
+#'    "byPage": Aggregate values by URI.
+#'    "byProperty": Aggregate values by property.
+search_analytics <- function(siteURL, 
+                             startDate, endDate, 
+                             dimensions = NULL, 
+                             searchType = c("web","image","video"),
+                             # groupType = "and", 
+                             dimensionFilterExp = NULL,
+                             aggregationType = "auto",
+                             rowLimit = 1000){
+  
+  siteURL <- check.Url(siteURL, reserved=T)
+  
+  ## require pre-existing token, to avoid recursion
+  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+    
+    ## docs here
+    ## https://developers.google.com/webmaster-tools/v3/searchanalytics/query
+    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
+                      siteURL,
+                      "/searchAnalytics/query")
+    
+    ## a list of filter expressions 
+    ## expects dimensionFilterExp like c("device==TABLET", "country~~GBR")
+    parsedDimFilterGroup <- lapply(dimensionFilterExp, parseDimFilterGroup)
+    
+    body <- list(
+      startDate = startDate,
+      endDate = endDate,
+      dimensions = as.list(dimensions),  
+      searchType = searchType,
+      dimensionFilterGroups = list(
+        list( ## you don't want more than one of these until different groupTypes available
+          groupType = "and", ##only one avialable for now
+          filters = parsedDimFilterGroup
+          )
+      ),
+      aggregationType = aggregationType,
+      rowLimit = rowLimit
+    )
+    
+    message(jsonlite::toJSON(body))
+  
+    req <- searchconsole_POST(req_url, the_body = body)
+    message("DEBUG:: body:", str(body))
+    as.data.frame(req$content$rows)
+    
+  } else {
+    
+    stop("Invalid Token")
+    
+  }
+}
+
+
+
+
+
 #' Retrieves dataframe of websites user has in Search Console
 #'
 #' @return a dataframe of siteUrl and permissionLevel

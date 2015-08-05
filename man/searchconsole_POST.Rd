@@ -4,7 +4,7 @@
 \alias{searchconsole_POST}
 \title{Create POST request}
 \usage{
-searchconsole_POST(url, the_body, params = NULL)
+searchconsole_POST(url, the_body, params = NULL, ...)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}

@@ -16,7 +16,7 @@ fix_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 \item{platform}{User agent type. Default 'web'.}
 }
 \value{
-TRUE if successful.
+TRUE if successful, raises an error if not.
 }
 \description{
 pageURL is the relative path (without the site) of the sample URL.

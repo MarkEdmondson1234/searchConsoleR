@@ -4,7 +4,8 @@
 \alias{doHttrRequest}
 \title{Get URL content based on if its Shiny or local}
 \usage{
-doHttrRequest(url, request_type = "GET", the_body = NULL, params = NULL)
+doHttrRequest(url, request_type = "GET", the_body = NULL, params = NULL,
+  ...)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}

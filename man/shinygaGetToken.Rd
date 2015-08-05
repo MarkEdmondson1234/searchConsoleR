@@ -4,7 +4,7 @@
 \alias{shinygaGetToken}
 \title{Returns the authentication Token.}
 \usage{
-shinygaGetToken(code, redirect.uri,
+shinygaGetToken(code, redirect.uri = getShinyURL(session),
   client.id = getOption("searchConsoleR.webapp.client_id"),
   client.secret = getOption("searchConsoleR.webapp.client_secret"))
 }

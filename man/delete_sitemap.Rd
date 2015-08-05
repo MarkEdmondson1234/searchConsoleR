@@ -12,7 +12,7 @@ delete_sitemap(siteURL, feedpath)
 \item{feedpath}{The URL of the sitemap to delete. Must include protocol (http://).}
 }
 \value{
-TRUE if successful.
+TRUE if successful, raises an error if not.
 }
 \description{
 See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps/delete

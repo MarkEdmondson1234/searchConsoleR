@@ -10,7 +10,7 @@ add_website(siteURL)
 \item{siteURL}{The URL of the website to add.}
 }
 \value{
-TRUE if successful.
+TRUE if successful, raises an error if not.
 }
 \description{
 Adds website to Search Console
