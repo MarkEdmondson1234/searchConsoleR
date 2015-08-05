@@ -10,19 +10,6 @@ createCode <- function(seed=NULL, num=20){
   if (!is.null(seed)) set.seed(seed)
   
   paste0(sample(c(1:9, LETTERS, letters), num, replace = T), collapse='')
-} 
-
-#' Is this a try error?
-#' 
-#' Utility to test errors
-#' 
-#' @param test_me an object created with try()
-#' 
-#' @return Boolean
-#' 
-#' @keywords internal
-is.error <- function(test_me){
-  inherits(test_me, "try-error")
 }
 
 #' Returns the authentication parameter "code" in redirected URLs
@@ -56,19 +43,6 @@ authReturnCode <- function(session, securityCode){
   }
 }
 
-#' Is this a valid shiny session object?
-#' 
-#' Checks that a valid Shiny session object has been passed.
-#' 
-#' @param shiny_session a Shiny session object.
-#' 
-#' @return Boolean
-#' 
-#' @keywords internal
-is_shiny <- function(shiny_session){
-  inherits(shiny_session, "ShinySession")
-}
-
 
 #' Returns the Google authentication URL
 #' 
@@ -90,19 +64,6 @@ shinygaGetTokenURL <-
            client.id     = getOption("searchConsoleR.webapp.client_id"),
            client.secret = getOption("searchConsoleR.webapp.client_secret"),
            scope         = getOption("searchConsoleR.scope")) {
-    
-#     scopeEnc <- sapply(scope, URLencode, reserved=TRUE)
-#     scopeEnc <- paste(scopeEnc, sep='', collapse='+')
-    
-#     url <- paste('https://accounts.google.com/o/oauth2/auth?',
-#                  'scope=',scopeEnc,'&',
-#                  'state=',state,'&',
-#                  'redirect_uri=', redirect.uri, '&',
-#                  'response_type=code&',
-#                  'client_id=', client.id, '&',
-#                  'approval_prompt=auto&',
-#                  'access_type=online', sep='', collapse='');
-#     return(url)
     
     ## httr friendly version
     url <- httr::modify_url(
@@ -176,21 +137,7 @@ shinygaGetToken <- function(code,
                             redirect.uri  = getShinyURL(session),
                             client.id     = getOption("searchConsoleR.webapp.client_id"),
                             client.secret = getOption("searchConsoleR.webapp.client_secret")){
-  
-#   raw.data <- httr::POST('https://accounts.google.com/o/oauth2/token',
-#                          encode = "form",
-#                          body = list(code = code,
-#                                      client_id = client.id,
-#                                      client_secret = client.secret,
-#                                      redirect_uri = redirect.uri,
-#                                      grant_type = 'authorization_code')
-#   )
-#   
-#   token.data <- httr::content(raw.data)
-#   now        <- as.numeric(Sys.time())
-#   token      <- c(token.data, timestamp = c('first'=now, 'refresh'=now))
-#   
-#   return(token)
+
   scr_app <- httr::oauth_app("google", key = client.id, secret = client.secret)
   
   scope_list <- getOption("searchConsoleR.scope")

@@ -128,7 +128,7 @@ app <- shinyApp(
         error_df <- try(list_crawl_error_samples(www$siteUrl, 
                                                  category = errors, 
                                                  platform = platform))
-        if(!is.error(error_df)){
+        if(!is.error(error_df) & (!is.null(error_df))){
           
           error_df$last_crawled <- as.Date(error_df$last_crawled)
           error_df$first_detected <- as.Date(error_df$first_detected)
@@ -148,7 +148,10 @@ app <- shinyApp(
     
     output$crawl_error_samples <- DT::renderDataTable({
       
-      crawl_error_df()
+      ces <- crawl_error_df()
+      message("str(ces)", str(ces))
+      
+      ces
       
     }, selection = 'single')
     
@@ -175,13 +178,15 @@ app <- shinyApp(
       platform <- input$platform      
       
       if(!is.null(siteUrl)){
-        df_err <- error_sample_url(siteUrl, 
+        df_err <- try(error_sample_url(siteUrl, 
                                      sample_error_url, 
                                      category = errors, 
-                                     platform = platform)
+                                     platform = platform))
         
-        df_err
-        
+        if(!is.error(df_err)){
+          df_err          
+        }
+
       }
 
     })

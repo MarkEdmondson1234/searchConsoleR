@@ -16,7 +16,7 @@ list_websites <- function() {
     
   } else {
     
-    NULL
+    stop("Invalid Token")
     
   }
   
@@ -26,10 +26,12 @@ list_websites <- function() {
 #' 
 #' @param siteURL The URL of the website to add.
 #'
-#' @return TRUE if successful.
+#' @return TRUE if successful, raises an error if not.
 #'
 #' @export
 add_website <- function(siteURL) {
+  
+  siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
@@ -53,10 +55,12 @@ add_website <- function(siteURL) {
 #' 
 #' @param siteURL The URL of the website to delete.
 #'
-#' @return TRUE if successful.
+#' @return TRUE if successful, raises an error if not.
 #'
 #' @export
 delete_website <- function(siteURL) {
+  
+  siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
@@ -88,14 +92,8 @@ delete_website <- function(siteURL) {
 
 list_sitemaps <- function(siteURL) {
   
-  if(!grepl("http",siteURL)){
-   stop("siteURL must include protocol, e.g. http://example.com") 
-  }
-  
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
+  siteURL <- check.Url(siteURL, reserved=T)
+
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
     
@@ -122,26 +120,14 @@ list_sitemaps <- function(siteURL) {
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param feedpath The URL of the sitemap to submit. Must include protocol (http://).
 #'
-#' @return TRUE if successful.
+#' @return TRUE if successful, raises an error if not.
 #'
 #' @export
 add_sitemap <- function(siteURL, feedpath) {
   
-  if(any(!grepl("http",siteURL), 
-         !grepl("http",feedpath)
-         )){
-    stop("URLs must include protocol, e.g. http://example.com") 
-  }
+  siteURL  <- check.Url(siteURL, reserved=T)
+  feedpath <- check.Url(feedpath, reserved = T)
   
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
-  
-  if(!grepl("%3A%2F%2F", feedpath)){
-    siteURL <- URLencode(feedpath, reserved=T)
-    message("Encoding sitemap URL to ", feedpath)
-  }
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
     
@@ -170,26 +156,14 @@ add_sitemap <- function(siteURL, feedpath) {
 #' @param siteURL The URL of the website you are deleting the sitemap from. Must include protocol (http://).
 #' @param feedpath The URL of the sitemap to delete. Must include protocol (http://).
 #'
-#' @return TRUE if successful.
+#' @return TRUE if successful, raises an error if not.
 #'
 #' @export
 delete_sitemap <- function(siteURL, feedpath) {
   
-  if(any(!grepl("http",siteURL), 
-         !grepl("http",feedpath)
-  )){
-    stop("URLs must include protocol, e.g. http://example.com") 
-  }
+  siteURL  <- check.Url(siteURL, reserved=T)
+  feedpath <- check.Url(feedpath, reserved = T)
   
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
-  
-  if(!grepl("%3A%2F%2F", feedpath)){
-    siteURL <- URLencode(feedpath, reserved=T)
-    message("Encoding sitemap URL to ", feedpath)
-  }
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
     
@@ -237,42 +211,14 @@ crawl_errors <- function(siteURL,
                          platform="all",
                          latestCountsOnly=FALSE) {
   
-  if(!grepl("http",siteURL)){
-    stop("siteURL must include protocol, e.g. http://example.com") 
-  }
-  
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
+  siteURL <- check.Url(siteURL, reserved=T)
   
   latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')
   
-  categories <- c('all',
-                  'authPermissions', 
-                  'manyToOneRedirect',
-                  'notFollowed',
-                  'notFound',
-                  'other',
-                  'roboted',
-                  'serverError',
-                  'soft404')
-  
-  platforms <- c('all',
-                 'mobile',
-                 'smartphoneOnly',
-                 'web')
-  
-  if(!category %in% categories) {
-    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
-  }
-  
-  if(!platform %in% platforms){
-    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
-  }
-  
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && 
+     is_legit_token(.state$token) && 
+     is.valid.category.platform(category, platform, include.all = TRUE)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorscounts/query
@@ -314,23 +260,7 @@ crawl_errors <- function(siteURL,
   
 }
 
-#' Converts RFC3339 to as.Date
-#' 
-#' @keywords internal
-RFC_convert <- function(RFC, drop_time=FALSE){
-  
-  if(drop_time){
-    d <-   as.Date(strptime(as.character(RFC), 
-                            tz="UTC", 
-                            "%Y-%m-%dT%H:%M:%OSZ"))
-  } else {
-    d <- strptime(as.character(RFC), 
-                  tz="UTC", 
-                  "%Y-%m-%dT%H:%M:%OSZ")
-  }
-  
-  return(d)
-}
+
 
 #' Lists a site's sample URLs for crawl errors.
 #' 
@@ -353,38 +283,12 @@ list_crawl_error_samples <- function(siteURL,
                                      category="notFound",
                                      platform="web") {
   
-  if(!grepl("http",siteURL)){
-    stop("siteURL must include protocol, e.g. http://example.com") 
-  }
-  
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
-  
-  categories <- c('authPermissions', 
-                  'manyToOneRedirect',
-                  'notFollowed',
-                  'notFound',
-                  'other',
-                  'roboted',
-                  'serverError',
-                  'soft404')
-  
-  platforms <- c('mobile',
-                 'smartphoneOnly',
-                 'web')
-  
-  if(!category %in% categories) {
-    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
-  }
-  
-  if(!platform %in% platforms){
-    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
-  }
-  
+  siteURL <- check.Url(siteURL, reserved=T)
+
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && 
+     is_legit_token(.state$token) && 
+     is.valid.category.platform(category, platform)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
@@ -397,10 +301,15 @@ list_crawl_error_samples <- function(siteURL,
     
     errs <- req$content$urlCrawlErrorSample
     
-    errs$last_crawled <- RFC_convert(errs$last_crawled)
-    errs$first_detected <- RFC_convert(errs$first_detected)
-    
-    errs
+    if(!is.null(errs)){
+      errs$last_crawled <- RFC_convert(errs$last_crawled)
+      errs$first_detected <- RFC_convert(errs$first_detected)
+      
+      errs      
+    } else {
+      NULL
+    }
+
     
   } else {
     
@@ -438,41 +347,14 @@ error_sample_url <- function(siteURL,
                              category="notFound",
                              platform="web") {
   
-  if(!grepl("http",siteURL)){
-    stop("siteURL must include protocol, e.g. http://example.com") 
-  }
+  siteURL <- check.Url(siteURL, reserved=T)
+  pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T, repeated=T)
   
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
-  
-  pageURL <- URLencode(pageURL, reserved = T, repeated = T)
-  message("Encoding sampleURL to ", pageURL)
-  
-  categories <- c('authPermissions', 
-                  'manyToOneRedirect',
-                  'notFollowed',
-                  'notFound',
-                  'other',
-                  'roboted',
-                  'serverError',
-                  'soft404')
-  
-  platforms <- c('mobile',
-                 'smartphoneOnly',
-                 'web')
-  
-  if(!category %in% categories) {
-    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
-  }
-  
-  if(!platform %in% platforms){
-    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
-  }
-  
+
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && 
+     is_legit_token(.state$token) && 
+     is.valid.category.platform(category, platform)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
@@ -516,7 +398,7 @@ error_sample_url <- function(siteURL,
 #' @param category Crawl error category. Default 'notFound'.
 #' @param platform User agent type. Default 'web'. 
 #'
-#' @return TRUE if successful.
+#' @return TRUE if successful, raises an error if not.
 #' 
 #' @description 
 #' pageURL is the relative path (without the site) of the sample URL. 
@@ -535,41 +417,13 @@ fix_sample_url <- function(siteURL,
                            category="notFound",
                            platform="web") {
   
-  if(!grepl("http",siteURL)){
-    stop("siteURL must include protocol, e.g. http://example.com") 
-  }
-  
-  if(!grepl("%3A%2F%2F", siteURL)){
-    siteURL <- URLencode(siteURL, reserved=T)
-    message("Encoding URL to ", siteURL)
-  }
-  
-  pageURL <- URLencode(pageURL, reserved = T)
-  message("Encoding sampleURL to ", pageURL)
-  
-  categories <- c('authPermissions', 
-                  'manyToOneRedirect',
-                  'notFollowed',
-                  'notFound',
-                  'other',
-                  'roboted',
-                  'serverError',
-                  'soft404')
-  
-  platforms <- c('mobile',
-                 'smartphoneOnly',
-                 'web')
-  
-  if(!category %in% categories) {
-    stop("Incorrect category.  Must be one of ", paste(categories, collapse=","))
-  }
-  
-  if(!platform %in% platforms){
-    stop("Incorrect platform. Must be one of ", paste(platforms, collapse=", "))
-  }
+  siteURL <- check.Url(siteURL, reserved=T)
+  pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && 
+     is_legit_token(.state$token) && 
+     is.valid.category.platform(category, platform)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/markAsFixed
@@ -592,4 +446,3 @@ fix_sample_url <- function(siteURL,
   }
   
 }
-
