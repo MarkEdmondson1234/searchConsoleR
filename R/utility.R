@@ -1,3 +1,32 @@
+#' Look up the country codes
+#' 
+#' @param code the ISO 3166-1 alpha-3 country code (as used in searchConsoleR)
+#' @param name_type One of "Name", "Official_name" or "Common_name"
+#' 
+#' @return The country name string
+#' @keywords internal
+lookupCountryCode <- function(country.code, 
+                              name_type = "Name"){
+  
+  if(!name_type %in% c("Name","Official_name","Common_name")){
+    stop('name_type not one of "Name","Official_name","Common_name".  Got: ', name_type)
+  }
+  
+  country.code <- stringr::str_to_upper(country.code, "en")
+  
+  ## get lookup data
+  country.codes <- ISO_3166_1[,name_type]
+  names(country.codes) <- ISO_3166_1$Alpha_3
+  
+  if(all(country.code %in% names(country.codes))){
+    country.codes[country.code] 
+  } else {
+    stop("country.code not in country.codes. Got: ", country.code)
+  }
+  
+}
+
+
 #' Helper function for the query dimension filters
 #' 
 #' Saves the need for 3 parameters when you just have one

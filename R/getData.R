@@ -10,6 +10,7 @@
 #' @param dimensionFilterExp A character vector of expressions to filter. e.g. c("device==TABLET", "country~~GBR")
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
+#' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name.
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
@@ -61,11 +62,11 @@
 search_analytics <- function(siteURL, 
                              startDate, endDate, 
                              dimensions = NULL, 
-                             searchType = c("web","image","video"),
-                             # groupType = "and", 
+                             searchType = "web",
                              dimensionFilterExp = NULL,
-                             aggregationType = c("auto","byPage","byProperty"),
-                             rowLimit = 1000){
+                             aggregationType = "auto",
+                             rowLimit = 1000,
+                             prettyNames = TRUE){
   
   siteURL <- check.Url(siteURL, reserved=T)
   
@@ -120,12 +121,8 @@ search_analytics <- function(siteURL,
       aggregationType = aggregationType,
       rowLimit = rowLimit
     )
-    
-    message(jsonlite::toJSON(body))
   
     req <- searchconsole_POST(req_url, the_body = body)
-    message("DEBUG:: body:", str(body))
-    message("DEBUG:: req$content:", str(req$content))
     
     the_data <- req$content$rows
     
@@ -141,10 +138,11 @@ search_analytics <- function(siteURL,
       dimensionCols$date <- as.Date(dimensionCols$date)
     }
     
-    metricCols <- the_data[setdiff(names(the_data), 'keys')]
+    if(all('country' %in% names(dimensionCols), prettyNames)){
+      dimensionCols$country <- lookupCountryCode(dimensionCols$country)
+    }
     
-    message("str(dimensions", str(dimensionCols))
-    message("str(metricCols", str(metricCols))
+    metricCols <- the_data[setdiff(names(the_data), 'keys')]
     
     the_df <- data.frame(dimensionCols , metricCols, stringsAsFactors = F, row.names = NULL)
     attr(the_df, "aggregationType") <- req$content$responseAggregationType
