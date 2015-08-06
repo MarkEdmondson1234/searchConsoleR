@@ -137,6 +137,10 @@ search_analytics <- function(siteURL,
                               lapply(the_data$keys, function(x) 
                                 rbind(x))), 
                        row.names=NULL, stringsAsFactors = F)
+    
+    ## if no rows, get out of here.
+    if(!NROW(dimensionCols) > 0) return(NULL)
+    
     names(dimensionCols ) <- dimensions
     dimensionCols <- lapply(dimensionCols, unname)
     

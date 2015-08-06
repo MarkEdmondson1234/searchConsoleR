@@ -156,6 +156,7 @@ scr_auth <- function(token = NULL,
           
         } else { ## we're back from browsing above
           
+          message("We're back, authenticating in Shiny.")
           shiny_token <- shinygaGetToken(return_code,
                                          app_url )
           .state$token <- shiny_token
