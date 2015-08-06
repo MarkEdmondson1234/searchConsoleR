@@ -146,11 +146,13 @@ scr_auth <- function(token = NULL,
         ## ?code= in URL only if they are back from browsing URL
         if(is.null(return_code)){
           
-          req_url <- shinygaGetTokenURL(state = sec_code,
-                                        redirect.uri = app_url)
-          
-          ## this may not work on shinyapps.io due to iframe
-          browseURL(req_url)
+#           req_url <- shinygaGetTokenURL(state = sec_code,
+#                                         redirect.uri = app_url)
+#           
+#           ## this may not work on shinyapps.io due to iframe
+#           browseURL(req_url)
+          message("searchConsoleR needs Shiny authentication.")
+          return(NULL)
           
         } else { ## we're back from browsing above
           
