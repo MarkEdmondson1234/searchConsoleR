@@ -65,9 +65,9 @@ parseDimFilterGroup <- function(dfe){
   dim_ex[2] <- stringr::str_trim(dim_ex[2])
   
   ## check variables
-  if(!dim_ex[1] %in% c('country','device','page','query')){
+  if(!dim_ex[1] %in% c('country','device','page','query','date')){
     stop("dimension not one of: ", 
-         paste(c('country','device','page','query')), 
+         paste(c('country','device','page','query','date')), 
          " Got this: ", 
          dim_ex[1])
   }
