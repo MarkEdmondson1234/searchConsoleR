@@ -80,7 +80,8 @@ parseDimFilterGroup <- function(dfe){
     stop("Incorrect format of filter: Need 'dimension' 'operator' 'expression'. e.g. 'country!~GBR' or 'device==MOBILE'. Got this:   ", dfe)
   }
   
-  if(dim_ex[1] == "country" && !dim_ex[2] %in% country.codes ){
+  if(dim_ex[1] == "country" && 
+     !stringr::str_to_upper(dim_ex[2], "en") %in% country.codes ){
     stop("country dimension indicated, but country code not an ISO 3166-1 alpha-3 type. e.g. GBR = United Kingdom. Got this:   ", dim_ex[2])
   }
   
