@@ -55,12 +55,13 @@ parseDimFilterGroup <- function(dfe){
                   "!~" = 'notContains',
                   "!=" = 'notEquals')
   
-  ## remove whitespace
-  dfe <- stringr::str_trim(dfe)
-  
   ## extract variables needed
   operator <- stringr::str_extract(dfe, "[\\!=~]{2}")
   dim_ex <- stringr::str_split_fixed(dfe, "[\\!=~]{2}", n=2)
+
+  ## remove whitespace apart from expression  
+  dim_ex[1] <- stringr::str_replace_all(dim_ex[1]," ","")
+  operator <- stringr::str_replace_all(operator," ","")
   
   ## check variables
   if(!dim_ex[1] %in% c('country','device','page','query')){
