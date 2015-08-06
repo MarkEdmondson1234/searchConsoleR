@@ -121,6 +121,9 @@ search_analytics <- function(siteURL,
       aggregationType = aggregationType,
       rowLimit = rowLimit
     )
+    
+    message("toJSON(body)", jsonlite::toJSON(body))
+    message("str(body)", str(body))
   
     req <- searchconsole_POST(req_url, the_body = body)
     
