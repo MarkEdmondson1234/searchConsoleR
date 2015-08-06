@@ -34,6 +34,12 @@ parseDimFilterGroup <- function(dfe){
   dim_ex <- stringr::str_split_fixed(dfe, "[\\!=~]{2}", n=2)
   
   ## check variables
+  if(!dim_ex[1] %in% c('country','device','page','query')){
+    stop("dimension not one of: ", 
+         paste(c('country','device','page','query')), 
+         " Got this: ", 
+         dim_ex[1])
+  }
   
   if(!op_symbol[operator] %in% op_symbol){
     stop("Operator not one of ~~, ==, !~ or !=.")

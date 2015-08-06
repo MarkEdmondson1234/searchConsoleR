@@ -11,6 +11,5 @@ Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
 Imports: httr (>= 0.6.1),
-    magrittr (>= 1.5),
     stringr (>= 1.0.0)
 Suggests: shiny (>= 0.12.1)

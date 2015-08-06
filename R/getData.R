@@ -11,6 +11,8 @@
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
 #' 
+#' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
+#' 
 #' @seealso Guide to Search Analytics: https://support.google.com/webmasters/answer/6155685
 #'   API docs: https://developers.google.com/webmaster-tools/v3/searchanalytics/query 
 #' @export
@@ -62,10 +64,34 @@ search_analytics <- function(siteURL,
                              searchType = c("web","image","video"),
                              # groupType = "and", 
                              dimensionFilterExp = NULL,
-                             aggregationType = "auto",
+                             aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000){
   
   siteURL <- check.Url(siteURL, reserved=T)
+  
+  startDate <- as.character(startDate)
+  endDate   <- as.character(endDate)
+  
+  if(any(is.na(as.Date(startDate, "%Y-%m-%d")), is.na(as.Date(endDate, "%Y-%m-%d")))){
+    stop("dates not in correct %Y-%m-%d format. Got these:", startDate, " - ", endDate)
+  }
+  
+  if(!is.null(dimensions) && !dimensions %in% c('country', 'device', 'page', 'query')){
+    stop("dimension must be NULL or one or more of 'country', 'device', 'page', 'query'. 
+         Got this: ", paste(dimensions, sep=", "))
+  }
+  
+  if(!searchType %in% c("web","image","video")){
+    stop('searchType not one of "web","image","video".  Got this: ', searchType)
+  }
+  
+  if(!aggregationType %in% c("auto","byPage","byProperty")){
+    stop('aggregationType not one of "auto","byPage","byProperty". Got this: ', aggregationType)
+  }
+  
+  if(rowLimit > 5000){
+    stop("rowLimit must be 5000 or lower. Got this: ", rowLimit)
+  }
   
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
@@ -86,7 +112,7 @@ search_analytics <- function(siteURL,
       dimensions = as.list(dimensions),  
       searchType = searchType,
       dimensionFilterGroups = list(
-        list( ## you don't want more than one of these until different groupTypes available
+        list( ## you don't want more than one of these until different groupType available
           groupType = "and", ##only one avialable for now
           filters = parsedDimFilterGroup
           )
@@ -99,7 +125,31 @@ search_analytics <- function(siteURL,
   
     req <- searchconsole_POST(req_url, the_body = body)
     message("DEBUG:: body:", str(body))
-    as.data.frame(req$content$rows)
+    message("DEBUG:: req$content:", str(req$content))
+    
+    the_data <- req$content$rows
+    
+    # a bit of jiggery pokery (data processing)
+    dimensionCols <- data.frame(Reduce(rbind, 
+                              lapply(the_data$keys, function(x) 
+                                rbind(x))), 
+                       row.names=NULL, stringsAsFactors = F)
+    names(dimensionCols ) <- dimensions
+    dimensionCols <- lapply(dimensionCols, unname)
+    
+    if('date' %in% names(dimensionCols)){
+      dimensionCols$date <- as.Date(dimensionCols$date)
+    }
+    
+    metricCols <- the_data[setdiff(names(the_data), 'keys')]
+    
+    message("str(dimensions", str(dimensionCols))
+    message("str(metricCols", str(metricCols))
+    
+    the_df <- data.frame(dimensionCols , metricCols, stringsAsFactors = F, row.names = NULL)
+    attr(the_df, "aggregationType") <- req$content$responseAggregationType
+    
+    the_df
     
   } else {
     
