@@ -62,11 +62,14 @@
 search_analytics <- function(siteURL, 
                              startDate, endDate, 
                              dimensions = NULL, 
-                             searchType = "web",
+                             searchType = c("web","video","image"),
                              dimensionFilterExp = NULL,
-                             aggregationType = "auto",
+                             aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
                              prettyNames = TRUE){
+  
+  searchType      <- match.arg(searchType)
+  aggregationType <- match.arg(aggregationType)
   
   siteURL <- check.Url(siteURL, reserved=T)
   
@@ -374,9 +377,9 @@ delete_sitemap <- function(siteURL, feedpath) {
 #' @export
 crawl_errors <- function(siteURL, 
                          category="all",
-                         platform="all",
+                         platform=c("all","mobile","smartphoneOnly","web"),
                          latestCountsOnly=FALSE) {
-  
+  platform <- match.arg(platform)
   siteURL <- check.Url(siteURL, reserved=T)
   
   latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')

@@ -56,7 +56,7 @@ parseDimFilterGroup <- function(dfe){
                   "!=" = 'notEquals')
   
   ## remove whitespace
-  dfe <- stringr::str_replace_all(dfe, " ","")
+  dfe <- stringr::str_trim(dfe)
   
   ## extract variables needed
   operator <- stringr::str_extract(dfe, "[\\!=~]{2}")
@@ -86,8 +86,6 @@ parseDimFilterGroup <- function(dfe){
     stop("device dimension indicated, but device not one of DESKTOP, MOBILE or TABLET (no quotes). Got this:   ", dim_ex[2])
   }
   
-  ## need to make non-box version
-  ## https://github.com/hadley/httr/issues/159
   list(dimension = dim_ex[1],
        operator  = unname(op_symbol[operator]),
        expression = URLencode(dim_ex[2], reserved=T)
