@@ -10,7 +10,7 @@
 #' @param dimensionFilterExp A character vector of expressions to filter. e.g. c("device==TABLET", "country~~GBR")
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
-#' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name.
+#' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column with original countryCode.
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
@@ -139,6 +139,7 @@ search_analytics <- function(siteURL,
     }
     
     if(all('country' %in% names(dimensionCols), prettyNames)){
+      dimensionCols$countryCode <- dimensionCols$country
       dimensionCols$country <- lookupCountryCode(dimensionCols$country)
     }
     

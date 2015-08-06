@@ -90,7 +90,8 @@ parseDimFilterGroup <- function(dfe){
   ## https://github.com/hadley/httr/issues/159
   list(dimension = dim_ex[1],
        operator  = unname(op_symbol[operator]),
-       expression = dim_ex[2])
+       expression = URLencode(dim_ex[2], reserved=T)
+       )
 }
 
 
