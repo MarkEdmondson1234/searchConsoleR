@@ -137,28 +137,33 @@ scr_auth <- function(token = NULL,
       
     } else { ## shiny online web authentication flow needed
           ## random each Shiny run
-          sec_code <- getOption("searchConsoleR.securitycode") 
-          ## shiny_session is from parent shiny environment
-          return_code <- authReturnCode(shiny_session, sec_code)
-          app_url     <- getShinyURL(shiny_session) 
-
-          ## ?code= in URL only if they are back from browsing URL
-          if(is.null(return_code)){
-            
-            req_url <- shinygaGetTokenURL(state = sec_code,
-                                          redirect.uri = app_url)
-            
-            ## this may not work on shinyapps.io due to iframe
-            browseURL(req_url)
-            
-          } else { ## we're back from browsing above
-            
-            shiny_token <- shinygaGetToken(return_code,
-                                           app_url )
-            .state$token <- shiny_token
-            .state$shiny <- TRUE
-            
-        }
+      if(!token_exists() && !is_legit_token(.state$token)){
+        sec_code <- getOption("searchConsoleR.securitycode") 
+        ## shiny_session is from parent shiny environment
+        return_code <- authReturnCode(shiny_session, sec_code)
+        app_url     <- getShinyURL(shiny_session) 
+        
+        ## ?code= in URL only if they are back from browsing URL
+        if(is.null(return_code)){
+          
+          req_url <- shinygaGetTokenURL(state = sec_code,
+                                        redirect.uri = app_url)
+          
+          ## this may not work on shinyapps.io due to iframe
+          browseURL(req_url)
+          
+        } else { ## we're back from browsing above
+          
+          shiny_token <- shinygaGetToken(return_code,
+                                         app_url )
+          .state$token <- shiny_token
+          .state$shiny <- TRUE
+          
+        }     
+        
+        
+      }
+  
     }
   
   .state$websites <- list_websites()
