@@ -76,8 +76,8 @@ search_analytics <- function(siteURL,
     stop("dates not in correct %Y-%m-%d format. Got these:", startDate, " - ", endDate)
   }
   
-  if(!is.null(dimensions) && !dimensions %in% c('country', 'device', 'page', 'query')){
-    stop("dimension must be NULL or one or more of 'country', 'device', 'page', 'query'. 
+  if(!is.null(dimensions) && !dimensions %in% c('date','country', 'device', 'page', 'query')){
+    stop("dimension must be NULL or one or more of 'date','country', 'device', 'page', 'query'. 
          Got this: ", paste(dimensions, sep=", "))
   }
   
