@@ -1,6 +1,5 @@
 library(shiny)
 library(DT)
-library(magrittr)
 library(searchConsoleR)
 source('global.R')
 
@@ -12,6 +11,25 @@ shinyServer(function(input, output, session) {
     
     a
     
+  })
+  
+  website_df <- reactive({
+    if(!is.null(auth())){
+      www <- list_websites()           
+    }
+    
+  })
+  
+  ## Make a button to link to Google auth screen
+  ## If auth_code is returned then don't show login button
+  output$loginButton <- renderUI({
+    if(is.null(isolate(auth()))) {
+      actionLink("loginButton",
+                 label = a("Authorize App",
+                           href = shinygaGetTokenURL(getShinyURL(session))))
+    } else {
+      return()
+    }
   })
   
   observe({
@@ -33,16 +51,16 @@ shinyServer(function(input, output, session) {
     dim_filter <- input$filter_dim
     dim_op <- input$filter_op
     dim_ex <- input$filter_ex
-
     
-    if(!is.null(www)){
+    
+    if(!is.null(auth())){
       
       if(all(dim_filter != "none", !is.null(dim_ex))){
         dfe <- paste0(dim_filter,dim_op,dim_ex)
       } else {
         dfe = NULL
       }
-    
+      
       sa <- search_analytics(www, dates[1], dates[2],
                              dimensions = c('date'),
                              searchType = type,
@@ -62,7 +80,7 @@ shinyServer(function(input, output, session) {
     dim_ex <- input$filter_ex
     
     
-    if(!is.null(www) && !is.null(dims)){
+    if(!is.null(auth()) && !is.null(dims)){
       
       if(all(dim_filter != "none", !is.null(dim_ex))){
         dfe <- paste0(dim_filter,dim_op,dim_ex)
@@ -73,7 +91,7 @@ shinyServer(function(input, output, session) {
       sa <- search_analytics(www, dates[1], dates[2],
                              dimensions = dims,
                              searchType = type,
-                             dimensionFilterExp = dfe, prettyNames = FALSE)      
+                             dimensionFilterExp = dfe, prettyNames = FALSE)
     }
     
     
@@ -97,7 +115,7 @@ shinyServer(function(input, output, session) {
     data_row <- breakdown_df[selected_row,]
     
     
-    if(!is.null(selected_row)){
+    if(!is.null(auth()) && !is.null(selected_row)){
       
       data_dims <- data_row[,dims]
       ## construct the filter
@@ -121,23 +139,21 @@ shinyServer(function(input, output, session) {
            xlab = "date", ylab = metrics)         
     }
     
-
+    
     
   })
   
   output$plot_analytics <- renderPlot({
-   
+    
     sadata <- sa_trend_data()
     metrics <- input$metrics
     
-    plot(sadata$date, sadata[,metrics], type = "l",
-         xlab = "date", ylab = metrics)
+    if(!is.null(auth())){
+      plot(sadata$date, sadata[,metrics], type = "l",
+           xlab = "date", ylab = metrics)     
+    }
     
-  })
-  
-  website_df <- reactive({
-    a <- auth()
-    www <- list_websites()
+    
   })
   
   output$websites <- DT::renderDataTable({
@@ -147,7 +163,7 @@ shinyServer(function(input, output, session) {
   }, selection = 'single')
   
   selected_www <- reactive({
-
+    
     www <- website_df()
     selected_row <- input$websites_rows_selected
     
@@ -169,7 +185,7 @@ shinyServer(function(input, output, session) {
     
     www <- input$website_select
     
-    if(!is.null(www)){
+    if(!is.null(auth())){
       s <- www  
     } else {
       s <- "Select a website in table above."
@@ -185,7 +201,7 @@ shinyServer(function(input, output, session) {
     errors <- input$errors
     platform <- input$platform
     
-    if(!is.null(www)){
+    if(!is.null(auth())){
       
       ce <- try(crawl_errors(www, category = errors, platform = platform))
       
@@ -201,7 +217,7 @@ shinyServer(function(input, output, session) {
     errors <- input$errors
     platform <- input$platform
     
-    if(!is.null(www)){
+    if(!is.null(auth())){
       
       error_df <- try(list_crawl_error_samples(www, 
                                                category = errors, 
@@ -214,7 +230,7 @@ shinyServer(function(input, output, session) {
         error_df
       }
     }
-      
+    
   })
   
   output$crawl_error_samples <- DT::renderDataTable({
@@ -245,14 +261,14 @@ shinyServer(function(input, output, session) {
     errors <- input$errors
     platform <- input$platform      
     
-    if(!is.null(www))
+    if(!is.null(auth()))
     {
       df_err <- error_sample_url(www, 
                                  sample_error_url, 
                                  category = errors, 
                                  platform = platform)     
     }
-
+    
   })
   
   output$error_detail <- DT::renderDataTable({
