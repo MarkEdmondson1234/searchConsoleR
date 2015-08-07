@@ -36,6 +36,8 @@ doHttrRequest <- function(url,
   if(!is.null(list(...))){
     arg_list <- c(arg_list, list(...))    
   }
+  
+  arg_list <- c(arg_list, list(httr::verbose()))
 
   req <- do.call(request_type, 
                  args = arg_list,

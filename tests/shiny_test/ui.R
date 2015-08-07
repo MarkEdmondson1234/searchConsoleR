@@ -13,7 +13,6 @@ shinyUI(fluidPage(
       br()
     ),
     mainPanel(
-      verbatimTextOutput("clientdataText"),
       tableOutput("token_websites"),
       textOutput("selected_url", container = h2),
       tabsetPanel(

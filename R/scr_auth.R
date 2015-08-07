@@ -156,6 +156,7 @@ scr_auth <- function(token = NULL,
       
     } else { ## shiny online web authentication flow needed
       Authentication$set("public", "shiny", TRUE, overwrite=TRUE)
+      options("searchConsoleR.httr_oauth_cache" = FALSE)
       ## shiny supplies the token
       if(!is.null(token)) {
         if(is_legit_token(token)){

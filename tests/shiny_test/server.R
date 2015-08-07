@@ -45,19 +45,9 @@ shinyServer(function(input, output, session) {
     
   })
   
-  # Values from cdata returned as text
-  output$clientdataText <- renderText({
-    cnames <- names(cdata)
-    
-    allvalues <- lapply(cnames, function(name) {
-      paste(name, cdata[[name]], sep=" = ")
-    })
-    paste(allvalues, collapse = "\n")
-  })
-  
   output$token_websites <- renderTable({
     if(!is.null(auth())){
-      Authentication$public_fields$website
+      list_websites(session)
     }
   })
   

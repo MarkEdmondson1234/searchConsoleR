@@ -171,7 +171,9 @@ search_analytics <- function(siteURL,
 
 #' Check API data token
 #' 
-#' @param shiny session
+#' @param shiny session.
+#' 
+#' @return boolean if it works.
 #' 
 #' @keywords internal
 checkTokenAPI <- function(session){
@@ -235,7 +237,7 @@ add_website <- function(siteURL, session=NULL) {
   siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
+  if(checkTokenAPI(session)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/add
@@ -265,7 +267,7 @@ delete_website <- function(siteURL, session=NULL) {
   siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
+  if(checkTokenAPI(session)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/delete
@@ -298,7 +300,7 @@ list_sitemaps <- function(siteURL, session=NULL) {
   siteURL <- check.Url(siteURL, reserved=T)
 
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
+  if(checkTokenAPI(session)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps
@@ -333,7 +335,7 @@ add_sitemap <- function(siteURL, feedpath, session=NULL) {
   feedpath <- check.Url(feedpath, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
+  if(checkTokenAPI(session)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps/submit
@@ -370,7 +372,7 @@ delete_sitemap <- function(siteURL, feedpath, session=NULL) {
   feedpath <- check.Url(feedpath, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
+  if(checkTokenAPI(session)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps/delete
@@ -423,9 +425,7 @@ crawl_errors <- function(siteURL,
   latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && 
-     is_legit_token(Authentication$public_fields$token) && 
-     is.valid.category.platform(category, platform, include.all = TRUE)) {
+  if(checkTokenAPI(session) && is.valid.category.platform(category, platform, include.all = TRUE)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorscounts/query
@@ -495,8 +495,7 @@ list_crawl_error_samples <- function(siteURL,
   siteURL <- check.Url(siteURL, reserved=T)
 
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && 
-     is_legit_token(Authentication$public_fields$token) && 
+  if(checkTokenAPI(session) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here
@@ -564,9 +563,8 @@ error_sample_url <- function(siteURL,
   
 
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && 
-     is_legit_token(Authentication$public_fields$token) && 
-     is.valid.category.platform(category, platform)) {
+  if(checkTokenAPI(session) && 
+     is.valid.category.platform(category, platform)){
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
@@ -639,8 +637,7 @@ fix_sample_url <- function(siteURL,
   pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && 
-     is_legit_token(Authentication$public_fields$token) && 
+  if(checkTokenAPI(session) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here
