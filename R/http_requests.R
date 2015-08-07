@@ -43,6 +43,15 @@ doHttrRequest <- function(url,
                  args = arg_list,
                  envir = asNamespace("httr"))
   
+  ga.json <- httr::content(req, as = "text", type = "application/json")
+  ga.json <- jsonlite::fromJSON(ga.json)
+  
+  if (is.null(ga.json)) { stop('data fetching did not output correct format') }
+  if (!is.null(ga.json$error$message)) {stop("JSON fetch error: ",ga.json$error$message)}
+  if (grepl("Error 400 (Bad Request)",ga.json[[1]])) {
+    stop('JSON fetch error: Bad request URL - 400. Fetched: ', url)
+  }
+  
   ok_content_types <- c("application/json; charset=UTF-8")
   if(!(req$headers$`content-type` %in% ok_content_types)) {
     
