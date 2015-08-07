@@ -13,4 +13,6 @@ LazyData: true
 Imports: httr (>= 0.6.1),
     R6 (>= 2.1.0),
     stringr (>= 1.0.0)
-Suggests: shiny (>= 0.12.1)
+Suggests: shiny (>= 0.12.1),
+    knitr
+VignetteBuilder: knitr

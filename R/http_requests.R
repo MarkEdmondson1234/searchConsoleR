@@ -4,6 +4,7 @@
 #' This changes the auth type depending on if its local or on Shiny
 #' 
 #' @param url the url of the page to retrieve
+#' @param session a shiny session object if in a shiny app.
 #' @param request_type the type of httr request function: GET, POST, PUT, DELETE etc.
 #' @param the_body body of POST request
 #' @param params A named character vector of other parameters to add to request.
@@ -12,7 +13,11 @@
 #' 
 #' 
 #' @keywords internal
-doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL, ...){
+doHttrRequest <- function(url,
+                          session = NULL,
+                          request_type="GET", 
+                          the_body=NULL, 
+                          params=NULL, ...){
   
   ## add any other params
   ## expects named character e.g. c(param1="foo", param2="bar")
@@ -26,7 +31,7 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL, .
   }
   
   arg_list <- list(url = url, 
-                   config = get_google_token(), 
+                   config = get_google_token(session), 
                    body = the_body)
   if(!is.null(list(...))){
     arg_list <- c(arg_list, list(...))    
@@ -64,9 +69,12 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL, .
 #' @param params A named character vector of other parameters to add to request.
 #'
 #' @keywords internal
-searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
+searchconsole_GET <- function(url,
+                              session = NULL, 
+                              to_json = TRUE, 
+                              params=NULL) {
     
-  req <- doHttrRequest(url, request_type = "GET", params = params)
+  req <- doHttrRequest(url, session, request_type = "GET", params = params)
   
   if(to_json) {
     content <- httr::content(req, as = "text", type = "application/json",encoding = "UTF-8")
@@ -87,9 +95,12 @@ searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
 #' @param params A named character vector of other parameters to add to request.
 #'
 #' @keywords internal
-searchconsole_POST <- function(url, the_body, params=NULL, ...) {
+searchconsole_POST <- function(url, 
+                               session = NULL, 
+                               the_body = NULL, 
+                               params=NULL, ...) {
   
-  req <- doHttrRequest(url, "POST", 
+  req <- doHttrRequest(url, session, "POST", 
                        the_body = the_body, 
                        params = params, encode = "json", ...)
     
@@ -108,9 +119,11 @@ searchconsole_POST <- function(url, the_body, params=NULL, ...) {
 #' @param url the url of the page to retrieve
 #' @param params A named character vector of other parameters to add to request.
 #' @keywords internal
-searchconsole_DELETE <- function(url, params=NULL) {
+searchconsole_DELETE <- function(url, 
+                                 session = NULL, 
+                                 params=NULL) {
   
-  req <- doHttrRequest(url, "DELETE", params = params)
+  req <- doHttrRequest(url, session, "DELETE", params = params)
 
   req
 }
@@ -124,9 +137,12 @@ searchconsole_DELETE <- function(url, params=NULL) {
 #' @param params A named character vector of other parameters to add to request.
 #' 
 #' @keywords internal
-searchconsole_PUT <- function(url, the_body, params=NULL) {
+searchconsole_PUT <- function(url, 
+                              session = NULL, 
+                              the_body = NULL, 
+                              params=NULL) {
   
-  req <- doHttrRequest(url, "PUT", the_body = the_body, params = params)
+  req <- doHttrRequest(url, session, "PUT", the_body = the_body, params = params)
   
   req
   

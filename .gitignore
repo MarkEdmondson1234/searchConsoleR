@@ -3,7 +3,6 @@
 .RData
 
 .httr-oauth
-
 .httr-oauth-SUSPENDED
-
 .Rbuildignore
+inst/doc

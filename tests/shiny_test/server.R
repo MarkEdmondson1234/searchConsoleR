@@ -5,28 +5,9 @@ source('global.R')
 
 shinyServer(function(input, output, session) {
   
-  Authentication$set("public", "token", NULL, overwrite=TRUE)
+  cdata <- session$clientData
   
-  auth <- reactive({
-    
-    a <- scr_auth(shiny_session = session, new_user = T)
-    
-    a
-    
-    
-  })
-  
-  token <- renderText({
-    Authentication$public_fields$token
-    
-  })
-  
-  website_df <- reactive({
-    if(!is.null(auth())){
-      www <- list_websites()           
-    }
-    
-  })
+  shiny_google_token_session_scope <- NULL
   
   ## Make a button to link to Google auth screen
   ## If auth_code is returned then don't show login button
@@ -39,6 +20,55 @@ shinyServer(function(input, output, session) {
       return()
     }
   })
+  
+  ## Get auth code from return URL
+  access_token  <- reactive({
+    ## gets all the parameters in the URL. The auth code should be one of them.
+    pars <- parseQueryString(session$clientData$url_search)
+    
+    if(length(pars$code) > 0) {
+      ## extract the authorization code
+      get_google_token_shiny(session) 
+    } else {
+      NULL
+    }
+  })
+  
+
+  auth <- reactive({
+    
+    token <- access_token()
+    
+    if(!is.null(token)){
+      a <- scr_auth(token = token, shiny_session=session)      
+    }
+    
+  })
+  
+  # Values from cdata returned as text
+  output$clientdataText <- renderText({
+    cnames <- names(cdata)
+    
+    allvalues <- lapply(cnames, function(name) {
+      paste(name, cdata[[name]], sep=" = ")
+    })
+    paste(allvalues, collapse = "\n")
+  })
+  
+  output$token_websites <- renderTable({
+    if(!is.null(auth())){
+      Authentication$public_fields$website
+    }
+  })
+  
+  website_df <- reactive({
+    if(!is.null(auth())){
+      www <- list_websites(session)           
+    }
+    
+  })
+  
+
   
   observe({
     
@@ -72,7 +102,8 @@ shinyServer(function(input, output, session) {
       sa <- search_analytics(www, dates[1], dates[2],
                              dimensions = c('date'),
                              searchType = type,
-                             dimensionFilterExp = dfe)      
+                             dimensionFilterExp = dfe,
+                             session = session)
     }
     
     
@@ -99,7 +130,8 @@ shinyServer(function(input, output, session) {
       sa <- search_analytics(www, dates[1], dates[2],
                              dimensions = dims,
                              searchType = type,
-                             dimensionFilterExp = dfe, prettyNames = FALSE)
+                             dimensionFilterExp = dfe, prettyNames = FALSE,
+                             session = session)
     }
     
     
@@ -132,7 +164,8 @@ shinyServer(function(input, output, session) {
       sa <- search_analytics(www, dates[1], dates[2],
                              dimensions = c('date'),
                              searchType = type,
-                             dimensionFilterExp = dfe)      
+                             dimensionFilterExp = dfe,
+                             session = session)      
     }
     
   })
@@ -211,7 +244,12 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(auth())){
       
-      ce <- try(crawl_errors(www, category = errors, platform = platform))
+      ce <- try(
+        crawl_errors(www, 
+                     category = errors, 
+                     platform = platform, 
+                     session = session)
+      )
       
       if(!is.error(ce)){
         plot(ce$timecount, ce$count, type="l")                 
@@ -229,7 +267,8 @@ shinyServer(function(input, output, session) {
       
       error_df <- try(list_crawl_error_samples(www, 
                                                category = errors, 
-                                               platform = platform))
+                                               platform = platform,
+                                               session = session))
       if(!is.error(error_df)){
         
         error_df$last_crawled <- as.Date(error_df$last_crawled)
@@ -274,7 +313,8 @@ shinyServer(function(input, output, session) {
       df_err <- error_sample_url(www, 
                                  sample_error_url, 
                                  category = errors, 
-                                 platform = platform)     
+                                 platform = platform,
+                                 session = session)     
     }
     
   })

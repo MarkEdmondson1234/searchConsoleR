@@ -44,6 +44,9 @@ authReturnCode <- function(session, securityCode){
 }
 
 
+
+
+
 #' Returns the Google authentication URL
 #' 
 #' The URL a user authenticates the Shiny app on.
@@ -151,7 +154,9 @@ shinygaGetToken <- function(code,
                            client_id = client.id,
                            client_secret = client.secret,
                            redirect_uri = redirect.uri,
-                           grant_type = "authorization_code"), verbose = TRUE)
+                           grant_type = "authorization_code"))
+  message(req)
+  
   stopifnot(identical(httr::headers(req)$`content-type`,
                       "application/json; charset=utf-8"))
   # content of req will contain access_token, token_type, expires_in
@@ -169,7 +174,7 @@ shinygaGetToken <- function(code,
                                      use_oob = FALSE, as_header = TRUE),
                        cache_path = FALSE)
   
-  Authentication$set("public", "token", token_formatted, overwrite=TRUE)
+  # Authentication$set("public", "token", token_formatted, overwrite=TRUE)
   
   token_formatted
 }

@@ -3,15 +3,15 @@
 \docType{data}
 \name{Authentication}
 \alias{Authentication}
-\title{In search of an object ot refer from within package and shiny session}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x7f8118ab88d8> 
+\title{R6 environment to store credentials}
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x7fe0243181c8> 
  - attr(*, "name")= chr "Authentication_generator"
 }}
 \usage{
 Authentication
 }
 \description{
-In search of an object ot refer from within package and shiny session
+In search of an object to refer from within package and shiny session
 }
 \keyword{datasets}
 
