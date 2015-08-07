@@ -16,6 +16,11 @@ shinyServer(function(input, output, session) {
     
   })
   
+  token <- renderText({
+    Authentication$public_fields$token
+    
+  })
+  
   website_df <- reactive({
     if(!is.null(auth())){
       www <- list_websites()           
