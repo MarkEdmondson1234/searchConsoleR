@@ -66,8 +66,7 @@ shinygaGetTokenURL <-
            scope         = getOption("searchConsoleR.scope")) {
     
     ## httr friendly version
-    message("shinygaGetTokenURL")
-    
+
     url <- httr::modify_url(
       httr::oauth_endpoints("google")$authorize,
       query = list(response_type = "code",
@@ -77,7 +76,7 @@ shinygaGetTokenURL <-
                    state = state,
                    access_type = "online",
                    approval_prompt = "auto"))
-    message("url: ", url)
+    message("auth token url: ", url)
     url
   }
 
@@ -94,7 +93,6 @@ shinygaGetTokenURL <-
 #' @export
 getShinyURL <- function(session){
   
-  message("getShinyURL")
   if(!is.null(session)){
     pathname <- session$clientData$url_pathname
     ## hack for shinyapps.io
@@ -171,7 +169,8 @@ shinygaGetToken <- function(code,
                                      use_oob = FALSE, as_header = TRUE),
                        cache_path = FALSE)
   
-  .state$token <- token_formatted
-  .state$token
+  Authentication$set("public", "token", token_formatted, overwrite=TRUE)
+  
+  token_formatted
 }
 

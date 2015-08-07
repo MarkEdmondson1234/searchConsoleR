@@ -4,8 +4,8 @@
 \alias{crawl_errors}
 \title{Fetch a time-series of Googlebot crawl errors.}
 \usage{
-crawl_errors(siteURL, category = "all", platform = "all",
-  latestCountsOnly = FALSE)
+crawl_errors(siteURL, category = "all", platform = c("all", "mobile",
+  "smartphoneOnly", "web"), latestCountsOnly = FALSE)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}

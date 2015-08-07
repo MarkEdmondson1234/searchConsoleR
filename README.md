@@ -8,6 +8,8 @@ Authentication can be done locally or within a Shiny app.
 
 See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
 
+By default the package will remember the authentication details 
+
 ## Function list
 
 * search_analytics() - download Google SEO data into an R dataframe.

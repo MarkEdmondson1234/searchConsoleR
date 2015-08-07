@@ -88,6 +88,7 @@ search_analytics <- function(siteURL,
   if(!searchType %in% c("web","image","video")){
     stop('searchType not one of "web","image","video".  Got this: ', searchType)
   }
+
   
   if(!aggregationType %in% c("auto","byPage","byProperty")){
     stop('aggregationType not one of "auto","byPage","byProperty". Got this: ', aggregationType)
@@ -98,7 +99,7 @@ search_analytics <- function(siteURL,
   }
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/searchanalytics/query
@@ -125,8 +126,8 @@ search_analytics <- function(siteURL,
       rowLimit = rowLimit
     )
     
-    message("toJSON(body)", jsonlite::toJSON(body))
-    message("str(body)", str(body))
+    # message("toJSON(body)", jsonlite::toJSON(body))
+    # message("str(body)", str(body))
   
     req <- searchconsole_POST(req_url, the_body = body)
     
@@ -178,7 +179,7 @@ search_analytics <- function(siteURL,
 list_websites <- function() {
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/list
@@ -206,7 +207,7 @@ add_website <- function(siteURL) {
   siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/add
@@ -235,7 +236,7 @@ delete_website <- function(siteURL) {
   siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/delete
@@ -267,7 +268,7 @@ list_sitemaps <- function(siteURL) {
   siteURL <- check.Url(siteURL, reserved=T)
 
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps
@@ -301,7 +302,7 @@ add_sitemap <- function(siteURL, feedpath) {
   feedpath <- check.Url(feedpath, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps/submit
@@ -337,7 +338,7 @@ delete_sitemap <- function(siteURL, feedpath) {
   feedpath <- check.Url(feedpath, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(.state$token)) {
+  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps/delete
@@ -389,7 +390,7 @@ crawl_errors <- function(siteURL,
   
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && 
-     is_legit_token(.state$token) && 
+     is_legit_token(Authentication$public_fields$token) && 
      is.valid.category.platform(category, platform, include.all = TRUE)) {
     
     ## docs here
@@ -459,7 +460,7 @@ list_crawl_error_samples <- function(siteURL,
 
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && 
-     is_legit_token(.state$token) && 
+     is_legit_token(Authentication$public_fields$token) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here
@@ -526,7 +527,7 @@ error_sample_url <- function(siteURL,
 
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && 
-     is_legit_token(.state$token) && 
+     is_legit_token(Authentication$public_fields$token) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here
@@ -599,7 +600,7 @@ fix_sample_url <- function(siteURL,
   
   ## require pre-existing token, to avoid recursion
   if(token_exists(verbose = FALSE) && 
-     is_legit_token(.state$token) && 
+     is_legit_token(Authentication$public_fields$token) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here

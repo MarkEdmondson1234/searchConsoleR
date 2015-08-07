@@ -1,6 +1,19 @@
 # environment to store credentials - 
 # not sure this is best place, but it doesn't work in scr_auth() or .onLoad()
-.state <- new.env(parent = emptyenv())
+# .state <- new.env(parent = emptyenv())
+
+#' In search of an object ot refer from within package and shiny session
+#' 
+#' @export
+Authentication <- R6::R6Class(
+  "Authentication",
+  public = list(
+    x = 6,
+    token = NULL
+  ),
+  lock_objects = F,
+  parent_env = emptyenv()
+)
 
 #' Authorize \code{searchConsoleR}
 #'
@@ -82,8 +95,6 @@ scr_auth <- function(token = NULL,
                     cache = getOption("searchConsoleR.httr_oauth_cache"),
                     verbose = TRUE,
                     shiny_session = NULL) {
-
-  .state$shiny <- FALSE
   
   if(new_user && file.exists(".httr-oauth")) {
     if(verbose) message("Removing old credentials ...")
@@ -109,7 +120,8 @@ scr_auth <- function(token = NULL,
       
       stopifnot(is_legit_token(google_token, verbose = TRUE))
       
-      .state$token <- google_token
+      # .state$token <- google_token
+      Authentication$set("public", "token", google_token, overwrite=TRUE)
       
     } else {
       
@@ -130,14 +142,15 @@ scr_auth <- function(token = NULL,
           return(invisible(NULL))
         }
       }
-      .state$token <- google_token
+      # .state$token <- google_token
+      Authentication$set("public", "token", google_token, overwrite=TRUE)
 
       }
    
       
     } else { ## shiny online web authentication flow needed
           ## random each Shiny run
-      if(!token_exists() && !is_legit_token(.state$token)){
+      if(!token_exists() && !is_legit_token(Authentication$public_fields$token)){
         sec_code <- getOption("searchConsoleR.securitycode") 
         ## shiny_session is from parent shiny environment
         return_code <- authReturnCode(shiny_session, sec_code)
@@ -159,8 +172,8 @@ scr_auth <- function(token = NULL,
           message("We're back, authenticating in Shiny.")
           shiny_token <- shinygaGetToken(return_code,
                                          app_url )
-          .state$token <- shiny_token
-          .state$shiny <- TRUE
+          
+          Authentication$set("public", "token", shiny_token, overwrite=TRUE)
           
         }     
         
@@ -169,9 +182,9 @@ scr_auth <- function(token = NULL,
   
     }
   
-  .state$websites <- list_websites()
+  # .state$websites <- list_websites()
   
-  invisible(.state$token)
+  invisible(Authentication$public_fields$token)
   
 }
 
@@ -182,11 +195,13 @@ scr_auth <- function(token = NULL,
 #' @keywords internal
 get_google_token <- function() {
   
-  if(is.null(.state$token) || !is_legit_token(.state$token)) {
+  token <- Authentication$public_fields$token
+  
+  if(is.null(token) || !is_legit_token(token)) {
     scr_auth()
   }
   
-  httr::config(token = .state$token)
+  httr::config(token = token)
   
 }
 
@@ -198,7 +213,9 @@ get_google_token <- function() {
 #' @keywords internal
 token_exists <- function(verbose = TRUE) {
   
-  if(is.null(.state$token)) {
+  token <- Authentication$public_fields$token
+  
+  if(is.null(token)) {
     if(verbose) {
       message("No authorization yet in this session!")
       
@@ -238,7 +255,7 @@ scr_auth_suspend <- function(disable_httr_oauth = TRUE, verbose = TRUE) {
     file.rename(".httr-oauth", ".httr-oauth-SUSPENDED")
   }
   
-  if(!is.null(.state$token)) {
+  if(!is.null(Authentication$public_fields$token)) {
     if(verbose) {
       message(paste("Removing google token stashed in searchConsoleR's",
                     "internal environment"))

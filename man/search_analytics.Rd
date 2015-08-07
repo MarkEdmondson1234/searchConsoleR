@@ -5,8 +5,9 @@
 \title{Query search traffic keyword data}
 \usage{
 search_analytics(siteURL, startDate, endDate, dimensions = NULL,
-  searchType = c("web", "image", "video"), dimensionFilterExp = NULL,
-  aggregationType = "auto", rowLimit = 1000)
+  searchType = c("web", "video", "image"), dimensionFilterExp = NULL,
+  aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
+  prettyNames = TRUE)
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -24,6 +25,11 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 \item{aggregationType}{How data is aggregated.}
 
 \item{rowLimit}{How many rows, maximum is 5000.}
+
+\item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.}
+}
+\value{
+A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 }
 \description{
 Download your Google keyword SEO data.

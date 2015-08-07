@@ -46,7 +46,7 @@ doHttrRequest <- function(url, request_type="GET", the_body=NULL, params=NULL, .
   
   httr::stop_for_status(req)
   
-  message("DEBUG:: str(req)::", str(req))
+  # message("DEBUG:: str(req)::", str(req))
 
   req
 }
@@ -72,11 +72,6 @@ searchconsole_GET <- function(url, to_json = TRUE, params=NULL) {
     content <- httr::content(req, as = "text", type = "application/json",encoding = "UTF-8")
     content <- jsonlite::fromJSON(content)
     req$content <- content
-#     req$content <- req %>%
-#       httr::content(as = "text", type = "application/json",encoding = "UTF-8") %>%
-#       jsonlite::fromJSON()
-    
-    message("DEBUG1: req$content: ",req$content)
   }
   
   req
@@ -101,8 +96,6 @@ searchconsole_POST <- function(url, the_body, params=NULL, ...) {
   content <- httr::content(req, as = "text", type = "application/json",encoding = "UTF-8")
   content <- jsonlite::fromJSON(content)
   req$content <- content
-  
-  message("DEBUG3: req$content: ",req$content)
   
   req
     

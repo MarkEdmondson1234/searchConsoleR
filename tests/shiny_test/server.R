@@ -5,11 +5,14 @@ source('global.R')
 
 shinyServer(function(input, output, session) {
   
+  Authentication$set("public", "token", NULL, overwrite=TRUE)
+  
   auth <- reactive({
     
-    a <- scr_auth(shiny_session = session)
+    a <- scr_auth(shiny_session = session, new_user = T)
     
     a
+    
     
   })
   
