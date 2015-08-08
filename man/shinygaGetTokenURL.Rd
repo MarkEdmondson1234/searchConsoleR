@@ -28,6 +28,6 @@ The URL for authentication.
 The URL a user authenticates the Shiny app on.
 }
 \seealso{
-Other Shiny.Authentication: \code{\link{getShinyURL}}
+Other Shiny Authentication: \code{\link{getShinyURL}}
 }
 

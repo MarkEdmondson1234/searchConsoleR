@@ -4,7 +4,7 @@
 \alias{searchconsole_DELETE}
 \title{Create DELETE request}
 \usage{
-searchconsole_DELETE(url, params = NULL)
+searchconsole_DELETE(url, session = NULL, params = NULL)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}

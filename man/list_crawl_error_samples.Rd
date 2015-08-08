@@ -4,7 +4,8 @@
 \alias{list_crawl_error_samples}
 \title{Lists a site's sample URLs for crawl errors.}
 \usage{
-list_crawl_error_samples(siteURL, category = "notFound", platform = "web")
+list_crawl_error_samples(siteURL, category = "notFound", platform = "web",
+  session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -12,6 +13,8 @@ list_crawl_error_samples(siteURL, category = "notFound", platform = "web")
 \item{category}{Crawl error category. Default 'notFound'.}
 
 \item{platform}{User agent type. Default 'web'.}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 A dataframe of $pageUrl, $last_crawled, $first_detected, $response
@@ -23,6 +26,11 @@ Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   Platform is one of: mobile, smartphoneOnly or web.
 }
 \details{
-See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
+See here for details: \url{https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples}
+}
+\seealso{
+Other working with search console errors: \code{\link{crawl_errors}};
+  \code{\link{error_sample_url}};
+  \code{\link{fix_sample_url}}
 }
 

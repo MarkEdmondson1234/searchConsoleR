@@ -4,17 +4,23 @@
 \alias{add_sitemap}
 \title{Submit a sitemap.}
 \usage{
-add_sitemap(siteURL, feedpath)
+add_sitemap(siteURL, feedpath, session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
 
 \item{feedpath}{The URL of the sitemap to submit. Must include protocol (http://).}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 TRUE if successful, raises an error if not.
 }
 \description{
 See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps/submit
+}
+\seealso{
+Other sitemap admin functions: \code{\link{delete_sitemap}};
+  \code{\link{list_sitemaps}}
 }
 

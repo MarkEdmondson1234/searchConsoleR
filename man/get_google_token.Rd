@@ -4,7 +4,7 @@
 \alias{get_google_token}
 \title{Retrieve Google token from environment}
 \usage{
-get_google_token()
+get_google_token(session = NULL)
 }
 \description{
 Get token if it's previously stored, else prompt user to get one.

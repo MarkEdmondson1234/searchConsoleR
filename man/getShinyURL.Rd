@@ -16,6 +16,6 @@ The URL of the Shiny App its called from.
 Needed for the redirect URL in Google Auth flow
 }
 \seealso{
-Other Shiny.Authentication: \code{\link{shinygaGetTokenURL}}
+Other Shiny Authentication: \code{\link{shinygaGetTokenURL}}
 }
 

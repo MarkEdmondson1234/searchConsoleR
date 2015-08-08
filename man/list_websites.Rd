@@ -4,12 +4,19 @@
 \alias{list_websites}
 \title{Retrieves dataframe of websites user has in Search Console}
 \usage{
-list_websites()
+list_websites(session = NULL)
+}
+\arguments{
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 a dataframe of siteUrl and permissionLevel
 }
 \description{
 Retrieves dataframe of websites user has in Search Console
+}
+\seealso{
+Other search console website functions: \code{\link{add_website}};
+  \code{\link{delete_website}}
 }
 

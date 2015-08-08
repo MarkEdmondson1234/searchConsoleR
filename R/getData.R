@@ -15,51 +15,82 @@
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
-#' @seealso Guide to Search Analytics: https://support.google.com/webmasters/answer/6155685
-#'   API docs: https://developers.google.com/webmaster-tools/v3/searchanalytics/query 
+#' @seealso Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
+#'   API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
 #' @export
 #' 
 #' @details 
-#'  Start date of the requested date range, in YYYY-MM-DD format, 
+#'  \strong{startDate}: Start date of the requested date range, in YYYY-MM-DD format, 
 #'    in PST time (UTC - 8:00). Must be less than or equal to the end date. 
 #'    This value is included in the range.
-#'  End date of the requested date range, in YYYY-MM-DD format, 
+#'    
+#'  \strong{endDate}: End date of the requested date range, in YYYY-MM-DD format, 
 #'    in PST time (UTC - 8:00). Must be greater than or equal to the start date. 
 #'    This value is included in the range.
-#'  [Optional] Zero or more dimensions to group results by. 
-#'  Results are grouped in the order that you supply these dimensions. 
-#'  dimension = c('country','device','page','query')
-#'   operator = c(`~~` = 'contains',
-#'                `==` = 'equals',
-#'                `!~` = 'notContains',
-#'                 `!=` = 'notEquals)
-#'  
-#'  expression = country: an ISO 3166-1 alpha-3 country code.
-#'               device: 'DESKTOP','MOBILE','TABLET'
-#'               page: not checked
-#'               query: not checked
-#'               
-#'  dimensionFilterExp expects a character vector of expressions in the form:
-#'   ("device==TABLET", "country~~GBR")
-#'  
+#'    
+#'  \strong{dimensions}: [Optional] Zero or more dimensions to group results by. 
+#'  c('country','device','page','query', 'date')
 #'  The grouping dimension values are combined to create a unique key 
 #'    for each result row. If no dimensions are specified, 
 #'    all values will be combined into a single row. 
 #'    There is no limit to the number of dimensions that you can group by, 
 #'    but you cannot group by the same dimension twice. Example: c(country, device)
-#'  [Optional] The search type to filter for. Acceptable values are:
-#'    "image": Image search results
-#'    "video": Video search results
-#'    "web": [Default] Web search results
-#'    [Optional] How data is aggregated. 
-#'    If aggregated by property, all data for the same property is aggregated; if aggregated by page, all data is aggregated by canonical URI. 
-#'    If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; see the help documentation to learn how data is calculated differently by site versus by page. 
+#'  
+#'  \strong{dimensionFilterExp}:
+#'  Results are grouped in the order that you supply these dimensions. 
+#'  dimensionFilterExp expects a character vector of expressions in the form:
+#'   ("device==TABLET", "country~~GBR", "dimension operator expression")
+#'   \itemize{
+#'     \item dimension  
+#'       \itemize{
+#'         \item 'country'
+#'         \item 'device'
+#'         \item 'page'
+#'         \item 'query'
+#'       }
+#'     \item operator 
+#'       \itemize{
+#'         \item '~~' meaning 'contains'
+#'         \item '==' meaning 'equals'
+#'         \item '!~' meaning 'notContains'
+#'         \item '!=' meaning 'notEquals
+#'       }
+#'     
+#'     \item expression 
+#'        \itemize{
+#'          \item country: an ISO 3166-1 alpha-3 country code.
+#'          \item device: 'DESKTOP','MOBILE','TABLET'.
+#'          \item page: not checked, a string in page URLs without hostname.
+#'          \item query: not checked, a string in keywords.
+#'        
+#'        }
+#'   }
+#'  
+#'  
+#'  \strong{searchType}: [Optional] The search type to filter for. Acceptable values are:
+#'  \itemize{
+#'    \item "web": [Default] Web search results
+#'    \item "image": Image search results
+#'    \item "video": Video search results
+#'  }
+#'  
+#'  \strong{aggregationType}: [Optional] How data is aggregated. 
+#'  \itemize{
+#'    \item If aggregated by property, all data for the same property is aggregated; 
+#'    \item If aggregated by page, all data is aggregated by canonical URI. 
+#'    \item If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; 
+#'  }
+#'    See the API documentation to learn how data is calculated differently by site versus by page. 
 #'    Note: If you group or filter by page, you cannot aggregate by property.
-#'    If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. The API will never change your aggregation type if the requested type is invalid.
+#'    If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. 
+#'    The API will never change your aggregation type if the requested type is invalid.
 #'    Acceptable values are:
-#'    "auto": [Default] Let the service decide the appropriate aggregation type.
-#'    "byPage": Aggregate values by URI.
-#'    "byProperty": Aggregate values by property.
+#'  \itemize{
+#'    \item "auto": [Default] Let the service decide the appropriate aggregation type.
+#'    \item "byPage": Aggregate values by URI.
+#'    \item "byProperty": Aggregate values by property.
+#'  }
+#'  
 search_analytics <- function(siteURL, 
                              startDate, endDate, 
                              dimensions = NULL, 
@@ -95,6 +126,11 @@ search_analytics <- function(siteURL,
   if(!aggregationType %in% c("auto","byPage","byProperty")){
     stop('aggregationType not one of "auto","byPage","byProperty". Got this: ', aggregationType)
   }
+  
+  if(aggregationType %in% c("byProperty") && 'page' %in% dimensions ){
+    stop("Can't aggregate byProperty and include page in dimensions.")
+  }
+  
   
   if(rowLimit > 5000){
     stop("rowLimit must be 5000 or lower. Got this: ", rowLimit)
@@ -176,6 +212,7 @@ search_analytics <- function(siteURL,
 #' @return boolean if it works.
 #' 
 #' @keywords internal
+#' @family data fetching functions
 checkTokenAPI <- function(session){
   if(!is.null(session)){
     shiny_google_token_session_scope <- get("shiny_google_token_session_scope")
@@ -204,6 +241,7 @@ checkTokenAPI <- function(session){
 #' @return a dataframe of siteUrl and permissionLevel
 #'
 #' @export
+#' @family search console website functions
 list_websites <- function(session=NULL) {
   
   ## require pre-existing token, to avoid recursion
@@ -230,7 +268,8 @@ list_websites <- function(session=NULL) {
 #' @param session If in a Shiny session, supply its session object.
 #'
 #' @return TRUE if successful, raises an error if not.
-#'
+#' @family search console website functions
+#' 
 #' @export
 add_website <- function(siteURL, session=NULL) {
   
@@ -260,8 +299,10 @@ add_website <- function(siteURL, session=NULL) {
 #' @param session If in a Shiny session, supply its session object.
 #' 
 #' @return TRUE if successful, raises an error if not.
-#'
+#' @family data fetching functions
+#' 
 #' @export
+#' @family search console website functions
 delete_website <- function(siteURL, session=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
@@ -292,9 +333,10 @@ delete_website <- function(siteURL, session=NULL) {
 #' @param session If in a Shiny session, supply its session object.
 #' 
 #' @return A list of two dataframes: $sitemap with general info and $contents with sitemap info.
-#'
+#' @family data fetching functions
+#' 
 #' @export
-
+#' @family sitemap admin functions
 list_sitemaps <- function(siteURL, session=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
@@ -329,6 +371,7 @@ list_sitemaps <- function(siteURL, session=NULL) {
 #' @return TRUE if successful, raises an error if not.
 #'
 #' @export
+#' @family sitemap admin functions
 add_sitemap <- function(siteURL, feedpath, session=NULL) {
   
   siteURL  <- check.Url(siteURL, reserved=T)
@@ -366,6 +409,7 @@ add_sitemap <- function(siteURL, feedpath, session=NULL) {
 #' @return TRUE if successful, raises an error if not.
 #'
 #' @export
+#' @family sitemap admin functions
 delete_sitemap <- function(siteURL, feedpath, session=NULL) {
   
   siteURL  <- check.Url(siteURL, reserved=T)
@@ -414,6 +458,7 @@ delete_sitemap <- function(siteURL, feedpath, session=NULL) {
 #'   Platform is one of: mobile, smartphoneOnly or web.
 #' 
 #' @export
+#' @family working with search console errors
 crawl_errors <- function(siteURL, 
                          category="all",
                          platform=c("all","mobile","smartphoneOnly","web"),
@@ -482,11 +527,12 @@ crawl_errors <- function(siteURL,
 #' @param session If in a Shiny session, supply its session object.
 #'
 #' @details
-#' See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples 
+#' See here for details: \url{https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples}
 #' 
 #' @return A dataframe of $pageUrl, $last_crawled, $first_detected, $response
 #'
 #' @export
+#' @family working with search console errors
 list_crawl_error_samples <- function(siteURL,
                                      category="notFound",
                                      platform="web",
@@ -539,7 +585,7 @@ list_crawl_error_samples <- function(siteURL,
 #' @param session If in a Shiny session, supply its session object.
 #' 
 #' @return Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
-#' 
+#' @family working with search console errors
 #' @description 
 #' pageURL is the relative path (without the site) of the sample URL. 
 #' It must be one of the URLs returned by list_crawl_error_samples. 
@@ -614,6 +660,7 @@ error_sample_url <- function(siteURL,
 #' @param session If in a Shiny session, supply its session object.
 #' 
 #' @return TRUE if successful, raises an error if not.
+#' @family working with search console errors
 #' 
 #' @description 
 #' pageURL is the relative path (without the site) of the sample URL. 

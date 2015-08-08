@@ -4,15 +4,21 @@
 \alias{add_website}
 \title{Adds website to Search Console}
 \usage{
-add_website(siteURL)
+add_website(siteURL, session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to add.}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 TRUE if successful, raises an error if not.
 }
 \description{
 Adds website to Search Console
+}
+\seealso{
+Other search console website functions: \code{\link{delete_website}};
+  \code{\link{list_websites}}
 }
 

@@ -4,7 +4,8 @@
 \alias{error_sample_url}
 \title{Shows details of errors for individual sample URLs}
 \usage{
-error_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
+error_sample_url(siteURL, pageURL, category = "notFound", platform = "web",
+  session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -14,6 +15,8 @@ error_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 \item{category}{Crawl error category. Default 'notFound'.}
 
 \item{platform}{User agent type. Default 'web'.}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
@@ -31,5 +34,10 @@ Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
 }
 \details{
 See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/get
+}
+\seealso{
+Other working with search console errors: \code{\link{crawl_errors}};
+  \code{\link{fix_sample_url}};
+  \code{\link{list_crawl_error_samples}}
 }
 

@@ -4,17 +4,23 @@
 \alias{delete_sitemap}
 \title{Delete a sitemap.}
 \usage{
-delete_sitemap(siteURL, feedpath)
+delete_sitemap(siteURL, feedpath, session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website you are deleting the sitemap from. Must include protocol (http://).}
 
 \item{feedpath}{The URL of the sitemap to delete. Must include protocol (http://).}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 TRUE if successful, raises an error if not.
 }
 \description{
 See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps/delete
+}
+\seealso{
+Other sitemap admin functions: \code{\link{add_sitemap}};
+  \code{\link{list_sitemaps}}
 }
 

@@ -7,7 +7,7 @@
 search_analytics(siteURL, startDate, endDate, dimensions = NULL,
   searchType = c("web", "video", "image"), dimensionFilterExp = NULL,
   aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
-  prettyNames = TRUE)
+  prettyNames = TRUE, session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -27,6 +27,8 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 \item{rowLimit}{How many rows, maximum is 5000.}
 
 \item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
@@ -35,49 +37,79 @@ A dataframe with columns in order of dimensions plus metrics, with attribute "ag
 Download your Google keyword SEO data.
 }
 \details{
-Start date of the requested date range, in YYYY-MM-DD format,
+\strong{startDate}: Start date of the requested date range, in YYYY-MM-DD format,
    in PST time (UTC - 8:00). Must be less than or equal to the end date.
    This value is included in the range.
- End date of the requested date range, in YYYY-MM-DD format,
+
+ \strong{endDate}: End date of the requested date range, in YYYY-MM-DD format,
    in PST time (UTC - 8:00). Must be greater than or equal to the start date.
    This value is included in the range.
- [Optional] Zero or more dimensions to group results by.
- Results are grouped in the order that you supply these dimensions.
- dimension = c('country','device','page','query')
-  operator = c(`~~` = 'contains',
-               `==` = 'equals',
-               `!~` = 'notContains',
-                `!=` = 'notEquals)
 
- expression = country: an ISO 3166-1 alpha-3 country code.
-              device: 'DESKTOP','MOBILE','TABLET'
-              page: not checked
-              query: not checked
-
- dimensionFilterExp expects a character vector of expressions in the form:
-  ("device==TABLET", "country~~GBR")
-
+ \strong{dimensions}: [Optional] Zero or more dimensions to group results by.
+ c('country','device','page','query', 'date')
  The grouping dimension values are combined to create a unique key
    for each result row. If no dimensions are specified,
    all values will be combined into a single row.
    There is no limit to the number of dimensions that you can group by,
    but you cannot group by the same dimension twice. Example: c(country, device)
- [Optional] The search type to filter for. Acceptable values are:
-   "image": Image search results
-   "video": Video search results
-   "web": [Default] Web search results
-   [Optional] How data is aggregated.
-   If aggregated by property, all data for the same property is aggregated; if aggregated by page, all data is aggregated by canonical URI.
-   If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; see the help documentation to learn how data is calculated differently by site versus by page.
+
+ \strong{dimensionFilterExp}:
+ Results are grouped in the order that you supply these dimensions.
+ dimensionFilterExp expects a character vector of expressions in the form:
+  ("device==TABLET", "country~~GBR", "dimension operator expression")
+  \itemize{
+    \item dimension
+      \itemize{
+        \item 'country'
+        \item 'device'
+        \item 'page'
+        \item 'query'
+      }
+    \item operator
+      \itemize{
+        \item '~~' meaning 'contains'
+        \item '==' meaning 'equals'
+        \item '!~' meaning 'notContains'
+        \item '!=' meaning 'notEquals
+      }
+
+    \item expression
+       \itemize{
+         \item country: an ISO 3166-1 alpha-3 country code.
+         \item device: 'DESKTOP','MOBILE','TABLET'.
+         \item page: not checked, a string in page URLs without hostname.
+         \item query: not checked, a string in keywords.
+
+       }
+  }
+
+
+ \strong{searchType}: [Optional] The search type to filter for. Acceptable values are:
+ \itemize{
+   \item "web": [Default] Web search results
+   \item "image": Image search results
+   \item "video": Video search results
+ }
+
+ \strong{aggregationType}: [Optional] How data is aggregated.
+ \itemize{
+   \item If aggregated by property, all data for the same property is aggregated;
+   \item If aggregated by page, all data is aggregated by canonical URI.
+   \item If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated;
+ }
+   See the API documentation to learn how data is calculated differently by site versus by page.
    Note: If you group or filter by page, you cannot aggregate by property.
-   If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. The API will never change your aggregation type if the requested type is invalid.
+   If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error.
+   The API will never change your aggregation type if the requested type is invalid.
    Acceptable values are:
-   "auto": [Default] Let the service decide the appropriate aggregation type.
-   "byPage": Aggregate values by URI.
-   "byProperty": Aggregate values by property.
+ \itemize{
+   \item "auto": [Default] Let the service decide the appropriate aggregation type.
+   \item "byPage": Aggregate values by URI.
+   \item "byProperty": Aggregate values by property.
+ }
 }
 \seealso{
-Guide to Search Analytics: https://support.google.com/webmasters/answer/6155685
-  API docs: https://developers.google.com/webmaster-tools/v3/searchanalytics/query
+Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
+  API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
 }
 

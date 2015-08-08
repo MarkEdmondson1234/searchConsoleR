@@ -5,7 +5,7 @@
 \title{Fetch a time-series of Googlebot crawl errors.}
 \usage{
 crawl_errors(siteURL, category = "all", platform = c("all", "mobile",
-  "smartphoneOnly", "web"), latestCountsOnly = FALSE)
+  "smartphoneOnly", "web"), latestCountsOnly = FALSE, session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -15,6 +15,8 @@ crawl_errors(siteURL, category = "all", platform = c("all", "mobile",
 \item{platform}{The user agent type. 'all', 'mobile', 'smartphoneOnly' or 'web'.}
 
 \item{latestCountsOnly}{Default FALSE. Only the latest crawl error counts returned if TRUE.}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 dataframe of errors with $platform $category $count and $timecount.
@@ -30,5 +32,10 @@ Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   other, roboted, serverError, soft404.
 
   Platform is one of: mobile, smartphoneOnly or web.
+}
+\seealso{
+Other working with search console errors: \code{\link{error_sample_url}};
+  \code{\link{fix_sample_url}};
+  \code{\link{list_crawl_error_samples}}
 }
 

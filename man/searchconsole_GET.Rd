@@ -4,7 +4,7 @@
 \alias{searchconsole_GET}
 \title{Create GET request}
 \usage{
-searchconsole_GET(url, to_json = TRUE, params = NULL)
+searchconsole_GET(url, session = NULL, to_json = TRUE, params = NULL)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}

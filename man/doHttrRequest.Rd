@@ -4,11 +4,13 @@
 \alias{doHttrRequest}
 \title{Get URL content based on if its Shiny or local}
 \usage{
-doHttrRequest(url, request_type = "GET", the_body = NULL, params = NULL,
-  ...)
+doHttrRequest(url, session = NULL, request_type = "GET", the_body = NULL,
+  params = NULL, ...)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}
+
+\item{session}{a shiny session object if in a shiny app.}
 
 \item{request_type}{the type of httr request function: GET, POST, PUT, DELETE etc.}
 

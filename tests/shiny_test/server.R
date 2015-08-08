@@ -1,9 +1,10 @@
 library(shiny)
 library(DT)
-library(searchConsoleR)
 source('global.R')
 
 shinyServer(function(input, output, session) {
+  
+  library(searchConsoleR)
   
   cdata <- session$clientData
   

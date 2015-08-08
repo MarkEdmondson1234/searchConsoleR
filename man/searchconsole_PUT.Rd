@@ -4,7 +4,7 @@
 \alias{searchconsole_PUT}
 \title{Create PUT request}
 \usage{
-searchconsole_PUT(url, the_body, params = NULL)
+searchconsole_PUT(url, session = NULL, the_body = NULL, params = NULL)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}

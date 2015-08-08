@@ -4,15 +4,24 @@
 \alias{delete_website}
 \title{Deletes website in Search Console}
 \usage{
-delete_website(siteURL)
+delete_website(siteURL, session = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete.}
+
+\item{session}{If in a Shiny session, supply its session object.}
 }
 \value{
 TRUE if successful, raises an error if not.
 }
 \description{
 Deletes website in Search Console
+}
+\seealso{
+Other data fetching functions: \code{\link{checkTokenAPI}};
+  \code{\link{list_sitemaps}}
+
+Other search console website functions: \code{\link{add_website}};
+  \code{\link{list_websites}}
 }
 
