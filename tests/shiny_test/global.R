@@ -1,6 +1,5 @@
 library(shiny)
 library(DT)
-library(searchConsoleR)
 
 is.error <- function(test_me){
   inherits(test_me, "try-error")

@@ -1,5 +1,6 @@
 library(shiny)
 library(DT)
+
 source('global.R')
 
 shinyServer(function(input, output, session) {
@@ -35,7 +36,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-
+  
   auth <- reactive({
     
     token <- access_token()
@@ -59,7 +60,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-
+  
   
   observe({
     
@@ -220,7 +221,7 @@ shinyServer(function(input, output, session) {
     if(!is.null(auth())){
       s <- www  
     } else {
-      s <- "Select a website in table above."
+      s <- "Authenticate to see data."
     }
     
     s

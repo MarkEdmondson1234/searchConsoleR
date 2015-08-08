@@ -1,6 +1,5 @@
 library(shiny)
 library(DT)
-library(searchConsoleR)
 
 # The object can be passed to runApp()
 shinyUI(fluidPage(
@@ -10,10 +9,12 @@ shinyUI(fluidPage(
       uiOutput("loginButton"),
       selectInput("website_select", label = "Select Website",
                   choices = NULL),
-      br()
+      br(),
+      p("Demo for the searchConsoleR R package."),
+      a("See source code on Github", href="https://github.com/MarkEdmondson1234/searchConsoleR"),
+      helpText("Note this app is not multi-user yet!  E.g. if someone else authenticates their Google account when you are using it, you will lose API access.  ")
     ),
     mainPanel(
-      tableOutput("token_websites"),
       textOutput("selected_url", container = h2),
       tabsetPanel(
         tabPanel(title = "Search Analytics",
