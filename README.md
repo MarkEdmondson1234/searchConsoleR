@@ -44,7 +44,7 @@ See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo
 
 ## Guide
 
-Install searchConsoleR from github using devtools.
+Install searchConsoleR from github using [devtools](https://cran.r-project.org/web/packages/devtools/index.html).
 
 ```
 devtools::install_github("MarkEdmondson1234/searchConsoleR")
