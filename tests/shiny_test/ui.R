@@ -1,3 +1,5 @@
+## Run via shiny::runApp("./tests/shiny_test", port=4624)
+
 library(shiny)
 library(DT)
 

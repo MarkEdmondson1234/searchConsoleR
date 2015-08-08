@@ -16,7 +16,7 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 
 \item{endDate}{End date of the requested date range, in YYYY-MM-DD.}
 
-\item{dimensions}{Zero or more dimensions to group results by. "country, "device", "page" or "query"}
+\item{dimensions}{Zero or more dimensions to group results by: "date", "country", "device", "page" or "query"}
 
 \item{searchType}{Search type filter, default 'web'.}
 

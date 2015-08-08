@@ -5,7 +5,7 @@
 #' @param siteURL The URL of the website you have auth access to.
 #' @param startDate Start date of requested range, in YYYY-MM-DD.
 #' @param endDate End date of the requested date range, in YYYY-MM-DD.
-#' @param dimensions Zero or more dimensions to group results by. "country, "device", "page" or "query"
+#' @param dimensions Zero or more dimensions to group results by: "date", "country", "device", "page" or "query"
 #' @param searchType Search type filter, default 'web'.
 #' @param dimensionFilterExp A character vector of expressions to filter. e.g. c("device==TABLET", "country~~GBR")
 #' @param aggregationType How data is aggregated.
@@ -137,7 +137,7 @@ search_analytics <- function(siteURL,
   }
   
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = FALSE) && is_legit_token(Authentication$public_fields$token)) {
+  if(checkTokenAPI(session)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/searchanalytics/query
