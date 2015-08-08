@@ -4,11 +4,23 @@ R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 Still under development 0.0.0.9000 but working.
 
 ## Shiny Compatible
-Authentication can be done locally or within a Shiny app. 
+Authentication can be done locally or within a Shiny app. See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
 
-See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
+The code for this Shiny app is in the ```./tests/shiny_test``` folder of the package
 
- However, at the moment it is not multi-user: if a user is using the app and another authenticates, the first will lose access.  This is being worked upon. 
+### Search analytics trend
+![searchConsoleR - google search console R package1][demo1]
+
+### Search Analytics breakdown
+![searchConsoleR - google search console R package2][demo2]
+
+### Error trend
+![searchConsoleR - google search console R package3][demo3]
+
+### Sample URLs of errors
+![searchConsoleR - google search console R package4][demo4]
+
+ However, at the moment Shiny authentication is not multi-user: if a user is using the app and another authenticates, the first will lose access.  This may be fine for local or Shiny Server use, but not on public Shiny instances.  Multi-user Shiny authentication will be coming up in a future release.
 
 ## Links
 
@@ -89,6 +101,7 @@ For a lot more details see:
 ```
 ?search_analytics
 ```
+![google search analytics R package][search_analytics_help]
 
 ## The dimensionFilterExp parameter
 
@@ -123,3 +136,9 @@ c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
 ```
 
 ```OR``` filters aren't yet supported in the API.
+
+[demo1]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo1.png
+[demo2]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo2.png
+[demo3]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo3.png
+[demo4]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo4.png
+[search_analytics_help]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/search_analytics_help.png
