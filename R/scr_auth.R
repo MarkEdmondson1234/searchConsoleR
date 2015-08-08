@@ -14,9 +14,6 @@ Authentication <- R6::R6Class(
   parent_env = emptyenv()
 )
 
-
-shiny_google_token_session_scope <- NULL
-
 #' Authorize \code{searchConsoleR}
 #'
 #' Authorize \code{searchConsoleR} to access your Google user data. You will be
@@ -167,7 +164,12 @@ scr_auth <- function(token = NULL,
           ## in get_google_token
           # assign("shiny_token", token, envir = parent.env(environment()))
           message("Shiny legit token, now where to set it....? ")
-          shiny_google_token_session_scope <<- token
+          if(exists("shiny_google_token_session_scope")){
+            shiny_google_token_session_scope <<- token
+          } else {
+            message("Problem setting shiny_google_token_session_scope")
+          }
+
           
           return(token)
 
@@ -200,9 +202,14 @@ get_google_token <- function(session=NULL) {
       token <- get_google_token_shiny(session)
     }
     
-    shiny_google_token_session_scope <- get("shiny_google_token_session_scope")
+    shiny_google_token_session_scope <- get0("shiny_google_token_session_scope")
     ## from scr_auth()
-    token <- shiny_google_token_session_scope
+    if(!is.null(shiny_google_token_session_scope)){
+      token <- shiny_google_token_session_scope
+    } else {
+      stop("Error finding shiny_google_token_session_scope in get_google_token")
+    }
+
 
   }
   ## put the token from scr_auth() here
@@ -265,7 +272,7 @@ token_exists <- function(verbose = TRUE) {
     }
       
     } else {
-      shiny_google_token_session_scope <- get("shiny_google_token_session_scope")
+      shiny_google_token_session_scope <- get0("shiny_google_token_session_scope")
       if(is.null(shiny_google_token_session_scope)){
         message("No shiny_google_token_session_scope found.")
         FALSE
