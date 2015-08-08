@@ -96,10 +96,10 @@ Filter using this format: ```filter operator expression```
 
 Filter can be one of:
 
-* 'country',
-* 'device'
-* 'page'
-* 'query')
+* `country`,
+* `device`
+* `page`
+* `query`
 
 Operator can be one of ```~~, ==, !~, !=``` where the symbols mean:
 
