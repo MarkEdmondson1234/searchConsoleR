@@ -72,7 +72,9 @@ sc_websites
 
 We'll need one unique ```sc_websites$siteUrl``` for the majority of the other functions.
 
-Most people will find the Search Analytics most useful.  All methods from the web interface are available.  Here is an example query, which downloads 100 rows of queries per page for the month of July 2015, for United Kingdom desktop web searches.
+Most people will find the Search Analytics most useful.  All methods from the web interface are available.  
+
+Here is an example query, which downloads the top 100 rows of queries per page for the month of July 2015, for United Kingdom desktop web searches:
 
 ```
 gbr_desktop_queries <- 
