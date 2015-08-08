@@ -213,7 +213,7 @@ search_analytics <- function(siteURL,
 #' 
 #' @keywords internal
 #' @family data fetching functions
-checkTokenAPI <- function(session){
+checkTokenAPI <- function(session, verbose=TRUE){
   if(!is.null(session)){
     shiny_google_token_session_scope <- get("shiny_google_token_session_scope")
     if(is.null(shiny_google_token_session_scope)){
@@ -224,10 +224,15 @@ checkTokenAPI <- function(session){
       token <- shiny_google_token_session_scope
     }
   }
+  
+  if(verbose) message("Getting token from local environment")
+  token <- Authentication$public_fields$token
   ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = TRUE) && is_legit_token(token)) {
+  if(token_exists(verbose = verbose) && is_legit_token(token, verbose=verbose)) {
+    if(verbose) message("Valid token")
     TRUE
   } else {
+    if(verbose) message("Invalid token")
       FALSE
     }
 }

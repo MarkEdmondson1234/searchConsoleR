@@ -14,6 +14,9 @@ Authentication <- R6::R6Class(
   parent_env = emptyenv()
 )
 
+
+shiny_google_token_session_scope <- NULL
+
 #' Authorize \code{searchConsoleR}
 #'
 #' Authorize \code{searchConsoleR} to access your Google user data. You will be
@@ -150,8 +153,6 @@ scr_auth <- function(token = NULL,
 
     }
     
-    ## Local token
-    Authentication$set("public", "websites", list_websites(), overwrite=TRUE)   
     return(invisible(Authentication$public_fields$token)) 
       
     } else { ## shiny online web authentication flow needed
@@ -235,7 +236,10 @@ get_google_token_shiny <-
 #' @keywords internal
 token_exists <- function(verbose = TRUE) {
   
+  if(verbose) message("token_exists function")
   if(!Authentication$public_fields$shiny){
+    
+    if(verbose) message("Not shiny token")
     token <- Authentication$public_fields$token
     
     if(is.null(token)) {
@@ -253,26 +257,24 @@ token_exists <- function(verbose = TRUE) {
         
       }
       
+      if(verbose) message("Token doesn't exist")
       FALSE
+    } else {
+      if(verbose) message("Token exists.")
+      TRUE      
+    }
       
     } else {
       shiny_google_token_session_scope <- get("shiny_google_token_session_scope")
       if(is.null(shiny_google_token_session_scope)){
         message("No shiny_google_token_session_scope found.")
         FALSE
-      } else{
+      } else {
         message("## shiny_google_token_session_scope found.")
           TRUE
         }
       
-    }    
-    
-  } else{
-    TRUE
-  }
-  
-
-  
+    } 
 }
 
 #' Suspend authorization
@@ -334,6 +336,7 @@ is_legit_token <- function(x, verbose = FALSE) {
 
   TRUE
   } else{
+    if(verbose) message("Presume token is true for Shiny")
     TRUE
   }
   
