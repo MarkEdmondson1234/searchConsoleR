@@ -137,6 +137,29 @@ c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
 
 ```OR``` filters aren't yet supported in the API.
 
+## Using your own Google API project 
+
+As default `searchConsoleR` uses its own Google API project to grant requests, but if you want to use your own keys:
+
+1. Set up your project in the [Google API Console](https://code.google.com/apis/console) to use the search console v3 API.
+
+### For local use
+2. Click 'Create a new Client ID', and choose "Installed Application".
+3. Note your Client ID and secret.
+4. Modify these options after `searchConsoleR` has been loaded:
+  + `options("searchConsoleR.client_id" = "YOUR_CLIENT_ID")`
+  + `options("searchConsoleR.client_secret" = "YOUR_CLIENT_SECRET")`
+
+### For Shiny use
+2. Click 'Create a new Client ID', and choose "Web Application".
+3. Note your Client ID and secret.
+4. Add the URL of where your Shiny app will run, as well as your local host for testing including a port number.  e.g. https://mark.shinyapps.io/searchConsoleRDemo/ and http://127.0.0.1:4624
+5. In your Shiny script modify these options:
+  + `options("searchConsoleR.webapp.client_id" = "YOUR_CLIENT_ID")`
+  + `options("searchConsoleR.webapp.client_secret" = "YOUR_CLIENT_SECRET")`
+6. Run the app locally specifying the port number you used e.g. `shiny::runApp(port=4624)`
+7. Or deploy to your Shiny Server that deploys to web port (80 or 443).
+
 [demo1]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo1.png
 [demo2]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo2.png
 [demo3]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo3.png
