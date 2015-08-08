@@ -4,7 +4,7 @@
 \alias{checkTokenAPI}
 \title{Check API data token}
 \usage{
-checkTokenAPI(session)
+checkTokenAPI(session, verbose = TRUE)
 }
 \arguments{
 \item{shiny}{session.}
