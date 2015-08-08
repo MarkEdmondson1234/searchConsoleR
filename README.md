@@ -35,7 +35,7 @@ See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo
 * crawl_errors() - list various types of crawl errors googlebot has found.
 * list_crawl_error_samples() - get a list of example URLs with errors.
 * error_sample_url() - show details about an example URL error (for example, links to a 404 URL)
-* fix_sample_url() - make a URL as fixed.
+* fix_sample_url() - mark a URL as fixed.
 
 ### Authentication functions
 * scr_auth() - main authentication function. Works locally and within a Shiny environment.
@@ -63,7 +63,7 @@ Check out the documentation of any function for a guide on what else can be done
 ?scr_auth
 ```
 
-If it works, you should see a list of your websites in the Search Console via:
+If you authenticate ok, you should be able to see a list of your websites in the Search Console via:
 
 ```
 sc_websites <- list_websites()
@@ -72,7 +72,7 @@ sc_websites
 
 We'll need one unique ```sc_websites$siteUrl``` for the majority of the other functions.
 
-Most people will find the search analytics most useful.  All methods from the web interface are available.  Here is an example query:
+Most people will find the Search Analytics most useful.  All methods from the web interface are available.  Here is an example query:
 
 ```
 gbr_desktop_queries <- 
@@ -83,9 +83,12 @@ gbr_desktop_queries <-
                      searchType="web", rowLimit = 100)
 ```
 
+For a lot more details see: 
+```
+?search_analytics
+```
 
-
-## dimensionFilterExp
+## The dimensionFilterExp parameter
 
 This parameter is used in search_analytics to filter the result.
 
@@ -105,21 +108,16 @@ Operator can be one of ```~~, ==, !~, !=``` where the symbols mean:
 * `!~` : 'notContains',
 * `!=` : 'notEquals'
 
-Expression:
+Expression formatting:
 
-* for page or query is free text.
-* for country must be the three letter country code as per the [the ISO 3166-1 alpha-3] standard. e.g. GBR
-* for device must be one of:  'MOBILE', 'DESKTOP' or 'TABLET'
+* for ```page``` or ```query``` is free text.
+* for ```country``` must be the three letter country code as per the [the ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) standard. e.g. USA, GBR = United Kingdon, DNK = Denmark
+* for ```device``` must be one of:  'MOBILE', 'DESKTOP' or 'TABLET'
 
-You can have multiple AND filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage or including queries containing 'brandterm'.
+You can have multiple ```AND``` filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage or including queries containing 'brandterm'.
 
 ```
 c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
 ```
 
-For a lot more details see: 
-```
-?search_analytics
-```
-
-OR filters aren't supported yet in the API.
+```OR``` filters aren't yet supported in the API.
