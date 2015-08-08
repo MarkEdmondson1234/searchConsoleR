@@ -72,12 +72,12 @@ sc_websites
 
 We'll need one unique ```sc_websites$siteUrl``` for the majority of the other functions.
 
-Most people will find the Search Analytics most useful.  All methods from the web interface are available.  Here is an example query:
+Most people will find the Search Analytics most useful.  All methods from the web interface are available.  Here is an example query, which downloads 100 rows of queries per page for the month of July 2015, for United Kingdom desktop web searches.
 
 ```
 gbr_desktop_queries <- 
     search_analytics("http://example.com", 
-                     "2015-07-01", "2015-08-01", 
+                     "2015-07-01", "2015-07-31", 
                      c("query", "page"), 
                      dimensionFilterExp = c("device==DESKTOP","country==GBR"), 
                      searchType="web", rowLimit = 100)
@@ -114,7 +114,7 @@ Expression formatting:
 * for ```country``` must be the three letter country code as per the [the ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) standard. e.g. USA, GBR = United Kingdon, DNK = Denmark
 * for ```device``` must be one of:  'MOBILE', 'DESKTOP' or 'TABLET'
 
-You can have multiple ```AND``` filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage or including queries containing 'brandterm'.
+You can have multiple ```AND``` filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage and not including queries containing 'brandterm'.
 
 ```
 c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
