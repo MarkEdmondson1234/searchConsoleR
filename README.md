@@ -103,22 +103,23 @@ Operator can be one of ```~~, ==, !~, !=``` where the symbols mean:
 * `~~` : 'contains',
 * `==` : 'equals',
 * `!~` : 'notContains',
-* `!=` : 'notEquals')
+* `!=` : 'notEquals'
 
-Expression for page or query if freeform.
+Expression:
 
-Expression for country must be the three letter country code as per the [the ISO 3166-1 alpha-3] standard. e.g. GBR
+* for page or query is free text.
+* for country must be the three letter country code as per the [the ISO 3166-1 alpha-3] standard. e.g. GBR
+* for device must be one of:  'MOBILE', 'DESKTOP' or 'TABLET'
 
-Expression for device must be one of:
-
-* 'MOBILE'
-* 'DESKTOP'
-* 'TABLET'
-
-You can have multiple AND filters by putting them in a character vector.  
+You can have multiple AND filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage or including queries containing 'brandterm'.
 
 ```
-c("device==DESKTOP","country==GBR")
+c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
+```
+
+For a lot more details see: 
+```
+?search_analytics
 ```
 
 OR filters aren't supported yet in the API.
