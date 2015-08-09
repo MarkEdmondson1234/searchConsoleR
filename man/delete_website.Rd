@@ -4,12 +4,12 @@
 \alias{delete_website}
 \title{Deletes website in Search Console}
 \usage{
-delete_website(siteURL, session = NULL)
+delete_website(siteURL, shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete.}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.

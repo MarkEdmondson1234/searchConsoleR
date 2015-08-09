@@ -17,5 +17,12 @@ a string of random digits and letters.
 \description{
 Creates a random character code
 }
+\seealso{
+Other shiny auth functions: \code{\link{authReturnCode}};
+  \code{\link{getShinyURL}};
+  \code{\link{get_google_token_shiny}};
+  \code{\link{shinygaGetTokenURL}};
+  \code{\link{shinygaGetToken}}
+}
 \keyword{internal}
 

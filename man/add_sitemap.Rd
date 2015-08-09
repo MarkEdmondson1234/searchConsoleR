@@ -4,14 +4,14 @@
 \alias{add_sitemap}
 \title{Submit a sitemap.}
 \usage{
-add_sitemap(siteURL, feedpath, session = NULL)
+add_sitemap(siteURL, feedpath, shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
 
 \item{feedpath}{The URL of the sitemap to submit. Must include protocol (http://).}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.

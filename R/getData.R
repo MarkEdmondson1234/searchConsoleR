@@ -11,10 +11,11 @@
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
 #' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
+#' @family search analytics
 #' @seealso Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
 #'   API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
 #' @export
@@ -29,7 +30,13 @@
 #'    This value is included in the range.
 #'    
 #'  \strong{dimensions}: [Optional] Zero or more dimensions to group results by. 
-#'  c('country','device','page','query', 'date')
+#'       \itemize{
+#'         \item 'date'
+#'         \item 'country'
+#'         \item 'device'
+#'         \item 'page'
+#'         \item 'query'
+#'       }
 #'  The grouping dimension values are combined to create a unique key 
 #'    for each result row. If no dimensions are specified, 
 #'    all values will be combined into a single row. 
@@ -99,7 +106,7 @@ search_analytics <- function(siteURL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
                              prettyNames = TRUE,
-                             session=NULL){
+                             shiny_access_token=NULL){
   
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
@@ -137,7 +144,7 @@ search_analytics <- function(siteURL,
   }
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
+  if(checkTokenAPI(shiny_access_token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/searchanalytics/query
@@ -156,18 +163,15 @@ search_analytics <- function(siteURL,
       searchType = searchType,
       dimensionFilterGroups = list(
         list( ## you don't want more than one of these until different groupType available
-          groupType = "and", ##only one avialable for now
+          groupType = "and", ##only one available for now
           filters = parsedDimFilterGroup
           )
       ),
       aggregationType = aggregationType,
       rowLimit = rowLimit
     )
-    
-    # message("toJSON(body)", jsonlite::toJSON(body))
-    # message("str(body)", str(body))
   
-    req <- searchconsole_POST(req_url, session, the_body = body)
+    req <- searchconsole_POST(req_url, shiny_access_token, the_body = body)
     
     the_data <- req$content$rows
     
@@ -207,55 +211,58 @@ search_analytics <- function(siteURL,
 
 #' Check API data token
 #' 
-#' @param shiny session.
+#' @param shiny_access_token auth token
 #' 
 #' @return boolean if it works.
 #' 
 #' @keywords internal
 #' @family data fetching functions
-checkTokenAPI <- function(session, verbose=TRUE){
-  if(!is.null(session)){
-    shiny_google_token_session_scope <- get("shiny_google_token_session_scope")
-    if(is.null(shiny_google_token_session_scope)){
-      message("No shiny_google_token_session_scope found.")
-      token <- Authentication$public_fields$token
-    } else{
-      message("## shiny_google_token_session_scope found.")
-      token <- shiny_google_token_session_scope
+checkTokenAPI <- function(shiny_access_token=NULL, verbose=TRUE){
+  
+  if(is.null(shiny_access_token)){
+    ## local token
+    token <- Authentication$public_fields$token
+    
+    if(token_exists(verbose = verbose) && is_legit_token(token, verbose=verbose)) {
+      if(verbose) message("Valid token")
+      TRUE
+    } else {
+      if(verbose) message("Invalid token")
+      FALSE
+    }
+    
+  } else {
+    ## is it a valid shiny token passed?
+    if(is_legit_token(shiny_access_token)){
+      if(verbose) message("Valid Shiny token")
+      TRUE
+    } else {
+      if(verbose) message("Invalid Shiny token")
+      FALSE
     }
   }
   
-  if(verbose) message("Getting token from local environment")
-  token <- Authentication$public_fields$token
-  ## require pre-existing token, to avoid recursion
-  if(token_exists(verbose = verbose) && is_legit_token(token, verbose=verbose)) {
-    if(verbose) message("Valid token")
-    TRUE
-  } else {
-    if(verbose) message("Invalid token")
-      FALSE
-    }
 }
 
 
 
 #' Retrieves dataframe of websites user has in Search Console
 #'
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return a dataframe of siteUrl and permissionLevel
 #'
 #' @export
 #' @family search console website functions
-list_websites <- function(session=NULL) {
+list_websites <- function(shiny_access_token=NULL) {
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
-    
+  if(checkTokenAPI(shiny_access_token)) {
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/list
-    req <- 
-      searchconsole_GET("https://www.googleapis.com/webmasters/v3/sites", session)
+  req <- 
+      searchconsole_GET("https://www.googleapis.com/webmasters/v3/sites", 
+                        shiny_access_token)
     
     req$content$siteEntry
     
@@ -270,23 +277,23 @@ list_websites <- function(session=NULL) {
 #' Adds website to Search Console
 #' 
 #' @param siteURL The URL of the website to add.
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #'
 #' @return TRUE if successful, raises an error if not.
 #' @family search console website functions
 #' 
 #' @export
-add_website <- function(siteURL, session=NULL) {
+add_website <- function(siteURL, shiny_access_token=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
+  if(checkTokenAPI(shiny_access_token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/add
     req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL)
-    searchconsole_PUT(req_url, session, the_body = NULL)
+    searchconsole_PUT(req_url, shiny_access_token, the_body = NULL)
     
     TRUE
     
@@ -301,24 +308,24 @@ add_website <- function(siteURL, session=NULL) {
 #' Deletes website in Search Console
 #' 
 #' @param siteURL The URL of the website to delete.
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #' @family data fetching functions
 #' 
 #' @export
 #' @family search console website functions
-delete_website <- function(siteURL, session=NULL) {
+delete_website <- function(siteURL, shiny_access_token=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
+  if(checkTokenAPI(shiny_access_token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sites/delete
     req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL)
-    searchconsole_DELETE(req_url, session)
+    searchconsole_DELETE(req_url, shiny_access_token)
     
     TRUE
     
@@ -335,24 +342,24 @@ delete_website <- function(siteURL, session=NULL) {
 #' See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps 
 #' 
 #' @param siteURL The URL of the website to get sitemap information from. Must include protocol (http://).
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return A list of two dataframes: $sitemap with general info and $contents with sitemap info.
 #' @family data fetching functions
 #' 
 #' @export
 #' @family sitemap admin functions
-list_sitemaps <- function(siteURL, session=NULL) {
+list_sitemaps <- function(siteURL, shiny_access_token=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
 
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
+  if(checkTokenAPI(shiny_access_token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps
     req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL,"/sitemaps")
-    req <- searchconsole_GET(req_url, session)
+    req <- searchconsole_GET(req_url, shiny_access_token)
     
     list(sitemap = req$content$sitemap[, setdiff(names(req$content$sitemap), "contents")],
          contents = req$content$sitemap$contents[[1]])
@@ -371,19 +378,19 @@ list_sitemaps <- function(siteURL, session=NULL) {
 #' 
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param feedpath The URL of the sitemap to submit. Must include protocol (http://).
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #'
 #' @export
 #' @family sitemap admin functions
-add_sitemap <- function(siteURL, feedpath, session=NULL) {
+add_sitemap <- function(siteURL, feedpath, shiny_access_token=NULL) {
   
   siteURL  <- check.Url(siteURL, reserved=T)
   feedpath <- check.Url(feedpath, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
+  if(checkTokenAPI(shiny_access_token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps/submit
@@ -391,7 +398,7 @@ add_sitemap <- function(siteURL, feedpath, session=NULL) {
                       siteURL,"/sitemaps/",
                       feedpath)
     
-    searchconsole_PUT(req_url, session, the_body = NULL)
+    searchconsole_PUT(req_url, shiny_access_token, the_body = NULL)
     
     TRUE
     
@@ -409,19 +416,19 @@ add_sitemap <- function(siteURL, feedpath, session=NULL) {
 #' 
 #' @param siteURL The URL of the website you are deleting the sitemap from. Must include protocol (http://).
 #' @param feedpath The URL of the sitemap to delete. Must include protocol (http://).
-#' @param session If in a Shiny session, supply its session object.
+#' @param session If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #'
 #' @export
 #' @family sitemap admin functions
-delete_sitemap <- function(siteURL, feedpath, session=NULL) {
+delete_sitemap <- function(siteURL, feedpath, shiny_access_token=NULL) {
   
   siteURL  <- check.Url(siteURL, reserved=T)
   feedpath <- check.Url(feedpath, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session)) {
+  if(checkTokenAPI(shiny_access_token)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/sitemaps/delete
@@ -429,7 +436,7 @@ delete_sitemap <- function(siteURL, feedpath, session=NULL) {
                       siteURL,"/sitemaps/",
                       feedpath)
     
-    searchconsole_DELETE(req_url, session)
+    searchconsole_DELETE(req_url, shiny_access_token)
     
     TRUE
     
@@ -451,7 +458,7 @@ delete_sitemap <- function(siteURL, feedpath, session=NULL) {
 #' @param category Crawl error category. Defaults to 'all'
 #' @param platform The user agent type. 'all', 'mobile', 'smartphoneOnly' or 'web'.
 #' @param latestCountsOnly Default FALSE. Only the latest crawl error counts returned if TRUE.
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return dataframe of errors with $platform $category $count and $timecount.
 #'
@@ -468,14 +475,14 @@ crawl_errors <- function(siteURL,
                          category="all",
                          platform=c("all","mobile","smartphoneOnly","web"),
                          latestCountsOnly=FALSE,
-                         session=NULL) {
+                         shiny_access_token=NULL) {
   platform <- match.arg(platform)
   siteURL <- check.Url(siteURL, reserved=T)
   
   latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session) && is.valid.category.platform(category, platform, include.all = TRUE)) {
+  if(checkTokenAPI(shiny_access_token) && is.valid.category.platform(category, platform, include.all = TRUE)) {
     
     ## docs here
     ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorscounts/query
@@ -488,7 +495,7 @@ crawl_errors <- function(siteURL,
                       'platform'=platform)
     param_vector <- param_vector[param_vector != 'all']
     
-    req <- searchconsole_GET(req_url, session, params = param_vector)
+    req <- searchconsole_GET(req_url, shiny_access_token, params = param_vector)
     
     cpt <- req$content$countPerTypes
     ## data parsing gymnastics
@@ -529,7 +536,7 @@ crawl_errors <- function(siteURL,
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param category Crawl error category. Default 'notFound'.
 #' @param platform User agent type. Default 'web'. 
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #'
 #' @details
 #' See here for details: \url{https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples}
@@ -541,12 +548,12 @@ crawl_errors <- function(siteURL,
 list_crawl_error_samples <- function(siteURL,
                                      category="notFound",
                                      platform="web",
-                                     session=NULL) {
+                                     shiny_access_token=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
 
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session) && 
+  if(checkTokenAPI(shiny_access_token) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here
@@ -556,7 +563,7 @@ list_crawl_error_samples <- function(siteURL,
     param_vector <- c('category'=category,
                       'platform'=platform)
     
-    req <- searchconsole_GET(req_url, session, params = param_vector)
+    req <- searchconsole_GET(req_url, shiny_access_token, params = param_vector)
     
     errs <- req$content$urlCrawlErrorSample
     
@@ -587,7 +594,7 @@ list_crawl_error_samples <- function(siteURL,
 #' @param pageURL A PageUrl taken from list_crawl_error_samples.
 #' @param category Crawl error category. Default 'notFound'.
 #' @param platform User agent type. Default 'web'. 
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
 #' @family working with search console errors
@@ -607,14 +614,14 @@ error_sample_url <- function(siteURL,
                              pageURL,
                              category="notFound",
                              platform="web",
-                             session=NULL) {
+                             shiny_access_token=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T, repeated=T)
   
 
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session) && 
+  if(checkTokenAPI(shiny_access_token) && 
      is.valid.category.platform(category, platform)){
     
     ## docs here
@@ -627,11 +634,9 @@ error_sample_url <- function(siteURL,
     param_vector <- c('category'=category,
                       'platform'=platform)
     
-    req <- searchconsole_GET(req_url, session, params = param_vector)
+    req <- searchconsole_GET(req_url, shiny_access_token, params = param_vector)
     
     raw_details <- req$content
-    
-    message("str(raw_details)", str(raw_details))
     
     if(all(c('last_crawled', 'first_detected') %in% names(raw_details))){
       raw_details$last_crawled <- RFC_convert(raw_details$last_crawled)
@@ -662,7 +667,7 @@ error_sample_url <- function(siteURL,
 #' @param pageURL A PageUrl taken from list_crawl_error_samples.
 #' @param category Crawl error category. Default 'notFound'.
 #' @param platform User agent type. Default 'web'. 
-#' @param session If in a Shiny session, supply its session object.
+#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #' @family working with search console errors
@@ -683,13 +688,13 @@ fix_sample_url <- function(siteURL,
                            pageURL,
                            category="notFound",
                            platform="web",
-                           session=NULL) {
+                           shiny_access_token=NULL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T)
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(session) && 
+  if(checkTokenAPI(shiny_access_token) && 
      is.valid.category.platform(category, platform)) {
     
     ## docs here
@@ -702,7 +707,7 @@ fix_sample_url <- function(siteURL,
     param_vector <- c('category'=category,
                       'platform'=platform)
     
-    req <- searchconsole_DELETE(req_url, session, params = param_vector)
+    req <- searchconsole_DELETE(req_url, shiny_access_token, params = param_vector)
     
     req
     

@@ -1,7 +1,7 @@
 # searchConsoleR
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
-Still under development 0.0.0.9000 but working.
+First release 0.1, Search Analytics with Shiny multi-user.
 
 ## Shiny Compatible
 Authentication can be done locally or within a Shiny app. See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
@@ -19,8 +19,6 @@ The code for this Shiny app is in the ```./tests/shiny_test``` folder of the pac
 
 ### Sample URLs of errors
 ![searchConsoleR - google search console R package4][demo4]
-
- However, at the moment Shiny authentication is not multi-user: if a user is using the app and another authenticates, the first will lose access.  This may be fine for local or Shiny Server use, but not on public Shiny instances.  Multi-user Shiny authentication will be coming up in a future release.
 
 ## Links
 

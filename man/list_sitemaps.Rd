@@ -4,12 +4,12 @@
 \alias{list_sitemaps}
 \title{Gets sitemap information for the URL supplied.}
 \usage{
-list_sitemaps(siteURL, session = NULL)
+list_sitemaps(siteURL, shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to get sitemap information from. Must include protocol (http://).}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A list of two dataframes: $sitemap with general info and $contents with sitemap info.

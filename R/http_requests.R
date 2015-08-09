@@ -14,14 +14,14 @@
 #' 
 #' @keywords internal
 doHttrRequest <- function(url,
-                          session = NULL,
+                          shiny_access_token = NULL,
                           request_type="GET", 
                           the_body=NULL, 
                           params=NULL, ...){
   
   ## add any other params
   ## expects named character e.g. c(param1="foo", param2="bar")
-  if(!is.null(params)){
+  if(!is.null(params)){ 
     
     param_string <- paste(names(params), params, 
                           sep='=', collapse='&')
@@ -31,13 +31,11 @@ doHttrRequest <- function(url,
   }
   
   arg_list <- list(url = url, 
-                   config = get_google_token(session), 
+                   config = get_google_token(shiny_access_token), 
                    body = the_body)
   if(!is.null(list(...))){
     arg_list <- c(arg_list, list(...))    
   }
-  
-  arg_list <- c(arg_list, list(httr::verbose()))
 
   req <- do.call(request_type, 
                  args = arg_list,
@@ -54,8 +52,6 @@ doHttrRequest <- function(url,
   }
   
   httr::stop_for_status(req)
-  
-  # message("DEBUG:: str(req)::", str(req))
 
   req
 }
@@ -68,11 +64,17 @@ checkGoogleAPIError <- function (req) {
   ga.json <- httr::content(req, as = "text", type = "application/json")
   ga.json <- jsonlite::fromJSON(ga.json)
   
-  if (is.null(ga.json)) { stop('data fetching did not output correct format') }
-  if (!is.null(ga.json$error$message)) {stop("JSON fetch error: ",ga.json$error$message)}
+  if (is.null(ga.json)) { 
+    stop('data fetching did not output correct format') 
+  }
+  
+  if (!is.null(ga.json$error$message)) {
+    stop("JSON fetch error: ",ga.json$error$message)
+  }
+  
   if (grepl("Error 400 (Bad Request)",ga.json[[1]][1])) {
     stop('JSON fetch error: Bad request URL - 400. Fetched: ', url)
-}
+    }
 }
 
 
@@ -90,11 +92,11 @@ checkGoogleAPIError <- function (req) {
 #'
 #' @keywords internal
 searchconsole_GET <- function(url,
-                              session = NULL, 
+                              shiny_access_token = NULL, 
                               to_json = TRUE, 
                               params=NULL) {
     
-  req <- doHttrRequest(url, session, request_type = "GET", params = params)
+  req <- doHttrRequest(url, shiny_access_token, request_type = "GET", params = params)
   
   if(to_json) {
     content <- httr::content(req, as = "text", type = "application/json",encoding = "UTF-8")
@@ -116,11 +118,11 @@ searchconsole_GET <- function(url,
 #'
 #' @keywords internal
 searchconsole_POST <- function(url, 
-                               session = NULL, 
+                               shiny_access_token = NULL, 
                                the_body = NULL, 
                                params=NULL, ...) {
   
-  req <- doHttrRequest(url, session, "POST", 
+  req <- doHttrRequest(url, shiny_access_token, "POST", 
                        the_body = the_body, 
                        params = params, encode = "json", ...)
     
@@ -140,10 +142,10 @@ searchconsole_POST <- function(url,
 #' @param params A named character vector of other parameters to add to request.
 #' @keywords internal
 searchconsole_DELETE <- function(url, 
-                                 session = NULL, 
+                                 shiny_access_token = NULL, 
                                  params=NULL) {
   
-  req <- doHttrRequest(url, session, "DELETE", params = params)
+  req <- doHttrRequest(url, shiny_access_token, "DELETE", params = params)
 
   req
 }
@@ -158,11 +160,11 @@ searchconsole_DELETE <- function(url,
 #' 
 #' @keywords internal
 searchconsole_PUT <- function(url, 
-                              session = NULL, 
+                              shiny_access_token = NULL, 
                               the_body = NULL, 
                               params=NULL) {
   
-  req <- doHttrRequest(url, session, "PUT", the_body = the_body, params = params)
+  req <- doHttrRequest(url, shiny_access_token, "PUT", the_body = the_body, params = params)
   
   req
   

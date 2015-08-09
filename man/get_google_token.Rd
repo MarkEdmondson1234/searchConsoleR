@@ -2,12 +2,15 @@
 % Please edit documentation in R/scr_auth.R
 \name{get_google_token}
 \alias{get_google_token}
-\title{Retrieve Google token from environment}
+\title{Retrieve Google token from environment and configs for httr}
 \usage{
-get_google_token(session = NULL)
+get_google_token(shiny_return_token = NULL)
 }
 \description{
 Get token if it's previously stored, else prompt user to get one.
+}
+\details{
+For shiny the token is passed from reactive session
 }
 \keyword{internal}
 

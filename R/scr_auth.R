@@ -8,7 +8,8 @@ Authentication <- R6::R6Class(
   public = list(
     websites = "initial",
     token = NULL,
-    shiny = FALSE
+    shiny = FALSE,
+    app_url = NULL
   ),
   lock_objects = F,
   parent_env = emptyenv()
@@ -92,8 +93,7 @@ scr_auth <- function(token = NULL,
                     key = getOption("searchConsoleR.client_id"),
                     secret = getOption("searchConsoleR.client_secret"),
                     cache = getOption("searchConsoleR.httr_oauth_cache"),
-                    verbose = TRUE,
-                    shiny_session = NULL) {
+                    verbose = TRUE) {
   
   if(new_user) {
     Authentication$set("public", "token", NULL, overwrite=TRUE)
@@ -104,8 +104,6 @@ scr_auth <- function(token = NULL,
     }
 
   }
- 
-  if(!is_shiny(shiny_session)){
     
     if(is.null(token)) {
       
@@ -151,42 +149,19 @@ scr_auth <- function(token = NULL,
     }
     
     return(invisible(Authentication$public_fields$token)) 
-      
-    } else { ## shiny online web authentication flow needed
-      Authentication$set("public", "shiny", TRUE, overwrite=TRUE)
-      options("searchConsoleR.httr_oauth_cache" = FALSE)
-      options("httr_oauth_cache" = FALSE)
-      ## shiny supplies the token
-      if(!is.null(token)) {
-        if(is_legit_token(token)){
-          
-          ## set a token that is accessible to the user of the Shiny session only.
-          ## in get_google_token
-          # assign("shiny_token", token, envir = parent.env(environment()))
-          message("Shiny legit token, now where to set it....? ")
-          if(exists("shiny_google_token_session_scope")){
-            shiny_google_token_session_scope <<- token
-          } else {
-            message("Problem setting shiny_google_token_session_scope")
-          }
-
-          
-          return(token)
-
-        }
-      }
-    }
   
 }
 
-#' Retrieve Google token from environment
+#' Retrieve Google token from environment and configs for httr
 #'
 #' Get token if it's previously stored, else prompt user to get one.
+#' 
+#' For shiny the token is passed from reactive session
 #'
 #' @keywords internal
-get_google_token <- function(session=NULL) {
+get_google_token <- function(shiny_return_token=NULL) {
   
-  if(is.null(session)){
+  if(is.null(shiny_return_token)){
     token <- Authentication$public_fields$token
     
     if(is.null(token) || !is_legit_token(token)) {
@@ -196,44 +171,14 @@ get_google_token <- function(session=NULL) {
     
   } else { #shiny session
     
-    message("get_google_token_shiny called from env: ", environmentName(parent.env(environment())))
-    ## its been taken care of in get_google_token_shiny
-    if(!token_exists()){
-      token <- get_google_token_shiny(session)
-    }
-    
-    shiny_google_token_session_scope <- get0("shiny_google_token_session_scope")
-    ## from scr_auth()
-    if(!is.null(shiny_google_token_session_scope)){
-      token <- shiny_google_token_session_scope
-    } else {
-      stop("Error finding shiny_google_token_session_scope in get_google_token")
-    }
-
+    token <- shiny_return_token
 
   }
-  ## put the token from scr_auth() here
+
   httr::config(token = token)
   
 }
 
-#' Does the Shiny authentication flow
-#' 
-#' @param session A Shiny session object passed from shinyServer().
-#' @param sec_code A random security code to check response is valid.
-#' 
-#' @return A Google OAuth2 token
-#' @export
-get_google_token_shiny <- 
-  function(session, sec_code = getOption("searchConsoleR.securitycode")){
-  
-  return_code <- authReturnCode(session, sec_code)
-  app_url     <- getShinyURL(session) 
-  
-  message(return_code, app_url)
-  token <- shinygaGetToken(return_code, app_url)
-  
-}
 
 
 #' Check if authorization currently in force
@@ -243,45 +188,29 @@ get_google_token_shiny <-
 #' @keywords internal
 token_exists <- function(verbose = TRUE) {
   
-  if(verbose) message("token_exists function")
-  if(!Authentication$public_fields$shiny){
-    
-    if(verbose) message("Not shiny token")
-    token <- Authentication$public_fields$token
-    
-    if(is.null(token)) {
-      if(verbose) {
-        message("No authorization yet in this session!")
-        
-        if(file.exists(".httr-oauth")) {
-          message(paste("NOTE: a .httr-oauth file exists in current working",
-                        "directory.\n Run scr_auth() to use the",
-                        "credentials cached in .httr-oauth for this session."))
-        } else {
-          message(paste("No .httr-oauth file exists in current working directory.",
-                        "Run scr_auth() to provide credentials."))
-        }
-        
+  token <- Authentication$public_fields$token
+  
+  if(is.null(token)) {
+    if(verbose) {
+      message("No authorization yet in this session!")
+      
+      if(file.exists(".httr-oauth")) {
+        message(paste("NOTE: a .httr-oauth file exists in current working",
+                      "directory.\n Run scr_auth() to use the",
+                      "credentials cached in .httr-oauth for this session."))
+      } else {
+        message(paste("No .httr-oauth file exists in current working directory.",
+                      "Run scr_auth() to provide credentials."))
       }
       
-      if(verbose) message("Token doesn't exist")
-      FALSE
-    } else {
-      if(verbose) message("Token exists.")
-      TRUE      
     }
-      
-    } else {
-      shiny_google_token_session_scope <- get0("shiny_google_token_session_scope")
-      if(is.null(shiny_google_token_session_scope)){
-        message("No shiny_google_token_session_scope found.")
-        FALSE
-      } else {
-        message("## shiny_google_token_session_scope found.")
-          TRUE
-        }
-      
-    } 
+    
+    if(verbose) message("Token doesn't exist")
+    FALSE
+  } else {
+    if(verbose) message("Token exists.")
+    TRUE      
+  }
 }
 
 #' Suspend authorization
@@ -317,35 +246,28 @@ scr_auth_suspend <- function(disable_httr_oauth = TRUE, verbose = TRUE) {
 #'
 #' @keywords internal
 is_legit_token <- function(x, verbose = FALSE) {
-  
-  if(!Authentication$public_fields$shiny){
     
-    if(!inherits(x, "Token2.0")) {
-      if(verbose) message("Not a Token2.0 object.")
-      return(FALSE)
-    }
-    
-    if("invalid_client" %in% unlist(x$credentials)) {
-      # check for validity so error is found before making requests
-      # shouldn't happen if id and secret don't change
-      if(verbose) {
-        message("Authorization error. Please check client_id and client_secret.")
-      }
-      return(FALSE)
-    }
-    
-    if("invalid_request" %in% unlist(x$credentials)) {
-      # known example: if user clicks "Cancel" instead of "Accept" when OAuth2
-      # flow kicks to browser
-      if(verbose) message("Authorization error. No access token obtained.")
-      return(FALSE)
-    }
-
-  TRUE
-  } else{
-    if(verbose) message("Presume token is true for Shiny")
-    TRUE
+  if(!inherits(x, "Token2.0")) {
+    if(verbose) message("Not a Token2.0 object.")
+    return(FALSE)
   }
   
+  if("invalid_client" %in% unlist(x$credentials)) {
+    # check for validity so error is found before making requests
+    # shouldn't happen if id and secret don't change
+    if(verbose) {
+      message("Authorization error. Please check client_id and client_secret.")
+    }
+    return(FALSE)
+  }
+  
+  if("invalid_request" %in% unlist(x$credentials)) {
+    # known example: if user clicks "Cancel" instead of "Accept" when OAuth2
+    # flow kicks to browser
+    if(verbose) message("Authorization error. No access token obtained.")
+    return(FALSE)
+  }
+  
+  TRUE
 }
 

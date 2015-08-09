@@ -4,12 +4,12 @@
 \alias{add_website}
 \title{Adds website to Search Console}
 \usage{
-add_website(siteURL, session = NULL)
+add_website(siteURL, shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to add.}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.

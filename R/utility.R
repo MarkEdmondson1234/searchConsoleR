@@ -5,6 +5,7 @@
 #' 
 #' @return The country name string
 #' @keywords internal
+#' @family search analytics
 lookupCountryCode <- function(country.code, 
                               name_type = "Name"){
   
@@ -45,6 +46,7 @@ lookupCountryCode <- function(country.code,
 #'               query: not checked
 #'          
 #' @keywords internal
+#' @family search analytics
 parseDimFilterGroup <- function(dfe){
   
   ## get lookup data

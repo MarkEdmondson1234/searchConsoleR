@@ -4,8 +4,8 @@
 \alias{searchconsole_POST}
 \title{Create POST request}
 \usage{
-searchconsole_POST(url, session = NULL, the_body = NULL, params = NULL,
-  ...)
+searchconsole_POST(url, shiny_access_token = NULL, the_body = NULL,
+  params = NULL, ...)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}

@@ -7,8 +7,7 @@
 scr_auth(token = NULL, new_user = FALSE,
   key = getOption("searchConsoleR.client_id"),
   secret = getOption("searchConsoleR.client_secret"),
-  cache = getOption("searchConsoleR.httr_oauth_cache"), verbose = TRUE,
-  shiny_session = NULL)
+  cache = getOption("searchConsoleR.httr_oauth_cache"), verbose = TRUE)
 }
 \arguments{
 \item{token}{an actual token object or the path to a valid token stored as an

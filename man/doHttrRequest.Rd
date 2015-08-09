@@ -4,19 +4,19 @@
 \alias{doHttrRequest}
 \title{Get URL content based on if its Shiny or local}
 \usage{
-doHttrRequest(url, session = NULL, request_type = "GET", the_body = NULL,
-  params = NULL, ...)
+doHttrRequest(url, shiny_access_token = NULL, request_type = "GET",
+  the_body = NULL, params = NULL, ...)
 }
 \arguments{
 \item{url}{the url of the page to retrieve}
-
-\item{session}{a shiny session object if in a shiny app.}
 
 \item{request_type}{the type of httr request function: GET, POST, PUT, DELETE etc.}
 
 \item{the_body}{body of POST request}
 
 \item{params}{A named character vector of other parameters to add to request.}
+
+\item{session}{a shiny session object if in a shiny app.}
 }
 \description{
 This changes the auth type depending on if its local or on Shiny

@@ -25,5 +25,11 @@ Once a user browses to ShinyGetTokenURL and is redirected back with request
 shinygaGetToken takes that code and returns a token needed for Google APIs
 Uses the same client.id and client.secret as ShinyGetTokenURL.
 }
+\seealso{
+Other shiny auth functions: \code{\link{authReturnCode}};
+  \code{\link{createCode}}; \code{\link{getShinyURL}};
+  \code{\link{get_google_token_shiny}};
+  \code{\link{shinygaGetTokenURL}}
+}
 \keyword{internal}
 

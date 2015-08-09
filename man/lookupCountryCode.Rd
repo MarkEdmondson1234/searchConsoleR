@@ -17,5 +17,9 @@ The country name string
 \description{
 Look up the country codes
 }
+\seealso{
+Other search analytics: \code{\link{parseDimFilterGroup}};
+  \code{\link{search_analytics}}
+}
 \keyword{internal}
 

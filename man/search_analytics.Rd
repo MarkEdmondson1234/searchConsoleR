@@ -7,7 +7,7 @@
 search_analytics(siteURL, startDate, endDate, dimensions = NULL,
   searchType = c("web", "video", "image"), dimensionFilterExp = NULL,
   aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
-  prettyNames = TRUE, session = NULL)
+  prettyNames = TRUE, shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -28,7 +28,7 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 
 \item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
@@ -46,7 +46,13 @@ Download your Google keyword SEO data.
    This value is included in the range.
 
  \strong{dimensions}: [Optional] Zero or more dimensions to group results by.
- c('country','device','page','query', 'date')
+      \itemize{
+        \item 'date'
+        \item 'country'
+        \item 'device'
+        \item 'page'
+        \item 'query'
+      }
  The grouping dimension values are combined to create a unique key
    for each result row. If no dimensions are specified,
    all values will be combined into a single row.
@@ -111,5 +117,8 @@ Download your Google keyword SEO data.
 \seealso{
 Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
   API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
+
+Other search analytics: \code{\link{lookupCountryCode}};
+  \code{\link{parseDimFilterGroup}}
 }
 

@@ -4,7 +4,8 @@
 \alias{authReturnCode}
 \title{Returns the authentication parameter "code" in redirected URLs}
 \usage{
-authReturnCode(session, securityCode)
+authReturnCode(session,
+  securityCode = getOption("searchConsoleR.securitycode"))
 }
 \arguments{
 \item{session}{A shiny session object}
@@ -16,6 +17,13 @@ The Google auth token in the code URL parameter.
 }
 \description{
 Checks the URL of the Shiny app to get the state and code URL parameters.
+}
+\seealso{
+Other shiny auth functions: \code{\link{createCode}};
+  \code{\link{getShinyURL}};
+  \code{\link{get_google_token_shiny}};
+  \code{\link{shinygaGetTokenURL}};
+  \code{\link{shinygaGetToken}}
 }
 \keyword{internal}
 

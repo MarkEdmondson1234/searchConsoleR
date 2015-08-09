@@ -5,7 +5,7 @@
 \title{Shows details of errors for individual sample URLs}
 \usage{
 error_sample_url(siteURL, pageURL, category = "notFound", platform = "web",
-  session = NULL)
+  shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -16,7 +16,7 @@ error_sample_url(siteURL, pageURL, category = "notFound", platform = "web",
 
 \item{platform}{User agent type. Default 'web'.}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL

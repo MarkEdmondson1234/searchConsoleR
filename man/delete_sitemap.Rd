@@ -4,14 +4,14 @@
 \alias{delete_sitemap}
 \title{Delete a sitemap.}
 \usage{
-delete_sitemap(siteURL, feedpath, session = NULL)
+delete_sitemap(siteURL, feedpath, shiny_access_token = NULL)
 }
 \arguments{
 \item{siteURL}{The URL of the website you are deleting the sitemap from. Must include protocol (http://).}
 
 \item{feedpath}{The URL of the sitemap to delete. Must include protocol (http://).}
 
-\item{session}{If in a Shiny session, supply its session object.}
+\item{session}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.

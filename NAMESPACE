@@ -3,6 +3,7 @@
 export(Authentication)
 export(add_sitemap)
 export(add_website)
+export(authReturnCode)
 export(crawl_errors)
 export(delete_sitemap)
 export(delete_website)

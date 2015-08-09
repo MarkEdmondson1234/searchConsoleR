@@ -1,63 +1,73 @@
 ## Run via shiny::runApp("./tests/shiny_test", port=4624)
-
+library(searchConsoleR)
 library(shiny)
 library(DT)
 
 source('global.R')
 
 shinyServer(function(input, output, session) {
-  
-  library(searchConsoleR)
-  
-  cdata <- session$clientData
-  
-  shiny_google_token_session_scope <- NULL
+
+  message("New Shiny Session - ", Sys.time())
   
   ## Make a button to link to Google auth screen
   ## If auth_code is returned then don't show login button
   output$loginButton <- renderUI({
-    if(is.null(isolate(auth()))) {
+    if(is.null(isolate(access_token()))) {
       actionLink("loginButton",
-                 label = a("Authorize App",
+                 label = a("Authenticate to get started here.",
                            href = shinygaGetTokenURL(getShinyURL(session))))
     } else {
       return()
     }
   })
   
+  ## Make a button to link to Google auth screen
+  ## If auth_code is returned then don't show login button
+  output$logoutButton <- renderUI({
+    if(!is.null(access_token())) {
+      actionLink("logout",
+                 label = a("Logout",
+                           href = getShinyURL(session)))
+    } else {
+      return()
+    }
+  })
+  
+#   AuthCode <- reactive({
+#     
+#     authReturnCode(session)
+#     
+#   })
+  
   ## Get auth code from return URL
   access_token  <- reactive({
     ## gets all the parameters in the URL. The auth code should be one of them.
-    pars <- parseQueryString(session$clientData$url_search)
     
-    if(length(pars$code) > 0) {
-      ## extract the authorization code
-      get_google_token_shiny(session) 
+    # if(length(pars$code) > 0) {
+    if(!is.null(authReturnCode(session))){
+      ## extract the authorization token
+      access_token <- get_google_token_shiny(authReturnCode(session), session) 
+      app_url <- getShinyURL(session)
+      Authentication$set("public", "app_url", app_url, overwrite=TRUE)
+      Authentication$set("public", "shiny", TRUE, overwrite=TRUE)
+      
+      access_token
+      
     } else {
       NULL
     }
   })
-  
-  
-  auth <- reactive({
-    
-    token <- access_token()
-    
-    if(!is.null(token)){
-      a <- scr_auth(token = token, shiny_session=session)      
-    }
-    
-  })
+
   
   output$token_websites <- renderTable({
-    if(!is.null(auth())){
-      list_websites(session)
+    if(!is.null(access_token())){
+      list_websites(shiny_access_token = access_token())
     }
   })
   
   website_df <- reactive({
-    if(!is.null(auth())){
-      www <- list_websites(session)           
+    if(!is.null(access_token())){
+      www <- list_websites(shiny_access_token = access_token())           
     }
     
   })
@@ -85,7 +95,7 @@ shinyServer(function(input, output, session) {
     dim_ex <- input$filter_ex
     
     
-    if(!is.null(auth())){
+    if(!is.null(access_token())){
       
       if(all(dim_filter != "none", !is.null(dim_ex))){
         dfe <- paste0(dim_filter,dim_op,dim_ex)
@@ -97,7 +107,7 @@ shinyServer(function(input, output, session) {
                              dimensions = c('date'),
                              searchType = type,
                              dimensionFilterExp = dfe,
-                             session = session)
+                             shiny_access_token = access_token())
     }
     
     
@@ -113,7 +123,7 @@ shinyServer(function(input, output, session) {
     dim_ex <- input$filter_ex
     
     
-    if(!is.null(auth()) && !is.null(dims)){
+    if(!is.null(access_token()) && !is.null(dims)){
       
       if(all(dim_filter != "none", !is.null(dim_ex))){
         dfe <- paste0(dim_filter,dim_op,dim_ex)
@@ -125,7 +135,7 @@ shinyServer(function(input, output, session) {
                              dimensions = dims,
                              searchType = type,
                              dimensionFilterExp = dfe, prettyNames = FALSE,
-                             session = session)
+                             shiny_access_token = access_token())
     }
     
     
@@ -149,7 +159,7 @@ shinyServer(function(input, output, session) {
     data_row <- breakdown_df[selected_row,]
     
     
-    if(!is.null(auth()) && !is.null(selected_row)){
+    if(!is.null(access_token()) && !is.null(selected_row)){
       
       data_dims <- data_row[,dims]
       ## construct the filter
@@ -159,7 +169,7 @@ shinyServer(function(input, output, session) {
                              dimensions = c('date'),
                              searchType = type,
                              dimensionFilterExp = dfe,
-                             session = session)      
+                             shiny_access_token = access_token())      
     }
     
   })
@@ -183,7 +193,7 @@ shinyServer(function(input, output, session) {
     sadata <- sa_trend_data()
     metrics <- input$metrics
     
-    if(!is.null(auth())){
+    if(!is.null(access_token())){
       plot(sadata$date, sadata[,metrics], type = "l",
            xlab = "date", ylab = metrics)     
     }
@@ -220,7 +230,7 @@ shinyServer(function(input, output, session) {
     
     www <- input$website_select
     
-    if(!is.null(auth())){
+    if(!is.null(access_token())){
       s <- www  
     } else {
       s <- "Authenticate to see data."
@@ -236,13 +246,13 @@ shinyServer(function(input, output, session) {
     errors <- input$errors
     platform <- input$platform
     
-    if(!is.null(auth())){
+    if(!is.null(access_token())){
       
       ce <- try(
         crawl_errors(www, 
                      category = errors, 
                      platform = platform, 
-                     session = session)
+                     shiny_access_token = access_token())
       )
       
       if(!is.error(ce)){
@@ -257,12 +267,12 @@ shinyServer(function(input, output, session) {
     errors <- input$errors
     platform <- input$platform
     
-    if(!is.null(auth())){
+    if(!is.null(access_token())){
       
       error_df <- try(list_crawl_error_samples(www, 
                                                category = errors, 
                                                platform = platform,
-                                               session = session))
+                                               shiny_access_token = access_token()))
       if(!is.error(error_df)){
         
         error_df$last_crawled <- as.Date(error_df$last_crawled)
@@ -302,13 +312,13 @@ shinyServer(function(input, output, session) {
     errors <- input$errors
     platform <- input$platform      
     
-    if(!is.null(auth()))
+    if(!is.null(access_token()))
     {
       df_err <- error_sample_url(www, 
                                  sample_error_url, 
                                  category = errors, 
                                  platform = platform,
-                                 session = session)     
+                                 shiny_access_token = access_token())     
     }
     
   })

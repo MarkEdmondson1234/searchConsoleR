@@ -11,7 +11,7 @@ shinygaGetTokenURL(redirect.uri = getShinyURL(session),
   scope = getOption("searchConsoleR.scope"))
 }
 \arguments{
-\item{redirect.uri}{App URL, from getShinyURL(session)}
+\item{redirect.uri}{App URL, from \code{getShinyURL}}
 
 \item{state}{A random string used to check auth is from same origin.}
 
@@ -28,6 +28,9 @@ The URL for authentication.
 The URL a user authenticates the Shiny app on.
 }
 \seealso{
-Other Shiny Authentication: \code{\link{getShinyURL}}
+Other shiny auth functions: \code{\link{authReturnCode}};
+  \code{\link{createCode}}; \code{\link{getShinyURL}};
+  \code{\link{get_google_token_shiny}};
+  \code{\link{shinygaGetToken}}
 }
 

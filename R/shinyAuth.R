@@ -4,7 +4,7 @@
 #' @param num number of characters the code should be.
 #' 
 #' @return a string of random digits and letters.
-#' 
+#' @family shiny auth functions
 #' @keywords internal
 createCode <- function(seed=NULL, num=20){
   if (!is.null(seed)) set.seed(seed)
@@ -20,9 +20,11 @@ createCode <- function(seed=NULL, num=20){
 #' @param securityCode A random string to check the auth comes form the same origin.
 #' 
 #' @return The Google auth token in the code URL parameter.
-#' 
+#' @family shiny auth functions
 #' @keywords internal
-authReturnCode <- function(session, securityCode){
+#' @export
+authReturnCode <- function(session, 
+                           securityCode=getOption("searchConsoleR.securitycode")){
 
   pars <- shiny::parseQueryString(session$clientData$url_search)
   
@@ -51,7 +53,7 @@ authReturnCode <- function(session, securityCode){
 #' 
 #' The URL a user authenticates the Shiny app on.
 #' 
-#' @param redirect.uri App URL, from getShinyURL(session)
+#' @param redirect.uri App URL, from \code{getShinyURL}
 #' @param state A random string used to check auth is from same origin.
 #' @param client.id From the Google API console.
 #' @param client.secret From the Google API console.
@@ -59,7 +61,7 @@ authReturnCode <- function(session, securityCode){
 #' 
 #' @return The URL for authentication.
 #' 
-#' @family Shiny Authentication
+#' @family shiny auth functions
 #' @export
 shinygaGetTokenURL <- 
   function(redirect.uri = getShinyURL(session),
@@ -79,7 +81,7 @@ shinygaGetTokenURL <-
                    state = state,
                    access_type = "online",
                    approval_prompt = "auto"))
-    message("auth token url: ", url)
+    message("Auth Token URL: ", url)
     url
   }
 
@@ -92,7 +94,7 @@ shinygaGetTokenURL <-
 #' 
 #' @return The URL of the Shiny App its called from.
 #' 
-#' @family Shiny Authentication
+#' @family shiny auth functions
 #' @export
 getShinyURL <- function(session){
   
@@ -115,7 +117,7 @@ getShinyURL <- function(session){
                   ":",
                   pathname),
            session$clientData$url_port)
-    message("url: ", url)
+    message("Shiny URL detected as: ", url)
     url
   } else {
     NULL
@@ -123,6 +125,31 @@ getShinyURL <- function(session){
   
   
 }
+
+#' Does the Shiny authentication flow
+#' 
+#' Used in a shiny session instead of \code{scr_auth}
+#' 
+#' @param return_code the code in the url from \code{authReturnCode}
+#' @param session A Shiny session object passed from shinyServer().
+#' 
+#' @return A Google OAuth2 token
+#' @family shiny auth functions
+#' @export
+get_google_token_shiny <- 
+  function(return_code, session=NULL){
+    
+    if(!is.null(session)){
+      app_url <- getShinyURL(session)
+      Authentication$set("public", "app_url", app_url, overwrite=TRUE)
+    } else {
+      app_url <- Authentication$public_fields$app_url
+    }
+    
+    shinygaGetToken(return_code, app_url)
+    
+  }
+
 
 
 #' Returns the authentication Token.
@@ -139,6 +166,8 @@ getShinyURL <- function(session){
 #' @return A list including the token needed for Google API requests.
 #' 
 #' @keywords internal
+#' @family shiny auth functions
+
 shinygaGetToken <- function(code,
                             redirect.uri  = getShinyURL(session),
                             client.id     = getOption("searchConsoleR.webapp.client_id"),
@@ -155,7 +184,6 @@ shinygaGetToken <- function(code,
                            client_secret = client.secret,
                            redirect_uri = redirect.uri,
                            grant_type = "authorization_code"))
-  message(req)
   
   stopifnot(identical(httr::headers(req)$`content-type`,
                       "application/json; charset=utf-8"))
@@ -172,10 +200,8 @@ shinygaGetToken <- function(code,
                                           refresh_token = token$refresh_token),
                        params = list(scope = scope_list, type = NULL,
                                      use_oob = FALSE, as_header = TRUE),
-                       cache_path = FALSE)
-  
-  # Authentication$set("public", "token", token_formatted, overwrite=TRUE)
-  
+                       cache_path = getOption("searchConsoleR.httr_oauth_cache"))
+ 
   token_formatted
 }
 

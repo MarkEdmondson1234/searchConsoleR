@@ -4,10 +4,10 @@
 \alias{checkTokenAPI}
 \title{Check API data token}
 \usage{
-checkTokenAPI(session, verbose = TRUE)
+checkTokenAPI(shiny_access_token = NULL, verbose = TRUE)
 }
 \arguments{
-\item{shiny}{session.}
+\item{shiny_access_token}{auth token}
 }
 \value{
 boolean if it works.
