@@ -7,3 +7,5 @@
 .httr-oauth-SUSPENDED
 .Rbuildignore
 inst/doc
+
+*.Rproj

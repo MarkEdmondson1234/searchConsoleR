@@ -33,12 +33,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-#   AuthCode <- reactive({
-#     
-#     authReturnCode(session)
-#     
-#   })
-  
   ## Get auth code from return URL
   access_token  <- reactive({
     ## gets all the parameters in the URL. The auth code should be one of them.

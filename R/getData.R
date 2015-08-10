@@ -217,7 +217,7 @@ search_analytics <- function(siteURL,
 #' 
 #' @keywords internal
 #' @family data fetching functions
-checkTokenAPI <- function(shiny_access_token=NULL, verbose=TRUE){
+checkTokenAPI <- function(shiny_access_token=NULL, verbose=FALSE){
   
   if(is.null(shiny_access_token)){
     ## local token
