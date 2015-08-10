@@ -57,7 +57,14 @@ The code for this Shiny app is in the ```./tests/shiny_test``` folder of the pac
 Install searchConsoleR from github using [devtools](https://cran.r-project.org/web/packages/devtools/index.html).
 
 ```
-devtools::install_github("MarkEdmondson1234/searchConsoleR")
+## load the library or download it if necessary
+if(!require(searchConsoleR)){
+  if(!require(devtools)){
+    install.packages("devtools")
+  } else {
+    devtools::install_github("MarkEdmondson1234/searchConsoleR")
+  }
+}
 library(searchConsoleR)
 ```
 
