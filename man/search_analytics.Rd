@@ -34,7 +34,7 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 }
 \description{
-Download your Google keyword SEO data.
+Download your Google SEO data.
 }
 \details{
 \strong{startDate}: Start date of the requested date range, in YYYY-MM-DD format,

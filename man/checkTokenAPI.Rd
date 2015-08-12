@@ -4,7 +4,7 @@
 \alias{checkTokenAPI}
 \title{Check API data token}
 \usage{
-checkTokenAPI(shiny_access_token = NULL, verbose = TRUE)
+checkTokenAPI(shiny_access_token = NULL, verbose = FALSE)
 }
 \arguments{
 \item{shiny_access_token}{auth token}

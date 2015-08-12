@@ -1,14 +1,12 @@
 #' R6 environment to store credentials
 #' 
-#' In search of an object to refer from within package and shiny session
+#' Stores local authentication details
 #' 
 #' @export
 Authentication <- R6::R6Class(
   "Authentication",
   public = list(
-    websites = "initial",
     token = NULL,
-    shiny = FALSE,
     app_url = NULL
   ),
   lock_objects = F,
@@ -87,6 +85,25 @@ Authentication <- R6::R6Class(
 #' @return an OAuth token object, specifically a
 #'   \code{\link[=Token-class]{Token2.0}}, invisibly or if shiny_session is a Shiny object, a list.
 #'
+#' @examples
+#' \dontrun{
+#' scr_auth()
+#' 
+#' ## one days data of search queries
+#' search_analytics("http://example.com", "2015-08-01", "2015-08-01", dimensions = "query")
+#' 
+#' ##  top 100 rows of queries per page for the month of July 2015, 
+#' ## for United Kingdom desktop web searches:
+#' search_analytics("http://example.com", 
+#'                  "2015-07-01", 
+#'                  "2015-07-31", 
+#'                  c("query", "page"), 
+#'                  dimensionFilterExp = ("device==DESKTOP","country==GBR"), 
+#'                  searchType="web", 
+#'                  rowLimit = 100)
+#' 
+#' }
+#'
 #' @export
 scr_auth <- function(token = NULL,
                     new_user = FALSE,
@@ -97,7 +114,7 @@ scr_auth <- function(token = NULL,
   
   if(new_user) {
     Authentication$set("public", "token", NULL, overwrite=TRUE)
-    Authentication$set("public", "websites", data.frame(siteURL="None", permissionLevel="N/A"), overwrite=TRUE)
+
     if(file.exists(".httr-oauth")){
       if(verbose) message("Removing old credentials ...")
       file.remove(".httr-oauth")     

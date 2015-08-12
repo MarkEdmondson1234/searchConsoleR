@@ -86,4 +86,23 @@ application" flow. See \code{\link{scr_webapp_auth_url}} and
 \code{\link{scr_webapp_get_token}} for functions that execute the "web server
 application" flow.
 }
+\examples{
+\dontrun{
+scr_auth()
+
+## one days data of search queries
+search_analytics("http://example.com", "2015-08-01", "2015-08-01", dimensions = "query")
+
+##  top 100 rows of queries per page for the month of July 2015,
+## for United Kingdom desktop web searches:
+search_analytics("http://example.com",
+                 "2015-07-01",
+                 "2015-07-31",
+                 c("query", "page"),
+                 dimensionFilterExp = ("device==DESKTOP","country==GBR"),
+                 searchType="web",
+                 rowLimit = 100)
+
+}
+}
 

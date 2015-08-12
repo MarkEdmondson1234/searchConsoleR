@@ -4,14 +4,14 @@
 \name{Authentication}
 \alias{Authentication}
 \title{R6 environment to store credentials}
-\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x7fe369854ca0> 
+\format{\preformatted{Class 'R6ClassGenerator' <environment: 0x7fb10cec55c8> 
  - attr(*, "name")= chr "Authentication_generator"
 }}
 \usage{
 Authentication
 }
 \description{
-In search of an object to refer from within package and shiny session
+Stores local authentication details
 }
 \keyword{datasets}
 

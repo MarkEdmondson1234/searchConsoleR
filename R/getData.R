@@ -1,6 +1,6 @@
 #' Query search traffic keyword data
 #' 
-#' @description Download your Google keyword SEO data.
+#' @description Download your Google SEO data.
 #' 
 #' @param siteURL The URL of the website you have auth access to.
 #' @param startDate Start date of requested range, in YYYY-MM-DD.
@@ -182,7 +182,7 @@ search_analytics <- function(siteURL,
                        row.names=NULL, stringsAsFactors = F)
     
     ## if no rows, get out of here.
-    if(!NROW(dimensionCols) > 0) return(NULL)
+    if(!NROW(dimensionCols) > 0) return(the_data)
     
     names(dimensionCols ) <- dimensions
     dimensionCols <- lapply(dimensionCols, unname)
