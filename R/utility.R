@@ -97,21 +97,6 @@ parseDimFilterGroup <- function(dfe){
        )
 }
 
-
-
-#' Is this a valid shiny session object?
-#' 
-#' Checks that a valid Shiny session object has been passed.
-#' 
-#' @param shiny_session a Shiny session object.
-#' 
-#' @return Boolean
-#' 
-#' @keywords internal
-is_shiny <- function(shiny_session){
-  inherits(shiny_session, "ShinySession")
-}
-
 #' Is this a try error?
 #' 
 #' Utility to test errors

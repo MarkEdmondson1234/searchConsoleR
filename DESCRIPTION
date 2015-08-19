@@ -10,9 +10,9 @@ URL: http://www.google.com/webmasters/tools/, https://developers.google.com/webm
 Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports: httr (>= 0.6.1),
-    R6 (>= 2.1.0),
-    stringr (>= 1.0.0)
-Suggests: shiny (>= 0.12.1),
+Imports: 
+    googleAuthR (>= 0.1.1)
+Suggests: 
+    shiny (>= 0.12.1),
     knitr
 VignetteBuilder: knitr

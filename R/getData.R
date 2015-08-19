@@ -1,3 +1,10 @@
+options("googleAuthR.scopes.selected" = getOption("searchConsoleR.scope") )
+options("googleAuthR.client_id" = getOption("searchConsoleR.client_id"))
+options("googleAuthR.client_secret" = getOption("searchConsoleR.client_secret"))
+options("googleAuthR.webapp.client_id" = getOption("searchConsoleR.webapp.client_id"))
+options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.client_secret"))
+
+
 #' Query search traffic keyword data
 #' 
 #' @description Download your Google SEO data.
@@ -105,17 +112,24 @@ search_analytics <- function(siteURL,
                              dimensionFilterExp = NULL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
-                             prettyNames = TRUE,
-                             shiny_access_token=NULL){
+                             prettyNames = TRUE){
   
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
   
-  siteURL <- check.Url(siteURL, reserved=T)
-  
   startDate <- as.character(startDate)
-  endDate   <- as.character(endDate)
+  endDate   <- as.character(endDate)  
+
+  message("Fetching search analytics for ", 
+          paste("url:", siteURL, 
+                "dates:", startDate, endDate,
+                "dimensions:", paste(dimensions, collapse = " ", sep=";"),
+                "dimensionFilterExp:", paste(dimensionFilterExp, collapse = " ", sep=";"), 
+                "searchType:", searchType, 
+                "aggregationType:", aggregationType))
   
+  siteURL <- check.Url(siteURL, reserved=T)
+
   if(any(is.na(as.Date(startDate, "%Y-%m-%d")), is.na(as.Date(endDate, "%Y-%m-%d")))){
     stop("dates not in correct %Y-%m-%d format. Got these:", startDate, " - ", endDate)
   }
@@ -144,106 +158,35 @@ search_analytics <- function(siteURL,
   }
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
     
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/searchanalytics/query
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
-                      siteURL,
-                      "/searchAnalytics/query")
-    
-    ## a list of filter expressions 
-    ## expects dimensionFilterExp like c("device==TABLET", "country~~GBR")
-    parsedDimFilterGroup <- lapply(dimensionFilterExp, parseDimFilterGroup)
-    
-    body <- list(
-      startDate = startDate,
-      endDate = endDate,
-      dimensions = as.list(dimensions),  
-      searchType = searchType,
-      dimensionFilterGroups = list(
-        list( ## you don't want more than one of these until different groupType available
-          groupType = "and", ##only one available for now
-          filters = parsedDimFilterGroup
-          )
-      ),
-      aggregationType = aggregationType,
-      rowLimit = rowLimit
-    )
+  ## a list of filter expressions 
+  ## expects dimensionFilterExp like c("device==TABLET", "country~~GBR")
+  parsedDimFilterGroup <- lapply(dimensionFilterExp, parseDimFilterGroup)
   
-    req <- searchconsole_POST(req_url, shiny_access_token, the_body = body)
-    
-    the_data <- req$content$rows
-    
-    # a bit of jiggery pokery (data processing)
-    dimensionCols <- data.frame(Reduce(rbind, 
-                              lapply(the_data$keys, function(x) 
-                                rbind(x))), 
-                       row.names=NULL, stringsAsFactors = F)
-    
-    ## if no rows, get out of here.
-    if(!NROW(dimensionCols) > 0) return(the_data)
-    
-    names(dimensionCols ) <- dimensions
-    dimensionCols <- lapply(dimensionCols, unname)
-    
-    if('date' %in% names(dimensionCols)){
-      dimensionCols$date <- as.Date(dimensionCols$date)
-    }
-    
-    if(all('country' %in% names(dimensionCols), prettyNames)){
-      dimensionCols$countryName <- lookupCountryCode(dimensionCols$country)
-    }
-    
-    metricCols <- the_data[setdiff(names(the_data), 'keys')]
-    
-    the_df <- data.frame(dimensionCols , metricCols, stringsAsFactors = F, row.names = NULL)
-    attr(the_df, "aggregationType") <- req$content$responseAggregationType
-    
-    the_df
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+  body <- list(
+    startDate = startDate,
+    endDate = endDate,
+    dimensions = as.list(dimensions),  
+    searchType = searchType,
+    dimensionFilterGroups = list(
+      list( ## you don't want more than one of these until different groupType available
+        groupType = "and", ##only one available for now
+        filters = parsedDimFilterGroup
+      )
+    ),
+    aggregationType = aggregationType,
+    rowLimit = rowLimit
+  )
+  
+  search_analytics_g <- 
+    googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                   "POST",
+                                   path_args = list(sites = "siteURL",
+                                                    searchAnalytics = "query"),
+                                   ,
+                                   data_parse_function = parse_search_analytics)
+  search_analytics_g(the_body=body, path_arguments=list(sites = siteURL))
 }
-
-#' Check API data token
-#' 
-#' @param shiny_access_token auth token
-#' 
-#' @return boolean if it works.
-#' 
-#' @keywords internal
-#' @family data fetching functions
-checkTokenAPI <- function(shiny_access_token=NULL, verbose=FALSE){
-  
-  if(is.null(shiny_access_token)){
-    ## local token
-    token <- Authentication$public_fields$token
-    
-    if(token_exists(verbose = verbose) && is_legit_token(token, verbose=verbose)) {
-      if(verbose) message("Valid token")
-      TRUE
-    } else {
-      if(verbose) message("Invalid token")
-      FALSE
-    }
-    
-  } else {
-    ## is it a valid shiny token passed?
-    if(is_legit_token(shiny_access_token)){
-      if(verbose) message("Valid Shiny token")
-      TRUE
-    } else {
-      if(verbose) message("Invalid Shiny token")
-      FALSE
-    }
-  }
-  
-}
-
 
 
 #' Retrieves dataframe of websites user has in Search Console
@@ -254,24 +197,12 @@ checkTokenAPI <- function(shiny_access_token=NULL, verbose=FALSE){
 #'
 #' @export
 #' @family search console website functions
-list_websites <- function(shiny_access_token=NULL) {
+list_websites <- function() {
   
-  ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/sites/list
-  req <- 
-      searchconsole_GET("https://www.googleapis.com/webmasters/v3/sites", 
-                        shiny_access_token)
-    
-    req$content$siteEntry
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
-  
+  l <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/sites",
+                                      "GET",
+                                      data_parse_function = function(x) x$siteEntry)
+  l()
 }
 
 #' Adds website to Search Console
@@ -283,25 +214,15 @@ list_websites <- function(shiny_access_token=NULL) {
 #' @family search console website functions
 #' 
 #' @export
-add_website <- function(siteURL, shiny_access_token=NULL) {
+add_website <- function(siteURL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   
-  ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
-    
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/sites/add
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL)
-    searchconsole_PUT(req_url, shiny_access_token, the_body = NULL)
-    
-    TRUE
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+  aw <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                      "PUT",
+                                      path_args = list(sites = "siteURL"))
+  
+  aw(path_arguments = list(sites = siteURL))
   
 }
 
@@ -315,25 +236,15 @@ add_website <- function(siteURL, shiny_access_token=NULL) {
 #' 
 #' @export
 #' @family search console website functions
-delete_website <- function(siteURL, shiny_access_token=NULL) {
+delete_website <- function(siteURL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   
-  ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
-    
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/sites/delete
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL)
-    searchconsole_DELETE(req_url, shiny_access_token)
-    
-    TRUE
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+  dw <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                      "DELETE",
+                                      path_args = list(sites = "siteURL"))
+  
+  dw(path_arguments = list(sites = siteURL))
   
 }
 
@@ -349,26 +260,17 @@ delete_website <- function(siteURL, shiny_access_token=NULL) {
 #' 
 #' @export
 #' @family sitemap admin functions
-list_sitemaps <- function(siteURL, shiny_access_token=NULL) {
+list_sitemaps <- function(siteURL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
-
-  ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
-    
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/sitemaps
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL,"/sitemaps")
-    req <- searchconsole_GET(req_url, shiny_access_token)
-    
-    list(sitemap = req$content$sitemap[, setdiff(names(req$content$sitemap), "contents")],
-         contents = req$content$sitemap$contents[[1]])
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+  
+  ls <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                      "GET",
+                                      path_args = list(sites = "siteURL",
+                                                       sitemaps = ""),
+                                      data_parse_function = parse_sitemaps)
+  
+  ls(path_arguments = list(sites = siteURL))
   
 }
 
@@ -384,29 +286,19 @@ list_sitemaps <- function(siteURL, shiny_access_token=NULL) {
 #'
 #' @export
 #' @family sitemap admin functions
-add_sitemap <- function(siteURL, feedpath, shiny_access_token=NULL) {
+add_sitemap <- function(siteURL, feedpath) {
   
-  siteURL  <- check.Url(siteURL, reserved=T)
+  siteURL <- check.Url(siteURL, reserved=T)
   feedpath <- check.Url(feedpath, reserved = T)
   
-  ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
-    
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/sitemaps/submit
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
-                      siteURL,"/sitemaps/",
-                      feedpath)
-    
-    searchconsole_PUT(req_url, shiny_access_token, the_body = NULL)
-    
-    TRUE
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+  as <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                      "PUT",
+                                      path_args = list(sites = "siteURL",
+                                                       sitemaps = "feedpath"),
+                                      data_parse_function = parse_sitemaps)
+  
+  as(path_arguments = list(sites = siteURL,
+                          sitemaps = feedpath))
   
 }
 
@@ -422,29 +314,19 @@ add_sitemap <- function(siteURL, feedpath, shiny_access_token=NULL) {
 #'
 #' @export
 #' @family sitemap admin functions
-delete_sitemap <- function(siteURL, feedpath, shiny_access_token=NULL) {
+delete_sitemap <- function(siteURL, feedpath) {
   
-  siteURL  <- check.Url(siteURL, reserved=T)
+  siteURL <- check.Url(siteURL, reserved=T)
   feedpath <- check.Url(feedpath, reserved = T)
   
-  ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token)) {
-    
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/sitemaps/delete
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
-                      siteURL,"/sitemaps/",
-                      feedpath)
-    
-    searchconsole_DELETE(req_url, shiny_access_token)
-    
-    TRUE
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+  ds <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                      "DELETE",
+                                      path_args = list(sites = "siteURL",
+                                                       sitemaps = "feedpath"),
+                                      data_parse_function = parse_sitemaps)
+  
+  ds(path_arguments = list(sites = siteURL,
+                          sitemaps = feedpath))
   
 }
 
@@ -474,57 +356,31 @@ delete_sitemap <- function(siteURL, feedpath, shiny_access_token=NULL) {
 crawl_errors <- function(siteURL, 
                          category="all",
                          platform=c("all","mobile","smartphoneOnly","web"),
-                         latestCountsOnly=FALSE,
-                         shiny_access_token=NULL) {
+                         latestCountsOnly=FALSE) {
   platform <- match.arg(platform)
   siteURL <- check.Url(siteURL, reserved=T)
   
   latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')
   
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token) && is.valid.category.platform(category, platform, include.all = TRUE)) {
+  if(is.valid.category.platform(category, platform, include.all = TRUE)) {
     
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorscounts/query
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
-                      siteURL,
-                      "/urlCrawlErrorsCounts/query")
+    params <- list('category' = category,
+                   'latestCountsOnly' = latestCountsOnly,
+                   'platform' = platform)
+    params <- params[params != 'all']
     
-    param_vector <- c('category'=category,
-                      'latestCountsOnly'=latestCountsOnly,
-                      'platform'=platform)
-    param_vector <- param_vector[param_vector != 'all']
+    ce <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                         "GET",
+                                         path_args = list(sites = "siteURL",
+                                                          urlCrawlErrorsCounts = "query"),
+                                         pars_args = params,
+                                         data_parse_function = parse_crawlerrors)
     
-    req <- searchconsole_GET(req_url, shiny_access_token, params = param_vector)
-    
-    cpt <- req$content$countPerTypes
-    ## data parsing gymnastics
-    ldf <- Reduce(rbind, 
-                  apply(cpt, 1, function(row) {
-                    data.frame(platform = row['platform'], 
-                               category = row['category'], 
-                               count = row$entries$count, 
-                               timecount = row$entries$timestamp )
-                  })
-    )
-    
-    ## transform to something useable
-    ldf$platform <- as.character(ldf$platform)
-    ldf$category <- as.character(ldf$category)
-    ldf$count <- as.numeric(as.character(ldf$count))
-    ldf$timecount <- RFC_convert(ldf$timecount, drop_time = TRUE)
-    
-    ldf
-    
-  } else {
-    
-    stop("Invalid Token")
-    
-  }
+    ce(path_arguments = list(sites = siteURL), pars_arguments = params)
   
+  }
 }
-
-
 
 #' Lists a site's sample URLs for crawl errors.
 #' 
@@ -547,41 +403,24 @@ crawl_errors <- function(siteURL,
 #' @family working with search console errors
 list_crawl_error_samples <- function(siteURL,
                                      category="notFound",
-                                     platform="web",
-                                     shiny_access_token=NULL) {
+                                     platform="web") {
   
   siteURL <- check.Url(siteURL, reserved=T)
 
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token) && 
-     is.valid.category.platform(category, platform)) {
+  if(is.valid.category.platform(category, platform)) {
     
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", siteURL,"/urlCrawlErrorsSamples")
+    params <- list('category' = category,
+                   'platform' = platform)
     
-    param_vector <- c('category'=category,
-                      'platform'=platform)
+    lces <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                         "GET",
+                                         path_args = list(sites = "siteURL",
+                                                          urlCrawlErrorsSamples = ""),
+                                         pars_args = params,
+                                         data_parse_function = parse_crawlerror_sample)
     
-    req <- searchconsole_GET(req_url, shiny_access_token, params = param_vector)
-    
-    errs <- req$content$urlCrawlErrorSample
-    
-    if(!is.null(errs)){
-      errs$last_crawled <- RFC_convert(errs$last_crawled)
-      errs$first_detected <- RFC_convert(errs$first_detected)
-      
-      errs      
-    } else {
-      message("No error samples available.")
-      NULL
-    }
-
-    
-  } else {
-    
-    stop("Invalid Token")
-    
+    lces(path_arguments = list(sites = siteURL), pars_arguments = params)
   }
   
 }
@@ -621,39 +460,22 @@ error_sample_url <- function(siteURL,
   
 
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token) && 
-     is.valid.category.platform(category, platform)){
+  if(is.valid.category.platform(category, platform)){
     
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
-                      siteURL,
-                      "/urlCrawlErrorsSamples/",
-                      pageURL)
+    params <- list('category' = category,
+                   'platform' = platform)
     
-    param_vector <- c('category'=category,
-                      'platform'=platform)
+    esu <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                          "GET",
+                                          path_args = list(sites = "siteURL",
+                                                           urlCrawlErrorsSamples = "pageURL"),
+                                          pars_args = params,
+                                          data_parse_function = parse_errorsample_url)
     
-    req <- searchconsole_GET(req_url, shiny_access_token, params = param_vector)
-    
-    raw_details <- req$content
-    
-    if(all(c('last_crawled', 'first_detected') %in% names(raw_details))){
-      raw_details$last_crawled <- RFC_convert(raw_details$last_crawled)
-      raw_details$first_detected <- RFC_convert(raw_details$first_detected)
-      inner_details <- Reduce(rbind, raw_details$urlDetails)
-      
-      detail_df <- data.frame(linkedFrom=inner_details, 
-                              last_crawled=raw_details$last_crawled,
-                              first_detected=raw_details$first_detected,
-                              pageUrl=raw_details$pageUrl) 
-      
-    }
+    esu(path_arguments = list(sites = siteURL,
+                              urlCrawlErrorsSamples = pageURL), 
+        pars_arguments = params)
 
-  } else {
-    
-    stop("Invalid Token")
-    
   }
   
 }
@@ -692,28 +514,23 @@ fix_sample_url <- function(siteURL,
   
   siteURL <- check.Url(siteURL, reserved=T)
   pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T)
-  
+ 
   ## require pre-existing token, to avoid recursion
-  if(checkTokenAPI(shiny_access_token) && 
-     is.valid.category.platform(category, platform)) {
+  if(is.valid.category.platform(category, platform)){
     
-    ## docs here
-    ## https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/markAsFixed
-    req_url <- paste0("https://www.googleapis.com/webmasters/v3/sites/", 
-                      siteURL,
-                      "/urlCrawlErrorsSamples/",
-                      pageURL)
+    params <- list('category' = category,
+                   'platform' = platform)
     
-    param_vector <- c('category'=category,
-                      'platform'=platform)
+    fsu <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                          "DELETE",
+                                          path_args = list(sites = "siteURL",
+                                                           urlCrawlErrorsSamples = "pageURL"),
+                                          pars_args = params,
+                                          data_parse_function = parse_errorsample_url)
     
-    req <- searchconsole_DELETE(req_url, shiny_access_token, params = param_vector)
-    
-    req
-    
-  } else {
-    
-    stop("Invalid Token")
+    fsu(path_arguments = list(sites = siteURL,
+                              urlCrawlErrorsSamples = pageURL), 
+        pars_arguments = params)
     
   }
   
