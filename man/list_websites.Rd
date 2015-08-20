@@ -6,9 +6,6 @@
 \usage{
 list_websites()
 }
-\arguments{
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
-}
 \value{
 a dataframe of siteUrl and permissionLevel
 }

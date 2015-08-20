@@ -8,8 +8,6 @@ list_sitemaps(siteURL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to get sitemap information from. Must include protocol (http://).}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A list of two dataframes: $sitemap with general info and $contents with sitemap info.

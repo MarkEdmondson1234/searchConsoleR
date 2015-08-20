@@ -8,8 +8,6 @@ delete_website(siteURL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete.}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.

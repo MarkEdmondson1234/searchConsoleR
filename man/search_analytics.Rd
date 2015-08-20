@@ -27,8 +27,6 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 \item{rowLimit}{How many rows, maximum is 5000.}
 
 \item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"

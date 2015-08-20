@@ -2,7 +2,7 @@
 #' 
 #' @param x req$content from API response
 #' 
-#' @keyword internal
+#' @keywords internal
 #' @family parsing functions
 parse_search_analytics <- function(x){
   the_data <- x$rows
@@ -40,7 +40,7 @@ parse_search_analytics <- function(x){
 #' 
 #' @param x req$content from API response
 #' 
-#' @keyword internal
+#' @keywords internal
 #' @family parsing functions
 parse_sitemaps <- function(x){
   list(sitemap = x$sitemap[, setdiff(names(x$sitemap), "contents")],
@@ -52,7 +52,7 @@ parse_sitemaps <- function(x){
 #' 
 #' @param x req$content from API response
 #' 
-#' @keyword internal
+#' @keywords internal
 #' @family parsing functions
 parse_crawlerrors <- function(x){
   cpt <- x$countPerTypes
@@ -80,7 +80,7 @@ parse_crawlerrors <- function(x){
 #' 
 #' @param x req$content from API response
 #' 
-#' @keyword internal
+#' @keywords internal
 #' @family parsing functions
 parse_crawlerror_sample <- function(x){
   errs <- x$urlCrawlErrorSample
@@ -101,7 +101,7 @@ parse_crawlerror_sample <- function(x){
 #' 
 #' @param x req$content from API response
 #' 
-#' @keyword internal
+#' @keywords internal
 #' @family parsing functions
 parse_errorsample_url <- function(x){
   raw_details <- x

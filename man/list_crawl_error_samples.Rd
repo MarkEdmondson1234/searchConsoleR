@@ -12,8 +12,6 @@ list_crawl_error_samples(siteURL, category = "notFound", platform = "web")
 \item{category}{Crawl error category. Default 'notFound'.}
 
 \item{platform}{User agent type. Default 'web'.}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A dataframe of $pageUrl, $last_crawled, $first_detected, $response

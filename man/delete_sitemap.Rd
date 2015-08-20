@@ -10,8 +10,6 @@ delete_sitemap(siteURL, feedpath)
 \item{siteURL}{The URL of the website you are deleting the sitemap from. Must include protocol (http://).}
 
 \item{feedpath}{The URL of the sitemap to delete. Must include protocol (http://).}
-
-\item{session}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.
