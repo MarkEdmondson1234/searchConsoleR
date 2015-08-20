@@ -8,10 +8,10 @@ shinyUI(fluidPage(
   titlePanel("searchConsoleR Shiny Demo"),
   sidebarLayout(
     sidebarPanel(
-      uiOutput("loginButton"),
+      googleAuthR::loginOutput("loginButton"),
       selectInput("website_select", label = "Select Website",
                   choices = NULL),
-      uiOutput("logoutButton"),
+      actionButton("submit", "Get Search Console Data"),
       br(),
       p("Demo for the searchConsoleR R package."),
       a("See source code on Github", href="https://github.com/MarkEdmondson1234/searchConsoleR"),

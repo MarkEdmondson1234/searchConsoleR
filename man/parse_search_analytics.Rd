@@ -4,10 +4,14 @@
 \alias{parse_search_analytics}
 \title{Parsing function for \code{\link{search_analytics}}}
 \usage{
-parse_search_analytics(x)
+parse_search_analytics(x, dim, pn = TRUE)
 }
 \arguments{
 \item{x}{req$content from API response}
+
+\item{dim}{the dimensions passed from search_analytics}
+
+\item{pn}{PrettyNames passed from search_analytics}
 }
 \description{
 Parsing function for \code{\link{search_analytics}}

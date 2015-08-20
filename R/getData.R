@@ -182,8 +182,12 @@ search_analytics <- function(siteURL,
                                    "POST",
                                    path_args = list(sites = "siteURL",
                                                     searchAnalytics = "query"),
-                                   data_parse_function = parse_search_analytics)
-  search_analytics_g(the_body=body, path_arguments=list(sites = siteURL))
+                                   data_parse_function = parse_search_analytics
+                                   )
+  search_analytics_g(the_body=body, 
+                     path_arguments=list(sites = siteURL), 
+                     dim = dimensions,
+                     pn = prettyNames)
 }
 
 

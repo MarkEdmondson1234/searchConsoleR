@@ -1,10 +1,12 @@
 #' Parsing function for \code{\link{search_analytics}}
 #' 
 #' @param x req$content from API response
+#' @param dim the dimensions passed from search_analytics
+#' @param pn PrettyNames passed from search_analytics
 #' 
 #' @keywords internal
 #' @family parsing functions
-parse_search_analytics <- function(x){
+parse_search_analytics <- function(x, dim, prettyNames=TRUE){
   the_data <- x$rows
   
   # a bit of jiggery pokery (data processing)
