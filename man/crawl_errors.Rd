@@ -5,8 +5,7 @@
 \title{Fetch a time-series of Googlebot crawl errors.}
 \usage{
 crawl_errors(siteURL, category = "all", platform = c("all", "mobile",
-  "smartphoneOnly", "web"), latestCountsOnly = FALSE,
-  shiny_access_token = NULL)
+  "smartphoneOnly", "web"), latestCountsOnly = FALSE)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}

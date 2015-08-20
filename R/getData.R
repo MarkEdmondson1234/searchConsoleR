@@ -18,7 +18,6 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
 #' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
@@ -183,7 +182,6 @@ search_analytics <- function(siteURL,
                                    "POST",
                                    path_args = list(sites = "siteURL",
                                                     searchAnalytics = "query"),
-                                   ,
                                    data_parse_function = parse_search_analytics)
   search_analytics_g(the_body=body, path_arguments=list(sites = siteURL))
 }
@@ -191,7 +189,6 @@ search_analytics <- function(siteURL,
 
 #' Retrieves dataframe of websites user has in Search Console
 #'
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return a dataframe of siteUrl and permissionLevel
 #'
@@ -208,7 +205,6 @@ list_websites <- function() {
 #' Adds website to Search Console
 #' 
 #' @param siteURL The URL of the website to add.
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #'
 #' @return TRUE if successful, raises an error if not.
 #' @family search console website functions
@@ -223,13 +219,13 @@ add_website <- function(siteURL) {
                                       path_args = list(sites = "siteURL"))
   
   aw(path_arguments = list(sites = siteURL))
+  TRUE
   
 }
 
 #' Deletes website in Search Console
 #' 
 #' @param siteURL The URL of the website to delete.
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #' @family data fetching functions
@@ -240,11 +236,13 @@ delete_website <- function(siteURL) {
   
   siteURL <- check.Url(siteURL, reserved=T)
   
+  
   dw <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "DELETE",
                                       path_args = list(sites = "siteURL"))
   
   dw(path_arguments = list(sites = siteURL))
+  TRUE
   
 }
 
@@ -253,7 +251,6 @@ delete_website <- function(siteURL) {
 #' See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps 
 #' 
 #' @param siteURL The URL of the website to get sitemap information from. Must include protocol (http://).
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return A list of two dataframes: $sitemap with general info and $contents with sitemap info.
 #' @family data fetching functions
@@ -280,7 +277,6 @@ list_sitemaps <- function(siteURL) {
 #' 
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param feedpath The URL of the sitemap to submit. Must include protocol (http://).
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #'
@@ -294,11 +290,11 @@ add_sitemap <- function(siteURL, feedpath) {
   as <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "PUT",
                                       path_args = list(sites = "siteURL",
-                                                       sitemaps = "feedpath"),
-                                      data_parse_function = parse_sitemaps)
+                                                       sitemaps = "feedpath"))
   
   as(path_arguments = list(sites = siteURL,
                           sitemaps = feedpath))
+  TRUE
   
 }
 
@@ -308,7 +304,6 @@ add_sitemap <- function(siteURL, feedpath) {
 #' 
 #' @param siteURL The URL of the website you are deleting the sitemap from. Must include protocol (http://).
 #' @param feedpath The URL of the sitemap to delete. Must include protocol (http://).
-#' @param session If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #'
@@ -322,11 +317,12 @@ delete_sitemap <- function(siteURL, feedpath) {
   ds <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "DELETE",
                                       path_args = list(sites = "siteURL",
-                                                       sitemaps = "feedpath"),
-                                      data_parse_function = parse_sitemaps)
+                                                       sitemaps = "feedpath"))
   
   ds(path_arguments = list(sites = siteURL,
                           sitemaps = feedpath))
+  
+  TRUE
   
 }
 
@@ -340,7 +336,6 @@ delete_sitemap <- function(siteURL, feedpath) {
 #' @param category Crawl error category. Defaults to 'all'
 #' @param platform The user agent type. 'all', 'mobile', 'smartphoneOnly' or 'web'.
 #' @param latestCountsOnly Default FALSE. Only the latest crawl error counts returned if TRUE.
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
 #' 
 #' @return dataframe of errors with $platform $category $count and $timecount.
 #'
@@ -391,8 +386,7 @@ crawl_errors <- function(siteURL,
 #' 
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param category Crawl error category. Default 'notFound'.
-#' @param platform User agent type. Default 'web'. 
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
+#' @param platform User agent type. Default 'web'.
 #'
 #' @details
 #' See here for details: \url{https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples}
@@ -432,8 +426,7 @@ list_crawl_error_samples <- function(siteURL,
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param pageURL A PageUrl taken from list_crawl_error_samples.
 #' @param category Crawl error category. Default 'notFound'.
-#' @param platform User agent type. Default 'web'. 
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
+#' @param platform User agent type. Default 'web'.
 #' 
 #' @return Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
 #' @family working with search console errors
@@ -452,8 +445,7 @@ list_crawl_error_samples <- function(siteURL,
 error_sample_url <- function(siteURL,
                              pageURL,
                              category="notFound",
-                             platform="web",
-                             shiny_access_token=NULL) {
+                             platform="web") {
   
   siteURL <- check.Url(siteURL, reserved=T)
   pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T, repeated=T)
@@ -488,8 +480,7 @@ error_sample_url <- function(siteURL,
 #' @param siteURL The URL of the website to delete. Must include protocol (http://).
 #' @param pageURL A PageUrl taken from list_crawl_error_samples.
 #' @param category Crawl error category. Default 'notFound'.
-#' @param platform User agent type. Default 'web'. 
-#' @param shiny_access_token If in a Shiny session, supply its shiny_access_token object.
+#' @param platform User agent type. Default 'web'.
 #' 
 #' @return TRUE if successful, raises an error if not.
 #' @family working with search console errors
@@ -509,13 +500,11 @@ error_sample_url <- function(siteURL,
 fix_sample_url <- function(siteURL,
                            pageURL,
                            category="notFound",
-                           platform="web",
-                           shiny_access_token=NULL) {
+                           platform="web") {
   
   siteURL <- check.Url(siteURL, reserved=T)
   pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T)
  
-  ## require pre-existing token, to avoid recursion
   if(is.valid.category.platform(category, platform)){
     
     params <- list('category' = category,
@@ -525,12 +514,13 @@ fix_sample_url <- function(siteURL,
                                           "DELETE",
                                           path_args = list(sites = "siteURL",
                                                            urlCrawlErrorsSamples = "pageURL"),
-                                          pars_args = params,
-                                          data_parse_function = parse_errorsample_url)
+                                          pars_args = params)
     
     fsu(path_arguments = list(sites = siteURL,
                               urlCrawlErrorsSamples = pageURL), 
         pars_arguments = params)
+    
+    TRUE
     
   }
   

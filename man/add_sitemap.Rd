@@ -4,7 +4,7 @@
 \alias{add_sitemap}
 \title{Submit a sitemap.}
 \usage{
-add_sitemap(siteURL, feedpath, shiny_access_token = NULL)
+add_sitemap(siteURL, feedpath)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}

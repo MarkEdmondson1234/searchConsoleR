@@ -4,7 +4,7 @@
 \alias{delete_sitemap}
 \title{Delete a sitemap.}
 \usage{
-delete_sitemap(siteURL, feedpath, shiny_access_token = NULL)
+delete_sitemap(siteURL, feedpath)
 }
 \arguments{
 \item{siteURL}{The URL of the website you are deleting the sitemap from. Must include protocol (http://).}

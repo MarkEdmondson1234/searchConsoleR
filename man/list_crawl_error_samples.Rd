@@ -4,8 +4,7 @@
 \alias{list_crawl_error_samples}
 \title{Lists a site's sample URLs for crawl errors.}
 \usage{
-list_crawl_error_samples(siteURL, category = "notFound", platform = "web",
-  shiny_access_token = NULL)
+list_crawl_error_samples(siteURL, category = "notFound", platform = "web")
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}

@@ -4,7 +4,7 @@
 \alias{list_sitemaps}
 \title{Gets sitemap information for the URL supplied.}
 \usage{
-list_sitemaps(siteURL, shiny_access_token = NULL)
+list_sitemaps(siteURL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to get sitemap information from. Must include protocol (http://).}
@@ -18,8 +18,7 @@ A list of two dataframes: $sitemap with general info and $contents with sitemap 
 See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps
 }
 \seealso{
-Other data fetching functions: \code{\link{checkTokenAPI}};
-  \code{\link{delete_website}}
+Other data fetching functions: \code{\link{delete_website}}
 
 Other sitemap admin functions: \code{\link{add_sitemap}};
   \code{\link{delete_sitemap}}

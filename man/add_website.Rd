@@ -4,7 +4,7 @@
 \alias{add_website}
 \title{Adds website to Search Console}
 \usage{
-add_website(siteURL, shiny_access_token = NULL)
+add_website(siteURL)
 }
 \arguments{
 \item{siteURL}{The URL of the website to add.}

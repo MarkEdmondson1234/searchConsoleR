@@ -1,3 +1,9 @@
+#' Parsing function for \code{\link{search_analytics}}
+#' 
+#' @param x req$content from API response
+#' 
+#' @keyword internal
+#' @family parsing functions
 parse_search_analytics <- function(x){
   the_data <- x$rows
   
@@ -30,12 +36,24 @@ parse_search_analytics <- function(x){
   
 }
 
+#' Parsing function for \code{\link{list_sitemaps}}
+#' 
+#' @param x req$content from API response
+#' 
+#' @keyword internal
+#' @family parsing functions
 parse_sitemaps <- function(x){
   list(sitemap = x$sitemap[, setdiff(names(x$sitemap), "contents")],
        contents = x$sitemap$contents[[1]])
   
 }
 
+#' Parsing function for \code{\link{crawl_errors}}
+#' 
+#' @param x req$content from API response
+#' 
+#' @keyword internal
+#' @family parsing functions
 parse_crawlerrors <- function(x){
   cpt <- x$countPerTypes
   ## data parsing gymnastics
@@ -58,6 +76,12 @@ parse_crawlerrors <- function(x){
   
 }
 
+#' Parsing function for \code{\link{list_crawl_error_samples}}
+#' 
+#' @param x req$content from API response
+#' 
+#' @keyword internal
+#' @family parsing functions
 parse_crawlerror_sample <- function(x){
   errs <- x$urlCrawlErrorSample
   
@@ -73,6 +97,12 @@ parse_crawlerror_sample <- function(x){
   
 }
 
+#' Parsing function for \code{\link{error_sample_url}}
+#' 
+#' @param x req$content from API response
+#' 
+#' @keyword internal
+#' @family parsing functions
 parse_errorsample_url <- function(x){
   raw_details <- x
   

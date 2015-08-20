@@ -7,7 +7,7 @@
 search_analytics(siteURL, startDate, endDate, dimensions = NULL,
   searchType = c("web", "video", "image"), dimensionFilterExp = NULL,
   aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
-  prettyNames = TRUE, shiny_access_token = NULL)
+  prettyNames = TRUE)
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
