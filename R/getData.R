@@ -186,8 +186,7 @@ search_analytics <- function(siteURL,
                                    )
   search_analytics_g(the_body=body, 
                      path_arguments=list(sites = siteURL), 
-                     dim = dimensions,
-                     pn = prettyNames)
+                     dim = dimensions)
 }
 
 
@@ -411,12 +410,13 @@ list_crawl_error_samples <- function(siteURL,
     params <- list('category' = category,
                    'platform' = platform)
     
-    lces <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
-                                         "GET",
-                                         path_args = list(sites = "siteURL",
-                                                          urlCrawlErrorsSamples = ""),
-                                         pars_args = params,
-                                         data_parse_function = parse_crawlerror_sample)
+    lces <- 
+      googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                     "GET",
+                                     path_args = list(sites = "siteURL",
+                                                      urlCrawlErrorsSamples = ""),
+                                     pars_args = params,
+                                     data_parse_function = parse_crawlerror_sample)
     
     lces(path_arguments = list(sites = siteURL), pars_arguments = params)
   }

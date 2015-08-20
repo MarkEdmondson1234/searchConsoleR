@@ -156,7 +156,7 @@ check.Url <- function(url, checkProtocol=TRUE, ...){
     
     if(!grepl("%3A%2F%2F", url)){
       url <- URLencode(url, ...)
-      message("Encoding URL to ", url)
+      # message("Encoding URL to ", url)
     }
     
     url    

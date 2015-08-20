@@ -18,7 +18,7 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
   ## if no rows, get out of here.
   if(!NROW(dimensionCols) > 0) return(the_data)
   
-  names(dimensionCols ) <- dimensions
+  names(dimensionCols ) <- dim
   dimensionCols <- lapply(dimensionCols, unname)
   
   if('date' %in% names(dimensionCols)){

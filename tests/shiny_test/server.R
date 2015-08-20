@@ -75,7 +75,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-  sa_breakdown_data <- eventReactive(input$submit, {
+  sa_breakdown_data <- reactive({
     www <- input$website_select
     dates <- input$date_range
     dims <- input$dims
@@ -217,13 +217,14 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(access_token())){
       
-      ce <- try(
+      ce <- 
+        # try(
         googleAuthR::with_shiny(crawl_errors, 
                                 shiny_access_token = access_token(),
                                 siteURL = www, 
                                 category = errors, 
                                 platform = platform)
-      )
+      # )
       
       if(!is.error(ce)){
         plot(ce$timecount, ce$count, type="l")                 
@@ -239,18 +240,17 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(access_token())){
       
-      error_df <- try(googleAuthR::with_shiny(list_crawl_error_samples,
-                                              shiny_access_token = access_token(),
-                                              siteURL = www, 
-                                              category = errors, 
-                                              platform = platform))
-      if(!is.error(error_df)){
+      error_df <- googleAuthR::with_shiny(list_crawl_error_samples,
+                                          shiny_access_token = access_token(),
+                                          siteURL = www, 
+                                          category = errors, 
+                                          platform = platform)
         
-        error_df$last_crawled <- as.Date(error_df$last_crawled)
-        error_df$first_detected <- as.Date(error_df$first_detected)
-        
-        error_df
-      }
+      error_df$last_crawled <- as.Date(error_df$last_crawled)
+      error_df$first_detected <- as.Date(error_df$first_detected)
+      
+      error_df
+
     }
     
   })
