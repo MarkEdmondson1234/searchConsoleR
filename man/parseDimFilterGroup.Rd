@@ -25,8 +25,7 @@ dimension = c('country','device','page','query')
               query: not checked
 }
 \seealso{
-Other search analytics: \code{\link{lookupCountryCode}};
-  \code{\link{search_analytics}}
+Other search analytics: \code{\link{lookupCountryCode}}
 }
 \keyword{internal}
 

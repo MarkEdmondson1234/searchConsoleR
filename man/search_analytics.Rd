@@ -115,8 +115,5 @@ Download your Google SEO data.
 \seealso{
 Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
   API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
-
-Other search analytics: \code{\link{lookupCountryCode}};
-  \code{\link{parseDimFilterGroup}}
 }
 
