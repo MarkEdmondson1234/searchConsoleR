@@ -21,7 +21,6 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
-#' @family search analytics
 #' @seealso Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
 #'   API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
 #' @export
@@ -192,7 +191,6 @@ search_analytics <- function(siteURL,
 
 #' Retrieves dataframe of websites user has in Search Console
 #'
-#' 
 #' @return a dataframe of siteUrl and permissionLevel
 #'
 #' @export

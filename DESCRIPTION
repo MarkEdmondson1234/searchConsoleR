@@ -1,7 +1,7 @@
 Package: searchConsoleR
 Title: R interface for Google Search Console API v3
 Version: 0.1.2
-Authors@R: c(person("Mark", "Edmondson",email = "scr@sunholo.com",
+Authors@R: c(person("Mark", "Edmondson",email = "r@sunholo.com",
                   role = c("aut", "cre")),
            person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
 Description: Provides an interface with the Google Search Console API v3, 

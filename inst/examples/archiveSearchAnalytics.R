@@ -6,6 +6,8 @@
 ##
 ## Mark Edmondson (http://markedmondson.me)
 
+library(googleAuthR)
+
 ## load the library or download it if necessary
 if(!require(searchConsoleR)){
   if(!require(devtools)){
@@ -15,6 +17,7 @@ if(!require(searchConsoleR)){
   }
 }
 library(searchConsoleR)
+
 
 ## change this to the website you want to download data for. Include http
 website <- "http://copenhagenish.me"
@@ -37,7 +40,7 @@ type <- c('web')
 ## First time you will need to login to Google,
 ## but should auto-refresh after that so can be put in 
 ## Authorize script with an account that has access to website.
-scr_auth()
+gar_auth()
 
 ## first time stop here and wait for authorisation
 

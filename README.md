@@ -16,8 +16,6 @@ Change search_analytics() so if no dimensions will still return data, instead of
 ## Shiny Compatible
 Authentication can be done locally or within a Shiny app. See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
 
-The code for this Shiny app is in the ```./tests/shiny_test``` folder of the package
-
 ## Info Links
 
 [Google Search Console](http://www.google.com/webmasters/tools/)
@@ -45,12 +43,17 @@ The code for this Shiny app is in the ```./tests/shiny_test``` folder of the pac
 * `error_sample_url()` - show details about an example URL error (for example, links to a 404 URL)
 * `fix_sample_url()` - mark a URL as fixed.
 
-### Authentication functions
-* `scr_auth()` - main authentication function. Works locally and within a Shiny environment.
-* `getShinyURL()` - detects the Shiny domain URL. Needed for authentication flow.
-* `shinygaGetTokenURL()` - Imported from shinyga() package. Needed for authentication flow, gives the URL a user must click on to get verified.
+### Authentication functions from googleAuthR
+
+* `gar_auth()` - main authentication function. Works locally and within a Shiny environment.
 
 ## Guide
+
+Install googleAuthR from CRAN:
+```
+install.packages("googleAuthR")
+library(googleAuthR)
+```
 
 Install searchConsoleR from github using [devtools](https://cran.r-project.org/web/packages/devtools/index.html).
 
@@ -68,14 +71,14 @@ library(searchConsoleR)
 
 Work flow always starts with authenticating with Google.
 ```
-scr_auth()
+gar_auth()
 ```
 
 Your browser window should open up and go through the Google sign in OAuth2 flow. Verify with a user that has Search Console access to the websites you want to work with.
 
 Check out the documentation of any function for a guide on what else can be done.
 ```
-?scr_auth
+?gar_auth
 ```
 
 If you authenticate ok, you should be able to see a list of your websites in the Search Console via:
@@ -119,6 +122,8 @@ Here is an example for downloading daily data and exporting to .csv
 ##
 ## Mark Edmondson (http://markedmondson.me)
 
+library(googleAuthR)
+
 ## load the library or download it if necessary
 if(!require(searchConsoleR)){
   if(!require(devtools)){
@@ -150,7 +155,7 @@ type <- c('web')
 ## First time you will need to login to Google,
 ## but should auto-refresh after that so can be put in 
 ## Authorize script with an account that has access to website.
-scr_auth()
+gar_auth()
 
 ## first time stop here and wait for authorisation
 
