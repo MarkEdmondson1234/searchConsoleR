@@ -4,8 +4,7 @@
 \alias{list_crawl_error_samples}
 \title{Lists a site's sample URLs for crawl errors.}
 \usage{
-list_crawl_error_samples(siteURL, category = "notFound", platform = "web",
-  shiny_access_token = NULL)
+list_crawl_error_samples(siteURL, category = "notFound", platform = "web")
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -13,8 +12,6 @@ list_crawl_error_samples(siteURL, category = "notFound", platform = "web",
 \item{category}{Crawl error category. Default 'notFound'.}
 
 \item{platform}{User agent type. Default 'web'.}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A dataframe of $pageUrl, $last_crawled, $first_detected, $response

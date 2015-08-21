@@ -4,10 +4,7 @@
 \alias{list_websites}
 \title{Retrieves dataframe of websites user has in Search Console}
 \usage{
-list_websites(shiny_access_token = NULL)
-}
-\arguments{
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
+list_websites()
 }
 \value{
 a dataframe of siteUrl and permissionLevel

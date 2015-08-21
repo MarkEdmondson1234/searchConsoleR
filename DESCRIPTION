@@ -1,6 +1,6 @@
 Package: searchConsoleR
 Title: R interface for Google Search Console API v3
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(person("Mark", "Edmondson",email = "scr@sunholo.com",
                   role = c("aut", "cre")),
            person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
@@ -10,9 +10,10 @@ URL: http://www.google.com/webmasters/tools/, https://developers.google.com/webm
 Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports: httr (>= 0.6.1),
-    R6 (>= 2.1.0),
+Imports: 
+    googleAuthR (>= 0.1.1),
     stringr (>= 1.0.0)
-Suggests: shiny (>= 0.12.1),
+Suggests: 
+    shiny (>= 0.12.1),
     knitr
 VignetteBuilder: knitr

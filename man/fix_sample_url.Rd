@@ -4,8 +4,7 @@
 \alias{fix_sample_url}
 \title{Mark As Fixed the individual sample URLs}
 \usage{
-fix_sample_url(siteURL, pageURL, category = "notFound", platform = "web",
-  shiny_access_token = NULL)
+fix_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -15,8 +14,6 @@ fix_sample_url(siteURL, pageURL, category = "notFound", platform = "web",
 \item{category}{Crawl error category. Default 'notFound'.}
 
 \item{platform}{User agent type. Default 'web'.}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 TRUE if successful, raises an error if not.

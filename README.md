@@ -1,9 +1,14 @@
 # searchConsoleR
+[![Travis-CI Build Status](https://travis-ci.org/MarkEdmondson1234/SearchConsoleR.svg?branch=master)](https://travis-ci.org/MarkEdmondson1234/SearchConsoleR)
+
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
-First release 0.1, Search Analytics with Shiny multi-user.
-
 ## News
+
+### 0.2
+
+Move to using googleAuthR for authentication backend.
+
 ### 0.1.1
 Change search_analytics() so if no dimensions will still return data, instead of NULL
 
@@ -12,19 +17,7 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 
 The code for this Shiny app is in the ```./tests/shiny_test``` folder of the package
 
-### Search analytics trend
-![searchConsoleR - google search console R package1][demo1]
-
-### Search Analytics breakdown
-![searchConsoleR - google search console R package2][demo2]
-
-### Error trend
-![searchConsoleR - google search console R package3][demo3]
-
-### Sample URLs of errors
-![searchConsoleR - google search console R package4][demo4]
-
-## Links
+## Info Links
 
 [Google Search Console](http://www.google.com/webmasters/tools/)
 
@@ -235,9 +228,3 @@ As default `searchConsoleR` uses its own Google API project to grant requests, b
   + `options("searchConsoleR.webapp.client_secret" = "YOUR_CLIENT_SECRET")`
 6. Run the app locally specifying the port number you used e.g. `shiny::runApp(port=4624)`
 7. Or deploy to your Shiny Server that deploys to web port (80 or 443).
-
-[demo1]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo1.png
-[demo2]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo2.png
-[demo3]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo3.png
-[demo4]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/searchConsoleR%20demo4.png
-[search_analytics_help]: https://github.com/MarkEdmondson1234/searchConsoleR/blob/master/images/search_analytics_help.png

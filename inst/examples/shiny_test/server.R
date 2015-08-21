@@ -9,59 +9,24 @@ shinyServer(function(input, output, session) {
 
   message("New Shiny Session - ", Sys.time())
   
-  ## Make a button to link to Google auth screen
-  ## If auth_code is returned then don't show login button
-  output$loginButton <- renderUI({
-    if(is.null(isolate(access_token()))) {
-      actionLink("loginButton",
-                 label = a("Authenticate to get started here.",
-                           href = shinygaGetTokenURL(getShinyURL(session))))
-    } else {
-      return()
-    }
-  })
+  ## Get auth code
+  access_token  <- googleAuthR::reactiveAccessToken(session)
   
   ## Make a button to link to Google auth screen
   ## If auth_code is returned then don't show login button
-  output$logoutButton <- renderUI({
-    if(!is.null(access_token())) {
-      actionLink("logout",
-                 label = a("Logout",
-                           href = getShinyURL(session)))
-    } else {
-      return()
-    }
-  })
-  
-  ## Get auth code from return URL
-  access_token  <- reactive({
-    ## gets all the parameters in the URL. The auth code should be one of them.
-    
-    # if(length(pars$code) > 0) {
-    if(!is.null(authReturnCode(session))){
-      ## extract the authorization token
-      access_token <- get_google_token_shiny(authReturnCode(session), session) 
-      app_url <- getShinyURL(session)
-      Authentication$set("public", "app_url", app_url, overwrite=TRUE)
-      Authentication$set("public", "shiny", TRUE, overwrite=TRUE)
-      
-      access_token
-      
-    } else {
-      NULL
-    }
-  })
-
+  output$loginButton <- googleAuthR::renderLogin(session, access_token())
   
   output$token_websites <- renderTable({
     if(!is.null(access_token())){
-      list_websites(shiny_access_token = access_token())
+      googleAuthR::with_shiny(list_websites,
+                              shiny_access_token = access_token())
     }
   })
   
   website_df <- reactive({
     if(!is.null(access_token())){
-      www <- list_websites(shiny_access_token = access_token())           
+      googleAuthR::with_shiny(list_websites,
+                              shiny_access_token = access_token())         
     }
     
   })
@@ -79,7 +44,7 @@ shinyServer(function(input, output, session) {
     
   })
   
-  sa_trend_data <- reactive({
+  sa_trend_data <- eventReactive(input$submit, {
     www <- input$website_select
     dates <- input$date_range
     # dims <- input$dims
@@ -97,11 +62,14 @@ shinyServer(function(input, output, session) {
         dfe = NULL
       }
       
-      sa <- search_analytics(www, dates[1], dates[2],
-                             dimensions = c('date'),
-                             searchType = type,
-                             dimensionFilterExp = dfe,
-                             shiny_access_token = access_token())
+      sa <- googleAuthR::with_shiny(search_analytics,
+                                    shiny_access_token = access_token(),
+                                    siteURL = www, 
+                                    startDate = dates[1], 
+                                    endDate = dates[2],
+                                    dimensions = c('date'),
+                                    searchType = type,
+                                    dimensionFilterExp = dfe)
     }
     
     
@@ -125,11 +93,15 @@ shinyServer(function(input, output, session) {
         dfe = NULL
       }
       
-      sa <- search_analytics(www, dates[1], dates[2],
-                             dimensions = dims,
-                             searchType = type,
-                             dimensionFilterExp = dfe, prettyNames = FALSE,
-                             shiny_access_token = access_token())
+      sa <- googleAuthR::with_shiny(search_analytics,
+                                    shiny_access_token = access_token(),
+                                    siteURL = www, 
+                                    startDate = dates[1], 
+                                    endDate = dates[2],
+                                    dimensions = dims,
+                                    searchType = type,
+                                    dimensionFilterExp = dfe, 
+                                    prettyNames = FALSE)
     }
     
     
@@ -159,11 +131,14 @@ shinyServer(function(input, output, session) {
       ## construct the filter
       dfe <- paste(dims, "==", data_dims)
       message(dfe)
-      sa <- search_analytics(www, dates[1], dates[2],
-                             dimensions = c('date'),
-                             searchType = type,
-                             dimensionFilterExp = dfe,
-                             shiny_access_token = access_token())      
+      sa <- googleAuthR::with_shiny(search_analytics,
+                                    shiny_access_token = access_token(),
+                                    siteURL = www, 
+                                    startDate = dates[1], 
+                                    endDate = dates[2],
+                                    dimensions = c('date'),
+                                    searchType = type,
+                                    dimensionFilterExp = dfe)      
     }
     
   })
@@ -242,12 +217,14 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(access_token())){
       
-      ce <- try(
-        crawl_errors(www, 
-                     category = errors, 
-                     platform = platform, 
-                     shiny_access_token = access_token())
-      )
+      ce <- 
+        # try(
+        googleAuthR::with_shiny(crawl_errors, 
+                                shiny_access_token = access_token(),
+                                siteURL = www, 
+                                category = errors, 
+                                platform = platform)
+      # )
       
       if(!is.error(ce)){
         plot(ce$timecount, ce$count, type="l")                 
@@ -263,17 +240,17 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(access_token())){
       
-      error_df <- try(list_crawl_error_samples(www, 
-                                               category = errors, 
-                                               platform = platform,
-                                               shiny_access_token = access_token()))
-      if(!is.error(error_df)){
+      error_df <- googleAuthR::with_shiny(list_crawl_error_samples,
+                                          shiny_access_token = access_token(),
+                                          siteURL = www, 
+                                          category = errors, 
+                                          platform = platform)
         
-        error_df$last_crawled <- as.Date(error_df$last_crawled)
-        error_df$first_detected <- as.Date(error_df$first_detected)
-        
-        error_df
-      }
+      error_df$last_crawled <- as.Date(error_df$last_crawled)
+      error_df$first_detected <- as.Date(error_df$first_detected)
+      
+      error_df
+
     }
     
   })
@@ -308,11 +285,12 @@ shinyServer(function(input, output, session) {
     
     if(!is.null(access_token()))
     {
-      df_err <- error_sample_url(www, 
-                                 sample_error_url, 
-                                 category = errors, 
-                                 platform = platform,
-                                 shiny_access_token = access_token())     
+      df_err <- googleAuthR::with_shiny(error_sample_url,
+                                        shiny_access_token = access_token(),
+                                        siteURL = www, 
+                                        pageURL = sample_error_url, 
+                                        category = errors, 
+                                        platform = platform)   
     }
     
   })

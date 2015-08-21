@@ -7,7 +7,7 @@
 search_analytics(siteURL, startDate, endDate, dimensions = NULL,
   searchType = c("web", "video", "image"), dimensionFilterExp = NULL,
   aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
-  prettyNames = TRUE, shiny_access_token = NULL)
+  prettyNames = TRUE)
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -27,8 +27,6 @@ search_analytics(siteURL, startDate, endDate, dimensions = NULL,
 \item{rowLimit}{How many rows, maximum is 5000.}
 
 \item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.}
-
-\item{shiny_access_token}{If in a Shiny session, supply its shiny_access_token object.}
 }
 \value{
 A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"

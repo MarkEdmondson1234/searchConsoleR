@@ -97,21 +97,6 @@ parseDimFilterGroup <- function(dfe){
        )
 }
 
-
-
-#' Is this a valid shiny session object?
-#' 
-#' Checks that a valid Shiny session object has been passed.
-#' 
-#' @param shiny_session a Shiny session object.
-#' 
-#' @return Boolean
-#' 
-#' @keywords internal
-is_shiny <- function(shiny_session){
-  inherits(shiny_session, "ShinySession")
-}
-
 #' Is this a try error?
 #' 
 #' Utility to test errors
@@ -171,7 +156,7 @@ check.Url <- function(url, checkProtocol=TRUE, ...){
     
     if(!grepl("%3A%2F%2F", url)){
       url <- URLencode(url, ...)
-      message("Encoding URL to ", url)
+      # message("Encoding URL to ", url)
     }
     
     url    
