@@ -6,7 +6,7 @@ R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
 ## News
 
-### 0.2
+### 0.1.2
 
 Move to using googleAuthR for authentication backend.
 
@@ -47,27 +47,28 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 
 * `gar_auth()` - main authentication function. Works locally and within a Shiny environment.
 
-## Guide
+## Setup Guide
 
-Install googleAuthR from CRAN:
+Install dependency `googleAuthR` from CRAN:
 ```
 install.packages("googleAuthR")
 library(googleAuthR)
 ```
 
-Install searchConsoleR from github using [devtools](https://cran.r-project.org/web/packages/devtools/index.html).
-
+Install `searchConsoleR` from CRAN:
 ```
-## load the library or download it if necessary
-if(!require(searchConsoleR)){
-  if(!require(devtools)){
-    install.packages("devtools")
-  } else {
-    devtools::install_github("MarkEdmondson1234/searchConsoleR")
-  }
-}
+install.packages("searchConsoleR")
 library(searchConsoleR)
 ```
+
+If you want the development version of `searchConsoleR` on Github:
+
+```
+devtools::install_github("MarkEdmondson1234/searchConsoleR")
+library(searchConsoleR)
+```
+
+## Work flow
 
 Work flow always starts with authenticating with Google.
 ```
@@ -78,7 +79,7 @@ Your browser window should open up and go through the Google sign in OAuth2 flow
 
 Check out the documentation of any function for a guide on what else can be done.
 ```
-?gar_auth
+?searchConsoleR
 ```
 
 If you authenticate ok, you should be able to see a list of your websites in the Search Console via:
@@ -123,15 +124,6 @@ Here is an example for downloading daily data and exporting to .csv
 ## Mark Edmondson (http://markedmondson.me)
 
 library(googleAuthR)
-
-## load the library or download it if necessary
-if(!require(searchConsoleR)){
-  if(!require(devtools)){
-    install.packages("devtools")
-  } else {
-    devtools::install_github("MarkEdmondson1234/searchConsoleR")
-  }
-}
 library(searchConsoleR)
 
 ## change this to the website you want to download data for. Include http
