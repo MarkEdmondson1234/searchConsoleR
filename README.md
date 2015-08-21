@@ -3,9 +3,12 @@
 
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
-First release 0.1, Search Analytics with Shiny multi-user.
-
 ## News
+
+### 0.2
+
+Move to using googleAuthR for authentication backend.
+
 ### 0.1.1
 Change search_analytics() so if no dimensions will still return data, instead of NULL
 
