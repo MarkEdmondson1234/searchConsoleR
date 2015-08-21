@@ -4,9 +4,31 @@
 
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
+## Setup Guide
+
+Install dependency `googleAuthR` from CRAN:
+```
+install.packages("googleAuthR")
+library(googleAuthR)
+```
+
+Install `searchConsoleR` from CRAN:
+```
+install.packages("searchConsoleR")
+library(searchConsoleR)
+```
+
+If you want the development version of `searchConsoleR` on Github:
+
+```
+devtools::install_github("MarkEdmondson1234/searchConsoleR")
+library(searchConsoleR)
+```
+
+
 ## News
 
-### 0.1.2
+### 0.1.2 - on CRAN
 
 Move to using googleAuthR for authentication backend.
 
@@ -47,26 +69,7 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 
 * `gar_auth()` - main authentication function. Works locally and within a Shiny environment.
 
-## Setup Guide
 
-Install dependency `googleAuthR` from CRAN:
-```
-install.packages("googleAuthR")
-library(googleAuthR)
-```
-
-Install `searchConsoleR` from CRAN:
-```
-install.packages("searchConsoleR")
-library(searchConsoleR)
-```
-
-If you want the development version of `searchConsoleR` on Github:
-
-```
-devtools::install_github("MarkEdmondson1234/searchConsoleR")
-library(searchConsoleR)
-```
 
 ## Work flow
 
