@@ -25,7 +25,6 @@ devtools::install_github("MarkEdmondson1234/searchConsoleR")
 library(searchConsoleR)
 ```
 
-
 ## News
 
 ### 0.1.2 - on CRAN
@@ -111,7 +110,6 @@ For a lot more details see:
 ```
 ?search_analytics
 ```
-![google search analytics R package][search_analytics_help]
 
 ## Demo script
 
