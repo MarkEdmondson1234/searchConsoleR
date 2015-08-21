@@ -1,6 +1,6 @@
 # searchConsoleR
 
-[![Travis-CI Build Status](https://travis-ci.org/MarkEdmondson1234/SearchConsoleR.svg?branch=master)](https://travis-ci.org/MarkEdmondson1234/SearchConsoleR)
+[![Travis-CI Build Status](https://travis-ci.org/MarkEdmondson1234/searchConsoleR.svg?branch=master)](https://travis-ci.org/MarkEdmondson1234/searchConsoleR)
 
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
