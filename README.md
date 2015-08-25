@@ -72,8 +72,9 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 
 ## Work flow
 
-Work flow always starts with authenticating with Google.
+Work flow always starts with authenticating with Google via `googleAuthR`
 ```
+library(googleAuthR)
 gar_auth()
 ```
 
