@@ -20,11 +20,14 @@ lookupCountryCode <- function(country.code,
   names(country.codes) <- ISO_3166_1$Alpha_3
   
   if(all(country.code %in% names(country.codes))){
-    country.codes[country.code] 
+    code <- country.codes[country.code] 
   } else {
-    stop("country.code not in country.codes. Got: ", country.code)
+    warning("country.code not in country.codes. Got: ", country.code)
+    warning("Returning original country.code instead.")
+    code <- country.code
   }
   
+  code
 }
 
 

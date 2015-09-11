@@ -27,6 +27,10 @@ library(searchConsoleR)
 
 ## News
 
+### 0.1.2.9000 - Github
+
+Change error for country lookup to a warning if countrycode not recognised, return the original ISO code instead.
+
 ### 0.1.2 - on CRAN
 
 Move to using googleAuthR for authentication backend.
