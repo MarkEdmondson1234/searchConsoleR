@@ -132,6 +132,10 @@ search_analytics <- function(siteURL,
     stop("dates not in correct %Y-%m-%d format. Got these:", startDate, " - ", endDate)
   }
   
+  if(any(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-3, as.Date(endDate, "%Y-%m-%d") > Sys.Date()-3)){
+    warning("Search Analytics usually not available within 3 days (96 hrs) of today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
+  }
+  
   if(!is.null(dimensions) && !dimensions %in% c('date','country', 'device', 'page', 'query')){
     stop("dimension must be NULL or one or more of 'date','country', 'device', 'page', 'query'. 
          Got this: ", paste(dimensions, sep=", "))

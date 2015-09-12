@@ -29,7 +29,8 @@ library(searchConsoleR)
 
 ### 0.1.2.9000 - Github
 
-Change error for country lookup to a warning if countrycode not recognised, return the original ISO code instead.
+* Correct bug for error in country code.  Will now return the original ISO code instead if not recognised (e.g. CXX)
+* Add `scr_auth` function that wraps `googleAuthR::gar_auth` so you don't need to load googleAuthR explicitly.
 
 ### 0.1.2 - on CRAN
 
@@ -70,16 +71,16 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 
 ### Authentication functions from googleAuthR
 
-* `gar_auth()` - main authentication function. Works locally and within a Shiny environment.
+* `scr_auth()` - main authentication function. Works locally and within a Shiny environment.
 
 
 
 ## Work flow
 
-Work flow always starts with authenticating with Google via `googleAuthR`
+Work flow always starts with authenticating with Google:
 ```
-library(googleAuthR)
-gar_auth()
+library(searchConsoleR)
+scr_auth()
 ```
 
 Your browser window should open up and go through the Google sign in OAuth2 flow. Verify with a user that has Search Console access to the websites you want to work with.
@@ -129,7 +130,6 @@ Here is an example for downloading daily data and exporting to .csv
 ##
 ## Mark Edmondson (http://markedmondson.me)
 
-library(googleAuthR)
 library(searchConsoleR)
 
 ## change this to the website you want to download data for. Include http
@@ -153,7 +153,7 @@ type <- c('web')
 ## First time you will need to login to Google,
 ## but should auto-refresh after that so can be put in 
 ## Authorize script with an account that has access to website.
-gar_auth()
+scr_auth()
 
 ## first time stop here and wait for authorisation
 

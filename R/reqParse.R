@@ -8,7 +8,7 @@
 #' @family parsing functions
 parse_search_analytics <- function(x, dim, prettyNames=TRUE){
   the_data <- x$rows
-  
+
   # a bit of jiggery pokery (data processing)
   dimensionCols <- data.frame(Reduce(rbind, 
                                      lapply(the_data$keys, function(x) 
@@ -26,7 +26,7 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
   }
   
   if(all('country' %in% names(dimensionCols), prettyNames)){
-    dimensionCols$countryName <- lookupCountryCode(dimensionCols$country)
+    dimensionCols$countryName <- sapply(dimensionCols$country, lookupCountryCode)
   }
   
   metricCols <- the_data[setdiff(names(the_data), 'keys')]
