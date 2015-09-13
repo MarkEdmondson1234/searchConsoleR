@@ -17,7 +17,7 @@ scr_auth(token = NULL, new_user = FALSE, verbose = FALSE)
 Do OAuth2 authentication
 }
 \details{
-This function just wraps gar_auth from googleAuthR,
+This function just wraps \code{\link[googleAuthR]{gar_auth}} from googleAuthR,
   but means you don't need to explictly load that library.
 }
 \seealso{

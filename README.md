@@ -29,15 +29,15 @@ library(searchConsoleR)
 
 ### 0.1.2.9000 - Github
 
-* Correct bug for error in country code.  Will now return the original ISO code instead if not recognised (e.g. CXX)
+* Correct bug for error in country code.  Will now return the 'Unknown Region' if not recognised (e.g. `CXX`)
 * Add `scr_auth` function that wraps `googleAuthR::gar_auth` so you don't need to load googleAuthR explicitly.
 
 ### 0.1.2 - on CRAN
 
-Move to using googleAuthR for authentication backend.
+* Move to using googleAuthR for authentication backend.
 
 ### 0.1.1
-Change search_analytics() so if no dimensions will still return data, instead of NULL
+* Change search_analytics() so if no dimensions will still return data, instead of NULL
 
 ## Shiny Compatible
 Authentication can be done locally or within a Shiny app. See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
