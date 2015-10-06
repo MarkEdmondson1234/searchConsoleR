@@ -110,7 +110,8 @@ search_analytics <- function(siteURL,
                              dimensionFilterExp = NULL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
-                             prettyNames = TRUE){
+                             prettyNames = TRUE,
+                             walkDates = FALSE){
   
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
@@ -187,9 +188,27 @@ search_analytics <- function(siteURL,
                                                     searchAnalytics = "query"),
                                    data_parse_function = parse_search_analytics
                                    )
-  search_analytics_g(the_body=body, 
-                     path_arguments=list(sites = siteURL), 
-                     dim = dimensions)
+  
+  if(!walkDates){
+    s <- search_analytics_g(the_body=body, 
+                            path_arguments=list(sites = siteURL), 
+                            dim = dimensions)
+  } else {
+    message("Walking data fetch through each date")
+    dates <- as.character(
+      seq(as.Date(startDate, format="%Y-%m-%d"),
+          as.Date(endDate, format="%Y-%m-%d"),
+          by=1))
+    s <- googleAuthR::gar_batch_walk(search_analytics_g,
+                                     walk_vector = dates,
+                                     the_body = body,
+                                     gar_paths=list(sites = siteURL),
+                                     body_walk = c("startDate", "endDate"),
+                                     batch_size=1000)
+  }
+  
+  s
+
 }
 
 
