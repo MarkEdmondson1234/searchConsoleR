@@ -22,7 +22,6 @@ lookupCountryCode <- function(country.code,
   if(all(country.code %in% names(country.codes))){
     code <- country.codes[country.code] 
   } else {
-    warning("country.code not in country.codes. Got: ", country.code, " Returning 'Unknown Region' instead.")
     code <- 'Unknown Region'
   }
   

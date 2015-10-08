@@ -27,10 +27,12 @@ library(searchConsoleR)
 
 ## News
 
-### 0.1.2.9000 - Github
+### 0.1.2.9001 - Github
 
 * Correct bug for error in country code.  Will now return the 'Unknown Region' if not recognised (e.g. `CXX`)
 * Add `scr_auth` function that wraps `googleAuthR::gar_auth` so you don't need to load googleAuthR explicitly.
+* (requires `googleAuthR` => 1.1.9002) Add batching of big requests, should be up to 1000 times faster.
+* (requires `googleAuthR` => 1.1.9002) Add `walkDates` argument to `search_analytics()`: Uses batching for walking data through each date to get a lot more data.
 
 ### 0.1.2 - on CRAN
 

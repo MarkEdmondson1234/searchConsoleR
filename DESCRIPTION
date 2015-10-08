@@ -11,7 +11,7 @@ Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
 Imports: 
-    googleAuthR (>= 0.1.1),
+    googleAuthR (>= 0.1.1.9002),
     stringr (>= 1.0.0)
 Suggests: 
     shiny (>= 0.12.1),

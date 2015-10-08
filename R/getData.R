@@ -204,7 +204,9 @@ search_analytics <- function(siteURL,
                                      the_body = body,
                                      gar_paths=list(sites = siteURL),
                                      body_walk = c("startDate", "endDate"),
-                                     batch_size=1000)
+                                     batch_size=1000,
+                                     data_frame_output=TRUE,
+                                     dim = dimensions)
   }
   
   s
