@@ -217,7 +217,7 @@ list_websites <- function() {
 #' @export
 add_website <- function(siteURL) {
   
-  siteURL <- check.Url(siteURL, reserved=T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
   
   aw <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "PUT",
@@ -239,7 +239,7 @@ add_website <- function(siteURL) {
 #' @family search console website functions
 delete_website <- function(siteURL) {
   
-  siteURL <- check.Url(siteURL, reserved=T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
   
   
   dw <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
@@ -264,7 +264,7 @@ delete_website <- function(siteURL) {
 #' @family sitemap admin functions
 list_sitemaps <- function(siteURL) {
   
-  siteURL <- check.Url(siteURL, reserved=T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
   
   ls <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "GET",
@@ -289,8 +289,8 @@ list_sitemaps <- function(siteURL) {
 #' @family sitemap admin functions
 add_sitemap <- function(siteURL, feedpath) {
   
-  siteURL <- check.Url(siteURL, reserved=T)
-  feedpath <- check.Url(feedpath, reserved = T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
+  feedpath <- check.Url(feedpath, reserved = TRUE)
   
   as <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "PUT",
@@ -316,8 +316,8 @@ add_sitemap <- function(siteURL, feedpath) {
 #' @family sitemap admin functions
 delete_sitemap <- function(siteURL, feedpath) {
   
-  siteURL <- check.Url(siteURL, reserved=T)
-  feedpath <- check.Url(feedpath, reserved = T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
+  feedpath <- check.Url(feedpath, reserved = TRUE)
   
   ds <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
                                       "DELETE",
@@ -356,9 +356,9 @@ delete_sitemap <- function(siteURL, feedpath) {
 crawl_errors <- function(siteURL, 
                          category="all",
                          platform=c("all","mobile","smartphoneOnly","web"),
-                         latestCountsOnly=FALSE) {
+                         latestCountsOnly = FALSE) {
   platform <- match.arg(platform)
-  siteURL <- check.Url(siteURL, reserved=T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
   
   latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')
   
@@ -453,8 +453,8 @@ error_sample_url <- function(siteURL,
                              category="notFound",
                              platform="web") {
   
-  siteURL <- check.Url(siteURL, reserved=T)
-  pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T, repeated=T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
+  pageURL <- check.Url(pageURL, checkProtocol = FALSE, reserved = TRUE, repeated = TRUE)
   
 
   ## require pre-existing token, to avoid recursion
@@ -505,11 +505,11 @@ error_sample_url <- function(siteURL,
 #' @export
 fix_sample_url <- function(siteURL,
                            pageURL,
-                           category="notFound",
-                           platform="web") {
+                           category = "notFound",
+                           platform = "web") {
   
-  siteURL <- check.Url(siteURL, reserved=T)
-  pageURL <- check.Url(pageURL, checkProtocol = F, reserved = T)
+  siteURL <- check.Url(siteURL, reserved = TRUE)
+  pageURL <- check.Url(pageURL, checkProtocol = FALSE, reserved = TRUE)
  
   if(is.valid.category.platform(category, platform)){
     
@@ -526,8 +526,9 @@ fix_sample_url <- function(siteURL,
                               urlCrawlErrorsSamples = pageURL), 
         pars_arguments = params)
     
-    TRUE
+    return(TRUE)
     
   }
   
+  return(FALSE)
 }
