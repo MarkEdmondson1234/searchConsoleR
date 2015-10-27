@@ -1,11 +1,6 @@
 .Rproj.user
-.Rproj
 .Rhistory
 .RData
-
 .httr-oauth
 .httr-oauth-SUSPENDED
-.Rbuildignore
 inst/doc
-
-*.Rproj
