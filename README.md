@@ -30,6 +30,7 @@ library(searchConsoleR)
 ### 0.1.2.9002
 
 * Return an empty dataframe of NAs if no resutls in fetch instead of NULL
+* Include andriod-app check from #7
 * Add `walk_data` parameter to `search_analytics` to get more data
 
 You can get 10 times the data using batching:

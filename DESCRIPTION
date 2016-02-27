@@ -18,6 +18,6 @@ Imports:
     stringr (>= 1.0.0)
 Suggests:
     shiny (>= 0.12.1),
-    knitr
-VignetteBuilder: knitr
+    rmarkdown
+VignetteBuilder: rmarkdown
 RoxygenNote: 5.0.1
