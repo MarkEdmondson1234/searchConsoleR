@@ -10,8 +10,6 @@ scr_auth(token = NULL, new_user = FALSE)
 \item{token}{An existing OAuth2 token, if you have one.}
 
 \item{new_user}{Set to TRUE if you want to go through the authentication flow again.}
-
-\item{verbose}{Get more debug messages if set to TRUE}
 }
 \description{
 Do OAuth2 authentication

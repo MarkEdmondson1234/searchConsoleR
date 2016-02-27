@@ -22,7 +22,6 @@ lookupCountryCode <- function(country.code,
   if(all(country.code %in% names(country.codes))){
     code <- country.codes[country.code] 
   } else {
-    warning("country.code not in country.codes. Got: ", country.code, " Returning 'Unknown Region' instead.")
     code <- 'Unknown Region'
   }
   
@@ -33,7 +32,6 @@ lookupCountryCode <- function(country.code,
 #' 
 #' @param token An existing OAuth2 token, if you have one.
 #' @param new_user Set to TRUE if you want to go through the authentication flow again.
-#' @param verbose Get more debug messages if set to TRUE
 #' 
 #' @details 
 #' This function just wraps \code{\link[googleAuthR]{gar_auth}} from googleAuthR, 
