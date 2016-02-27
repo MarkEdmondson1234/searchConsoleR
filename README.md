@@ -35,9 +35,15 @@ library(searchConsoleR)
 You can get 10 times the data using batching:
 
 ```r
-nobatch <- search_analytics("http://www.example.com", "2016-01-01","2016-02-01", dimensions = c("date","query"), rowLimit = 5000)
+nobatch <- search_analytics("http://www.example.com", 
+                            "2016-01-01","2016-02-01", 
+                            dimensions = c("date","query"), 
+                            rowLimit = 5000)
 
-batch <- search_analytics("http://www.example.com", "2016-01-01","2016-02-01", dimensions = c("date","query"), walk_data = TRUE)
+batch <- search_analytics("http://www.example.com", 
+                          "2016-01-01","2016-02-01", 
+                          dimensions = c("date","query"), 
+                          walk_data = TRUE)
 
 str(nobatch)
 'data.frame':	4969 obs. of  6 variables:
