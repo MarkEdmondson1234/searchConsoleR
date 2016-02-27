@@ -139,7 +139,7 @@ search_analytics <- function(siteURL,
     warning("Search Analytics usually not available within 3 days (96 hrs) of today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
   
-  if(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-93){
+  if(as.Date(startDate, "%Y-%m-%d") < Sys.Date()-93){
     warning("Search Analytics usually not available 93 days before today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
   
