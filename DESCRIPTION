@@ -4,18 +4,20 @@ Version: 0.1.2.9002
 Authors@R: c(person("Mark", "Edmondson",email = "r@sunholo.com",
                   role = c("aut", "cre")),
            person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
-Description: Provides an interface with the Google Search Console API v3, 
-    formally called Google Webmaster Tools. 
-URL: https://github.com/MarkEdmondson1234/searchConsoleR. http://www.google.com/webmasters/tools/,
-     https://developers.google.com/webmaster-tools/
+Description: Provides an interface with the Google Search Console API v3,
+    formally called Google Webmaster Tools.
+URL: https://github.com/MarkEdmondson1234/searchConsoleR. http://www.google.com/
+    webmasters/tools/, https://developers.google.com/webmaster-tools/
 BugReports: https://github.com/MarkEdmondson1234/searchConsoleR/issues
-Depends: R (>= 3.2.0)
+Depends:
+    R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
-Imports: 
-    googleAuthR (>= 0.2.1),
+Imports:
+    googleAuthR (>= 0.2.0),
     stringr (>= 1.0.0)
-Suggests: 
+Suggests:
     shiny (>= 0.12.1),
     knitr
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

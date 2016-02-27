@@ -206,8 +206,10 @@ search_analytics <- function(siteURL,
     out <- googleAuthR::gar_batch_walk(search_analytics_g,
                                        walk_vector = walk_vector,
                                        gar_paths = list(sites = siteURL),
+                                       body_walk = c("startDate", "endDate"),
                                        the_body = body,
-                                       batch_size = 1000,
+                                       batch_size = 1,
+                                       # batch_function = function(x) {message("Pausing"); Sys.sleep(0.1);str(x);x},
                                        dim = dimensions)
     
   } else {
