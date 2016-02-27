@@ -1,6 +1,6 @@
 Package: searchConsoleR
 Title: Google Search Console APIv3 R Client
-Version: 0.1.2.9001
+Version: 0.1.2.9002
 Authors@R: c(person("Mark", "Edmondson",email = "r@sunholo.com",
                   role = c("aut", "cre")),
            person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
@@ -13,7 +13,7 @@ Depends: R (>= 3.2.0)
 License: MIT + file LICENSE
 LazyData: true
 Imports: 
-    googleAuthR (>= 0.1.1),
+    googleAuthR (>= 0.2.1),
     stringr (>= 1.0.0)
 Suggests: 
     shiny (>= 0.12.1),

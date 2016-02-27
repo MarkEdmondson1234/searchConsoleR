@@ -43,8 +43,8 @@ lookupCountryCode <- function(country.code,
 #' 
 #' 
 #' @export
-scr_auth <- function(token=NULL, new_user=FALSE, verbose = FALSE){
-  googleAuthR::gar_auth(token=token, new_user=new_user, verbose = verbose)
+scr_auth <- function(token=NULL, new_user=FALSE){
+  googleAuthR::gar_auth(token=token, new_user=new_user)
 }
 
 #' Helper function for the query dimension filters

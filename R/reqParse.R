@@ -16,7 +16,12 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
                               row.names=NULL, stringsAsFactors = F)
   
   ## if no rows, get out of here.
-  if(!NROW(dimensionCols) > 0) return(the_data)
+  if(!NROW(dimensionCols) > 0) {
+    warning("No data found")
+    empty_df <- data.frame(matrix(NA, nrow = 1, ncol = length(dim) + 4))
+    names(empty_df) <- c(dim, 'clicks','impressions','ctr','position')
+    return(empty_df)
+  }
   
   names(dimensionCols ) <- dim
   dimensionCols <- lapply(dimensionCols, unname)

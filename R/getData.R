@@ -17,7 +17,9 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #' @param dimensionFilterExp A character vector of expressions to filter. e.g. c("device==TABLET", "country~~GBR")
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
-#' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and creates new column called countryName.
+#' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and 
+#'   creates new column called countryName.
+#' @param walk_data Make an API call per day, which can increase the amount of data returned.
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
@@ -110,7 +112,8 @@ search_analytics <- function(siteURL,
                              dimensionFilterExp = NULL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
-                             prettyNames = TRUE){
+                             prettyNames = TRUE,
+                             walk_data = FALSE){
   
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
@@ -136,6 +139,10 @@ search_analytics <- function(siteURL,
     warning("Search Analytics usually not available within 3 days (96 hrs) of today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
   
+  if(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-93){
+    warning("Search Analytics usually not available 93 days before today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
+  }
+  
   if(!is.null(dimensions) && !dimensions %in% c('date','country', 'device', 'page', 'query')){
     stop("dimension must be NULL or one or more of 'date','country', 'device', 'page', 'query'. 
          Got this: ", paste(dimensions, sep=", "))
@@ -157,6 +164,11 @@ search_analytics <- function(siteURL,
   
   if(rowLimit > 5000){
     stop("rowLimit must be 5000 or lower. Got this: ", rowLimit)
+  }
+  
+  if(walk_data){
+    message("Walking data per day: setting rowLimit to 5000 per day.")
+    rowLimit <- 5000
   }
   
   ## require pre-existing token, to avoid recursion
@@ -187,9 +199,27 @@ search_analytics <- function(siteURL,
                                                     searchAnalytics = "query"),
                                    data_parse_function = parse_search_analytics
                                    )
-  search_analytics_g(the_body=body, 
-                     path_arguments=list(sites = siteURL), 
-                     dim = dimensions)
+  
+  if(walk_data){
+    walk_vector <- seq(as.Date(startDate), as.Date(endDate), 1)
+    
+    out <- googleAuthR::gar_batch_walk(search_analytics_g,
+                                       walk_vector = walk_vector,
+                                       gar_paths = list(sites = siteURL),
+                                       the_body = body,
+                                       batch_size = 1000,
+                                       dim = dimensions)
+    
+  } else {
+    
+    out <-   search_analytics_g(the_body=body, 
+                                path_arguments=list(sites = siteURL), 
+                                dim = dimensions)
+    
+  }
+  
+  out
+
 }
 
 
