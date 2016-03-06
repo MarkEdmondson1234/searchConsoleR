@@ -32,6 +32,7 @@ library(searchConsoleR)
 * Return an empty dataframe of NAs if no resutls in fetch instead of NULL
 * Include andriod-app check from #7
 * Add `walk_data` parameter to `search_analytics` to get more data
+* Set default start and end dates in `search_analytics` to 93 days ago and 3 days ago respectivily. 
 
 You can get 10 times the data using batching:
 

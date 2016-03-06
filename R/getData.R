@@ -106,7 +106,8 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #'  }
 #'  
 search_analytics <- function(siteURL, 
-                             startDate, endDate, 
+                             startDate = Sys.Date() - 93, 
+                             endDate = Sys.Date() - 3, 
                              dimensions = NULL, 
                              searchType = c("web","video","image"),
                              dimensionFilterExp = NULL,
@@ -169,6 +170,10 @@ search_analytics <- function(siteURL,
   if(walk_data){
     message("Walking data per day: setting rowLimit to 5000 per day.")
     rowLimit <- 5000
+    if(!'date' %in% dimensions){
+      stop("To walk data per date requires 'date' to be one of the dimensions. 
+           Got this: ", paste(dimensions, sep=", "))
+    }
   }
   
   ## require pre-existing token, to avoid recursion
@@ -209,7 +214,6 @@ search_analytics <- function(siteURL,
                                        body_walk = c("startDate", "endDate"),
                                        the_body = body,
                                        batch_size = 1,
-                                       # batch_function = function(x) {message("Pausing"); Sys.sleep(0.1);str(x);x},
                                        dim = dimensions)
     
   } else {
