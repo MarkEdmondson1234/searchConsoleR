@@ -256,7 +256,7 @@ c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
 
 As default `searchConsoleR` uses its own Google API project to grant requests, but if you want to use your own keys:
 
-1. Set up your project in the [Google API Console](https://code.google.com/apis/console) to use the search console v3 API.
+1. Set up your project in the [Google API Console](https://developers.google.com/identity/sign-in/web/devconsole-project) to use the search console v3 API.
 
 ### For local use
 2. Click 'Create a new Client ID', and choose "Installed Application".

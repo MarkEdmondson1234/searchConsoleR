@@ -1,10 +1,10 @@
 Package: searchConsoleR
-Title: Google Search Console APIv3 R Client
+Title: Google Search Console R Client
 Version: 0.2.0
 Authors@R: c(person("Mark", "Edmondson",email = "r@sunholo.com",
                   role = c("aut", "cre")),
            person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
-Description: Provides an interface with the Google Search Console API v3,
+Description: Provides an interface with the Google Search Console,
     formally called Google Webmaster Tools.
 URL: https://github.com/MarkEdmondson1234/searchConsoleR
 BugReports: https://github.com/MarkEdmondson1234/searchConsoleR/issues
@@ -17,6 +17,7 @@ Imports:
     stringr (>= 1.0.0)
 Suggests:
     shiny (>= 0.12.1),
+    knitr,
     rmarkdown
-VignetteBuilder: rmarkdown
+VignetteBuilder: knitr
 RoxygenNote: 5.0.1
