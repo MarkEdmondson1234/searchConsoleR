@@ -17,6 +17,8 @@ Do OAuth2 authentication
 \details{
 This function just wraps \code{\link[googleAuthR]{gar_auth}} from googleAuthR, 
   but means you don't need to explictly load that library.
+
+Don't use this if you are using multiple APIs aside Search Console.
 }
 \seealso{
 \code{\link[googleAuthR]{gar_auth}}
