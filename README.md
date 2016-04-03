@@ -4,6 +4,10 @@
 
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
+# News
+
+Check out the [news](news.md) for latest updates.
+
 ## Setup Guide
 
 Install dependency `googleAuthR` from CRAN:
@@ -12,7 +16,7 @@ install.packages("googleAuthR")
 library(googleAuthR)
 ```
 
-Install `searchConsoleR` from CRAN:
+Install `searchConsoleR` 0.2.0 from CRAN:
 ```
 install.packages("searchConsoleR")
 library(searchConsoleR)
@@ -24,62 +28,6 @@ If you want the development version of `searchConsoleR` on Github:
 devtools::install_github("MarkEdmondson1234/searchConsoleR")
 library(searchConsoleR)
 ```
-
-## News
-
-### 0.1.2.9002
-
-* Return an empty dataframe of NAs if no resutls in fetch instead of NULL
-* Include andriod-app check from #7
-* Add `walk_data` parameter to `search_analytics` to get more data
-* Set default start and end dates in `search_analytics` to 93 days ago and 3 days ago respectivily. 
-
-You can get 10 times the data using batching:
-
-```r
-nobatch <- search_analytics("http://www.example.com", 
-                            "2016-01-01","2016-02-01", 
-                            dimensions = c("date","query"), 
-                            rowLimit = 5000)
-
-batch <- search_analytics("http://www.example.com", 
-                          "2016-01-01","2016-02-01", 
-                          dimensions = c("date","query"), 
-                          walk_data = TRUE)
-
-str(nobatch)
-'data.frame':	4969 obs. of  6 variables:
- $ date       : Date, format: "2016-01-04" "2016-01-14" ...
- $ query      : chr  "iphone 6", "iphone 6s" "apple watch" ...
- $ clicks     : num  19 19 17 17 16 16 16 16 15 15 ...
- $ impressions: num  175 20 175 23 20 173 19 19 21 157 ...
- $ ctr        : num  0.1086 0.95 0.0971 0.7391 0.8 ...
- $ position   : num  2.77 1 3.81 1 1 ...
- - attr(*, "aggregationType")= chr "byProperty"
- 
- str(batch)
- 'data.frame':	46483 obs. of  6 variables:
- $ date       : Date, format: "2016-01-01" "2016-01-01" ...
- $ query      : chr  "iphone 6" "iphone" "iphone 6s" "apple watch" ...
- $ clicks     : num  10 8 6 6 5 4 3 3 2 2 ...
- $ impressions: num  108 304 94 45 7 49 17 193 2 23 ...
- $ ctr        : num  0.0926 0.0263 0.0638 0.1333 0.7143 ...
- $ position   : num  3.4 6.54 3.83 3.96 1.29 ...
- - attr(*, "aggregationType")= chr "byProperty"
-
-```
-
-### 0.1.2.9000 
-
-* Correct bug for error in country code.  Will now return the 'Unknown Region' if not recognised (e.g. `CXX`)
-* Add `scr_auth` function that wraps `googleAuthR::gar_auth` so you don't need to load googleAuthR explicitly.
-
-### 0.1.2 - on CRAN
-
-* Move to using googleAuthR for authentication backend.
-
-### 0.1.1
-* Change search_analytics() so if no dimensions will still return data, instead of NULL
 
 ## Shiny Compatible
 Authentication can be done locally or within a Shiny app. See a very bare bones example here: https://mark.shinyapps.io/searchConsoleRDemo/
@@ -114,8 +62,6 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 ### Authentication functions from googleAuthR
 
 * `scr_auth()` - main authentication function. Works locally and within a Shiny environment.
-
-
 
 ## Work flow
 
