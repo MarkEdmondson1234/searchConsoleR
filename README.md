@@ -187,7 +187,7 @@ Operator can be one of ```~~, ==, !~, !=``` where the symbols mean:
 Expression formatting:
 
 * for ```page``` or ```query``` is free text.
-* for ```country``` must be the three letter country code as per the [the ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) standard. e.g. USA, GBR = United Kingdon, DNK = Denmark
+* for ```country``` must be the three letter country code as per the [the ISO 3166-1 alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) standard. e.g. USA, GBR = United Kingdom, DNK = Denmark
 * for ```device``` must be one of:  'MOBILE', 'DESKTOP' or 'TABLET'
 
 You can have multiple ```AND``` filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage and not including queries containing 'brandterm'.
