@@ -12,14 +12,16 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #' @param siteURL The URL of the website you have auth access to.
 #' @param startDate Start date of requested range, in YYYY-MM-DD.
 #' @param endDate End date of the requested date range, in YYYY-MM-DD.
-#' @param dimensions Zero or more dimensions to group results by: "date", "country", "device", "page" or "query"
+#' @param dimensions Zero or more dimensions to group results by: 
+#'      \code{"date", "country", "device", "page" or "query"}
 #' @param searchType Search type filter, default 'web'.
-#' @param dimensionFilterExp A character vector of expressions to filter. e.g. c("device==TABLET", "country~~GBR")
+#' @param dimensionFilterExp A character vector of expressions to filter. 
+#'      e.g. \code{("device==TABLET", "country~~GBR")}
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows, maximum is 5000.
 #' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and 
 #'   creates new column called countryName.
-#' @param walk_data Make an API call per day, which can increase the amount of data returned.
+#' @param walk_data Make multiple API calls. One of \code{("byBatch","byDate","none")}
 #' 
 #' @return A dataframe with columns in order of dimensions plus metrics, with attribute "aggregationType"
 #' 
@@ -105,6 +107,13 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #'    \item "byProperty": Aggregate values by property.
 #'  }
 #'  
+#'  \strong{batchType}: [Optional] Batching data into multiple API calls
+#' \itemize{
+#'   \item byBatch Use the API call to batch
+#'   \item byData Runs a call over each day in the date range.
+#'   \item none No batching
+#'  }
+#'  
 search_analytics <- function(siteURL, 
                              startDate = Sys.Date() - 93, 
                              endDate = Sys.Date() - 3, 
@@ -114,10 +123,11 @@ search_analytics <- function(siteURL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
                              prettyNames = TRUE,
-                             walk_data = FALSE){
+                             walk_data = c("byBatch","byDate","none")){
   
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
+  walk_data       <- match.arg(walk_data)
   
   startDate <- as.character(startDate)
   endDate   <- as.character(endDate)  
@@ -162,18 +172,11 @@ search_analytics <- function(siteURL,
     stop("Can't aggregate byProperty and include page in dimensions.")
   }
   
-  
   if(rowLimit > 5000){
-    stop("rowLimit must be 5000 or lower. Got this: ", rowLimit)
-  }
-  
-  if(walk_data){
-    message("Walking data per day: setting rowLimit to 5000 per day.")
+    message("Batching data via method: ", walk_data)
+    rowLimit0 <- rowLimit
     rowLimit <- 5000
-    if(!'date' %in% dimensions){
-      stop("To walk data per date requires 'date' to be one of the dimensions. 
-           Got this: ", paste(dimensions, sep=", "))
-    }
+
   }
   
   ## require pre-existing token, to avoid recursion
@@ -205,7 +208,13 @@ search_analytics <- function(siteURL,
                                    data_parse_function = parse_search_analytics
                                    )
   
-  if(walk_data){
+  if(walk_data == "byDate"){
+    
+    if(!'date' %in% dimensions){
+      stop("To walk data per date requires 'date' to be one of the dimensions. 
+           Got this: ", paste(dimensions, sep=", "))
+    }
+    
     walk_vector <- seq(as.Date(startDate), as.Date(endDate), 1)
     
     out <- googleAuthR::gar_batch_walk(search_analytics_g,
@@ -215,6 +224,23 @@ search_analytics <- function(siteURL,
                                        the_body = body,
                                        batch_size = 1,
                                        dim = dimensions)
+    
+  } else if(walk_data == "byBatch") {
+    
+    ## byBatch uses API batching, but this pulls out less data
+    ## 0 impression keywords not included. 
+    walk_vector <- seq(0, rowLimit0, 5000)
+    
+    out <- googleAuthR::gar_batch_walk(search_analytics_g,
+                                       walk_vector = walk_vector,
+                                       gar_paths = list(sites = siteURL),
+                                       body_walk = "startRow",
+                                       the_body = body,
+                                       batch_size = 3,
+                                       dim = dimensions)
+    
+    
+    
     
   } else {
     

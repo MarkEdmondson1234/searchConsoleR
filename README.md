@@ -11,20 +11,20 @@ Check out the [news](news.md) for latest updates.
 ## Setup Guide
 
 Install dependency `googleAuthR` from CRAN:
-```
+```r
 install.packages("googleAuthR")
 library(googleAuthR)
 ```
 
 Install `searchConsoleR` 0.2.0 from CRAN:
-```
+```r
 install.packages("searchConsoleR")
 library(searchConsoleR)
 ```
 
 If you want the development version of `searchConsoleR` on Github:
 
-```
+```r
 devtools::install_github("MarkEdmondson1234/searchConsoleR")
 library(searchConsoleR)
 ```
@@ -66,7 +66,7 @@ Authentication can be done locally or within a Shiny app. See a very bare bones 
 ## Work flow
 
 Work flow always starts with authenticating with Google:
-```
+```r
 library(searchConsoleR)
 scr_auth()
 ```
@@ -74,13 +74,13 @@ scr_auth()
 Your browser window should open up and go through the Google sign in OAuth2 flow. Verify with a user that has Search Console access to the websites you want to work with.
 
 Check out the documentation of any function for a guide on what else can be done.
-```
+```r
 ?searchConsoleR
 ```
 
 If you authenticate ok, you should be able to see a list of your websites in the Search Console via:
 
-```
+```r
 sc_websites <- list_websites()
 sc_websites
 ```
@@ -91,7 +91,7 @@ Most people will find the Search Analytics most useful.  All methods from the we
 
 Here is an example query, which downloads the top 100 rows of queries per page for the month of July 2015, for United Kingdom desktop web searches:
 
-```
+```r
 gbr_desktop_queries <- 
     search_analytics("http://example.com", 
                      "2015-07-01", "2015-07-31", 
@@ -101,15 +101,49 @@ gbr_desktop_queries <-
 ```
 
 For a lot more details see: 
-```
+```r
 ?search_analytics
+```
+
+### Batching
+
+You can get more than the standard 5000 rows via batching.  There are two methods available, one via a API call per date, the other using the APIs `startRow` parameter.
+
+The date method gets more impressions for 0 click rows, the batch method is quicker but gets just rows with clicks. 
+
+```r
+test0 <- search_analytics("http://www.example.co.uk", 
+                          dimensions = c("date","query","page","country"), 
+                          walk_data = "byBatch")
+Batching data via method: byBatch
+
+### test0 has 13063 rows
+
+test <- search_analytics("http://www.example.co.uk", 
+                         dimensions = c("date","query","page","country"), 
+                         rowLimit = 200000, 
+                         walk_data = "byDate")
+Batching data via method: byDate
+
+### test has 419957 rows
+
+> sum(test0$clicks)
+[1] 12866
+> sum(test$clicks)
+[1] 12826
+> sum(test$impressions)
+[1] 1420217
+> sum(test0$impressions)
+[1] 441029
+> 
+
 ```
 
 ## Demo script
 
 Here is an example for downloading daily data and exporting to .csv
 
-```
+```r
 ## A script to download and archive Google search analytics
 ##
 ## Demo of searchConsoleR R package.

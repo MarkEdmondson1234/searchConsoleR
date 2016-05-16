@@ -1,5 +1,6 @@
 # 0.2.0.9000
 
+* Add batching per the new API feature to go over 5000 rows. (#12)
 
 # 0.2.0
 
