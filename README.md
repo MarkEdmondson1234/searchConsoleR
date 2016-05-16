@@ -114,6 +114,7 @@ The date method gets more impressions for 0 click rows, the batch method is quic
 ```r
 test0 <- search_analytics("http://www.example.co.uk", 
                           dimensions = c("date","query","page","country"), 
+                          rowLimit = 200000, 
                           walk_data = "byBatch")
 Batching data via method: byBatch
 
@@ -121,7 +122,7 @@ Batching data via method: byBatch
 
 test <- search_analytics("http://www.example.co.uk", 
                          dimensions = c("date","query","page","country"), 
-                         rowLimit = 200000, 
+
                          walk_data = "byDate")
 Batching data via method: byDate
 
