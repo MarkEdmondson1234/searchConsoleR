@@ -114,6 +114,29 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #'   \item none No batching
 #'  }
 #'  
+#' @examples 
+#' 
+#' \dontrun{
+#'  
+#'    library(searchConsoleR)
+#'    scr_auth()
+#'    sc_websites <- list_websites()
+#'    
+#'    gbr_desktop_queries <- 
+#'        search_analytics("http://www.example.com",
+#'                          start = "2016-01-01", end = "2016-03-01",
+#'                          dimensions = c("query", "page"),
+#'                          dimensionsFilterExp = c("device==DESKTOP", "country==GBR"),
+#'                          searchType = "web", rowLimit = 100)
+#'                          
+#'    batching <- 
+#'         search_analytics("http://www.example.com",
+#'                          start = "2016-01-01", end = "2016-03-01",
+#'                          dimensions = c("query", "page", "date"),
+#'                          searchType = "web", rowLimit = 100000,
+#'                          walk_data = "byBatch") 
+#'   
+#'   }  
 search_analytics <- function(siteURL, 
                              startDate = Sys.Date() - 93, 
                              endDate = Sys.Date() - 3, 
