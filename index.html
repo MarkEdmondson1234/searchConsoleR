@@ -1,0 +1,355 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Searchconsoler by MarkEdmondson1234</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Searchconsoler</h1>
+        <p>R interface with Google Search Console API v3, including Search Analytics.</p>
+
+        <p class="view"><a href="https://github.com/MarkEdmondson1234/searchConsoleR">View the Project on GitHub <small>MarkEdmondson1234/searchConsoleR</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/MarkEdmondson1234/searchConsoleR/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/MarkEdmondson1234/searchConsoleR/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/MarkEdmondson1234/searchConsoleR">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="searchconsoler" class="anchor" href="#searchconsoler" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>searchConsoleR</h1>
+
+<p><a href="http://cran.r-project.org/package=searchConsoleR"><img src="http://www.r-pkg.org/badges/version/searchConsoleR" alt="CRAN"></a>
+<a href="https://travis-ci.org/MarkEdmondson1234/searchConsoleR"><img src="https://travis-ci.org/MarkEdmondson1234/searchConsoleR.svg?branch=master" alt="Travis-CI Build Status"></a></p>
+
+<p>R interface with Google Search Console (formally Google Webmaster Tools) API v3.</p>
+
+<h1>
+<a id="news" class="anchor" href="#news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News</h1>
+
+<p>Check out the <a href="news.md">news</a> for latest updates.</p>
+
+<h2>
+<a id="setup-guide" class="anchor" href="#setup-guide" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup Guide</h2>
+
+<p>Install dependency <code>googleAuthR</code> from CRAN:</p>
+
+<div class="highlight highlight-source-r"><pre>install.packages(<span class="pl-s"><span class="pl-pds">"</span>googleAuthR<span class="pl-pds">"</span></span>)
+library(<span class="pl-smi">googleAuthR</span>)</pre></div>
+
+<p>Install <code>searchConsoleR</code> 0.2.0 from CRAN:</p>
+
+<div class="highlight highlight-source-r"><pre>install.packages(<span class="pl-s"><span class="pl-pds">"</span>searchConsoleR<span class="pl-pds">"</span></span>)
+library(<span class="pl-smi">searchConsoleR</span>)</pre></div>
+
+<p>If you want the development version of <code>searchConsoleR</code> on Github:</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-e">devtools</span><span class="pl-k">::</span>install_github(<span class="pl-s"><span class="pl-pds">"</span>MarkEdmondson1234/searchConsoleR<span class="pl-pds">"</span></span>)
+library(<span class="pl-smi">searchConsoleR</span>)</pre></div>
+
+<h2>
+<a id="shiny-compatible" class="anchor" href="#shiny-compatible" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Shiny Compatible</h2>
+
+<p>Authentication can be done locally or within a Shiny app. See a very bare bones example here: <a href="https://mark.shinyapps.io/searchConsoleRDemo/">https://mark.shinyapps.io/searchConsoleRDemo/</a></p>
+
+<h2>
+<a id="info-links" class="anchor" href="#info-links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Info Links</h2>
+
+<p><a href="http://www.google.com/webmasters/tools/">Google Search Console</a></p>
+
+<p><a href="https://developers.google.com/webmaster-tools/">Search Console v3 API docs</a></p>
+
+<h2>
+<a id="function-quick-guide" class="anchor" href="#function-quick-guide" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Function Quick Guide</h2>
+
+<h3>
+<a id="search-analytics" class="anchor" href="#search-analytics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Search analytics</h3>
+
+<ul>
+<li>
+<code>search_analytics()</code> - download Google SEO data into an R dataframe.</li>
+</ul>
+
+<h3>
+<a id="website-admin" class="anchor" href="#website-admin" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Website admin</h3>
+
+<ul>
+<li>
+<code>list_websites()</code> - list websites in your Google Search Console.</li>
+<li>
+<code>add_website()</code> - add a website to your Google Search Console.</li>
+<li>
+<code>delete_website()</code> - delete a website from your Google Search Console.</li>
+</ul>
+
+<h3>
+<a id="sitemaps" class="anchor" href="#sitemaps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sitemaps</h3>
+
+<ul>
+<li>
+<code>list_sitemaps()</code> - list sitemaps recognised in Google Search Console.</li>
+<li>
+<code>add_sitemap()</code> - add sitemap URL location to Google Search Console.</li>
+<li>
+<code>delete_sitemap()</code> - remove sitemap URL location in Google Search Console.</li>
+</ul>
+
+<h3>
+<a id="error-listings" class="anchor" href="#error-listings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Error listings</h3>
+
+<ul>
+<li>
+<code>crawl_errors()</code> - list various types of crawl errors googlebot has found.</li>
+<li>
+<code>list_crawl_error_samples()</code> - get a list of example URLs with errors.</li>
+<li>
+<code>error_sample_url()</code> - show details about an example URL error (for example, links to a 404 URL)</li>
+<li>
+<code>fix_sample_url()</code> - mark a URL as fixed.</li>
+</ul>
+
+<h3>
+<a id="authentication-functions-from-googleauthr" class="anchor" href="#authentication-functions-from-googleauthr" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authentication functions from googleAuthR</h3>
+
+<ul>
+<li>
+<code>scr_auth()</code> - main authentication function. Works locally and within a Shiny environment.</li>
+</ul>
+
+<h2>
+<a id="work-flow" class="anchor" href="#work-flow" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Work flow</h2>
+
+<p>Work flow always starts with authenticating with Google:</p>
+
+<div class="highlight highlight-source-r"><pre>library(<span class="pl-smi">searchConsoleR</span>)
+scr_auth()</pre></div>
+
+<p>Your browser window should open up and go through the Google sign in OAuth2 flow. Verify with a user that has Search Console access to the websites you want to work with.</p>
+
+<p>Check out the documentation of any function for a guide on what else can be done.</p>
+
+<div class="highlight highlight-source-r"><pre>?<span class="pl-smi">searchConsoleR</span></pre></div>
+
+<p>If you authenticate ok, you should be able to see a list of your websites in the Search Console via:</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">sc_websites</span> <span class="pl-k">&lt;-</span> list_websites()
+<span class="pl-smi">sc_websites</span></pre></div>
+
+<p>We'll need one unique <code>sc_websites$siteUrl</code> for the majority of the other functions.</p>
+
+<p>Most people will find the Search Analytics most useful.  All methods from the web interface are available.  </p>
+
+<p>Here is an example query, which downloads the top 100 rows of queries per page for the month of July 2015, for United Kingdom desktop web searches:</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">gbr_desktop_queries</span> <span class="pl-k">&lt;-</span> 
+    search_analytics(<span class="pl-s"><span class="pl-pds">"</span>http://example.com<span class="pl-pds">"</span></span>, 
+                     <span class="pl-s"><span class="pl-pds">"</span>2015-07-01<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>2015-07-31<span class="pl-pds">"</span></span>, 
+                     c(<span class="pl-s"><span class="pl-pds">"</span>query<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>page<span class="pl-pds">"</span></span>), 
+                     <span class="pl-v">dimensionFilterExp</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span>device==DESKTOP<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>country==GBR<span class="pl-pds">"</span></span>), 
+                     <span class="pl-v">searchType</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>web<span class="pl-pds">"</span></span>, <span class="pl-v">rowLimit</span> <span class="pl-k">=</span> <span class="pl-c1">100</span>)</pre></div>
+
+<p>For a lot more details see: </p>
+
+<div class="highlight highlight-source-r"><pre>?<span class="pl-smi">search_analytics</span></pre></div>
+
+<h3>
+<a id="batching" class="anchor" href="#batching" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Batching</h3>
+
+<p>You can get more than the standard 5000 rows via batching.  There are two methods available, one via a API call per date, the other using the APIs <code>startRow</code> parameter.</p>
+
+<p>The date method gets more impressions for 0 click rows, the batch method is quicker but gets just rows with clicks. </p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">test0</span> <span class="pl-k">&lt;-</span> search_analytics(<span class="pl-s"><span class="pl-pds">"</span>http://www.example.co.uk<span class="pl-pds">"</span></span>, 
+                          <span class="pl-v">dimensions</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>query<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>page<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>country<span class="pl-pds">"</span></span>), 
+                          <span class="pl-v">rowLimit</span> <span class="pl-k">=</span> <span class="pl-c1">200000</span>, 
+                          <span class="pl-v">walk_data</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>byBatch<span class="pl-pds">"</span></span>)
+<span class="pl-smi">Batching</span> <span class="pl-smi">data</span> <span class="pl-smi">via</span> <span class="pl-smi">method</span><span class="pl-k">:</span> <span class="pl-smi">byBatch</span>
+
+<span class="pl-c">### test0 has 13063 rows</span>
+
+<span class="pl-smi">test</span> <span class="pl-k">&lt;-</span> search_analytics(<span class="pl-s"><span class="pl-pds">"</span>http://www.example.co.uk<span class="pl-pds">"</span></span>, 
+                         <span class="pl-v">dimensions</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>query<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>page<span class="pl-pds">"</span></span>,<span class="pl-s"><span class="pl-pds">"</span>country<span class="pl-pds">"</span></span>), 
+                         <span class="pl-v">walk_data</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>byDate<span class="pl-pds">"</span></span>)
+<span class="pl-smi">Batching</span> <span class="pl-smi">data</span> <span class="pl-smi">via</span> <span class="pl-smi">method</span><span class="pl-k">:</span> <span class="pl-smi">byDate</span>
+
+<span class="pl-c">### test has 419957 rows</span>
+
+<span class="pl-k">&gt;</span> sum(<span class="pl-smi">test0</span><span class="pl-k">$</span><span class="pl-smi">clicks</span>)
+[<span class="pl-c1">1</span>] <span class="pl-c1">12866</span>
+<span class="pl-k">&gt;</span> sum(<span class="pl-smi">test</span><span class="pl-k">$</span><span class="pl-smi">clicks</span>)
+[<span class="pl-c1">1</span>] <span class="pl-c1">12826</span>
+<span class="pl-k">&gt;</span> sum(<span class="pl-smi">test</span><span class="pl-k">$</span><span class="pl-smi">impressions</span>)
+[<span class="pl-c1">1</span>] <span class="pl-c1">1420217</span>
+<span class="pl-k">&gt;</span> sum(<span class="pl-smi">test0</span><span class="pl-k">$</span><span class="pl-smi">impressions</span>)
+[<span class="pl-c1">1</span>] <span class="pl-c1">441029</span>
+<span class="pl-k">&gt;</span> 
+</pre></div>
+
+<h2>
+<a id="demo-script" class="anchor" href="#demo-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Demo script</h2>
+
+<p>Here is an example for downloading daily data and exporting to .csv</p>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-c">## A script to download and archive Google search analytics</span>
+<span class="pl-c">##</span>
+<span class="pl-c">## Demo of searchConsoleR R package.</span>
+<span class="pl-c">##</span>
+<span class="pl-c">## Version 1 - 10th August 2015</span>
+<span class="pl-c">##</span>
+<span class="pl-c">## Mark Edmondson (http://markedmondson.me)</span>
+
+library(<span class="pl-smi">searchConsoleR</span>)
+
+<span class="pl-c">## change this to the website you want to download data for. Include http</span>
+<span class="pl-smi">website</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">"</span>http://copenhagenish.me<span class="pl-pds">"</span></span>
+
+<span class="pl-c">## data is in search console reliably 3 days ago, so we donwnload from then</span>
+<span class="pl-c">## today - 3 days</span>
+<span class="pl-smi">start</span> <span class="pl-k">&lt;-</span> Sys.Date() <span class="pl-k">-</span> <span class="pl-c1">3</span>
+<span class="pl-c">## one days data, but change it as needed</span>
+<span class="pl-smi">end</span> <span class="pl-k">&lt;-</span> Sys.Date() <span class="pl-k">-</span> <span class="pl-c1">3</span> 
+
+<span class="pl-c">## what to download, choose between data, query, page, device, country</span>
+<span class="pl-smi">download_dimensions</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">'</span>date<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>query<span class="pl-pds">'</span></span>)
+
+<span class="pl-c">## what type of Google search, choose between 'web', 'video' or 'image'</span>
+<span class="pl-smi">type</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">'</span>web<span class="pl-pds">'</span></span>)
+
+<span class="pl-c">## other options available, check out ?search_analytics in the R console</span>
+
+<span class="pl-c">## Authorize script with Search Console.  </span>
+<span class="pl-c">## First time you will need to login to Google,</span>
+<span class="pl-c">## but should auto-refresh after that so can be put in </span>
+<span class="pl-c">## Authorize script with an account that has access to website.</span>
+scr_auth()
+
+<span class="pl-c">## first time stop here and wait for authorisation</span>
+
+<span class="pl-c">## get the search analytics data</span>
+<span class="pl-smi">data</span> <span class="pl-k">&lt;-</span> search_analytics(<span class="pl-v">siteURL</span> <span class="pl-k">=</span> <span class="pl-smi">website</span>, 
+                         <span class="pl-v">startDate</span> <span class="pl-k">=</span> <span class="pl-smi">start</span>, 
+                         <span class="pl-v">endDate</span> <span class="pl-k">=</span> <span class="pl-smi">end</span>, 
+                         <span class="pl-v">dimensions</span> <span class="pl-k">=</span> <span class="pl-smi">download_dimensions</span>, 
+                         <span class="pl-v">searchType</span> <span class="pl-k">=</span> <span class="pl-smi">type</span>)
+
+<span class="pl-c">## do stuff to the data</span>
+<span class="pl-c">## combine with Google Analytics, filter, apply other stats etc.</span>
+
+<span class="pl-c">## write a csv to a nice filename</span>
+<span class="pl-smi">filename</span> <span class="pl-k">&lt;-</span> paste(<span class="pl-s"><span class="pl-pds">"</span>search_analytics<span class="pl-pds">"</span></span>,
+                  Sys.Date(),
+                  paste(<span class="pl-smi">download_dimensions</span>, <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>,<span class="pl-v">sep</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>),
+                  <span class="pl-smi">type</span>,<span class="pl-s"><span class="pl-pds">"</span>.csv<span class="pl-pds">"</span></span>,<span class="pl-v">sep</span><span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>-<span class="pl-pds">"</span></span>)
+
+write.csv(<span class="pl-smi">data</span>, <span class="pl-smi">filename</span>)</pre></div>
+
+<h2>
+<a id="the-dimensionfilterexp-parameter" class="anchor" href="#the-dimensionfilterexp-parameter" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The dimensionFilterExp parameter</h2>
+
+<p>This parameter is used in search_analytics to filter the result.</p>
+
+<p>Filter using this format: <code>filter operator expression</code></p>
+
+<p>Filter can be one of:</p>
+
+<ul>
+<li>
+<code>country</code>,</li>
+<li><code>device</code></li>
+<li><code>page</code></li>
+<li><code>query</code></li>
+</ul>
+
+<p>Operator can be one of <code>~~, ==, !~, !=</code> where the symbols mean:</p>
+
+<ul>
+<li>
+<code>~~</code> : 'contains',</li>
+<li>
+<code>==</code> : 'equals',</li>
+<li>
+<code>!~</code> : 'notContains',</li>
+<li>
+<code>!=</code> : 'notEquals'</li>
+</ul>
+
+<p>Expression formatting:</p>
+
+<ul>
+<li>for <code>page</code> or <code>query</code> is free text.</li>
+<li>for <code>country</code> must be the three letter country code as per the <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3">the ISO 3166-1 alpha-3</a> standard. e.g. USA, GBR = United Kingdom, DNK = Denmark</li>
+<li>for <code>device</code> must be one of:  'MOBILE', 'DESKTOP' or 'TABLET'</li>
+</ul>
+
+<p>You can have multiple <code>AND</code> filters by putting them in a character vector.  The below looks for desktop searches in the United Kingdom, not showing the homepage and not including queries containing 'brandterm'.</p>
+
+<pre><code>c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
+</code></pre>
+
+<p><code>OR</code> filters aren't yet supported in the API.</p>
+
+<h2>
+<a id="using-your-own-google-api-project" class="anchor" href="#using-your-own-google-api-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using your own Google API project</h2>
+
+<p>As default <code>searchConsoleR</code> uses its own Google API project to grant requests, but if you want to use your own keys:</p>
+
+<ol>
+<li>Set up your project in the <a href="https://developers.google.com/identity/sign-in/web/devconsole-project">Google API Console</a> to use the search console v3 API.</li>
+</ol>
+
+<h3>
+<a id="for-local-use" class="anchor" href="#for-local-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>For local use</h3>
+
+<ol>
+<li>Click 'Create a new Client ID', and choose "Installed Application".</li>
+<li>Note your Client ID and secret.</li>
+<li>Modify these options after <code>searchConsoleR</code> has been loaded:
+
+<ul>
+<li><code>options("searchConsoleR.client_id" = "YOUR_CLIENT_ID")</code></li>
+<li><code>options("searchConsoleR.client_secret" = "YOUR_CLIENT_SECRET")</code></li>
+</ul>
+</li>
+</ol>
+
+<h3>
+<a id="for-shiny-use" class="anchor" href="#for-shiny-use" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>For Shiny use</h3>
+
+<ol>
+<li>Click 'Create a new Client ID', and choose "Web Application".</li>
+<li>Note your Client ID and secret.</li>
+<li>Add the URL of where your Shiny app will run, as well as your local host for testing including a port number.  e.g. <a href="https://mark.shinyapps.io/searchConsoleRDemo/">https://mark.shinyapps.io/searchConsoleRDemo/</a> and <a href="http://127.0.0.1:4624">http://127.0.0.1:4624</a>
+</li>
+<li>In your Shiny script modify these options:
+
+<ul>
+<li><code>options("searchConsoleR.webapp.client_id" = "YOUR_CLIENT_ID")</code></li>
+<li><code>options("searchConsoleR.webapp.client_secret" = "YOUR_CLIENT_SECRET")</code></li>
+</ul>
+</li>
+<li>Run the app locally specifying the port number you used e.g. <code>shiny::runApp(port=4624)</code>
+</li>
+<li>Or deploy to your Shiny Server that deploys to web port (80 or 443).</li>
+</ol>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/MarkEdmondson1234">MarkEdmondson1234</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
