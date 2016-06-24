@@ -122,7 +122,6 @@ Batching data via method: byBatch
 
 test <- search_analytics("http://www.example.co.uk", 
                          dimensions = c("date","query","page","country"), 
-
                          walk_data = "byDate")
 Batching data via method: byDate
 

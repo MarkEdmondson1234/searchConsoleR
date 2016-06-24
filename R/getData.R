@@ -176,7 +176,8 @@ search_analytics <- function(siteURL,
     message("Batching data via method: ", walk_data)
     rowLimit0 <- rowLimit
     rowLimit <- 5000
-
+  } else {
+    walk_data <- "none"
   }
   
   ## require pre-existing token, to avoid recursion
