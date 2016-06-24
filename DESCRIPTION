@@ -1,6 +1,6 @@
 Package: searchConsoleR
 Title: Google Search Console R Client
-Version: 0.2.1
+Version: 0.2.1.9000
 Authors@R: c(person("Mark", "Edmondson",email = "r@sunholo.com",
                   role = c("aut", "cre")),
            person("Jennifer", "Bryan",email="jenny@stat.ubc.ca", role = "ctb"))
