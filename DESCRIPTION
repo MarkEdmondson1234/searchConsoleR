@@ -13,11 +13,12 @@ Depends:
 License: MIT + file LICENSE
 LazyData: true
 Imports:
-    googleAuthR (>= 0.2.0),
+    googleAuthR (>= 0.4.0),
     stringr (>= 1.0.0)
 Suggests:
     shiny (>= 0.12.1),
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

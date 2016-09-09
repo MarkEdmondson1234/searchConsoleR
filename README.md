@@ -112,6 +112,8 @@ You can get more than the standard 5000 rows via batching.  There are two method
 
 The date method gets more impressions for 0 click rows, the batch method is quicker but gets just rows with clicks. 
 
+Specify a `rowLimit` when batching - if using method `byDate` this will be the limit it fetches per day, and currently needs to be over 5000 to work. [(Issue #17 will fix this)](https://github.com/MarkEdmondson1234/searchConsoleR/issues/17).
+
 ```r
 test0 <- search_analytics("http://www.example.co.uk", 
                           dimensions = c("date","query","page","country"), 
