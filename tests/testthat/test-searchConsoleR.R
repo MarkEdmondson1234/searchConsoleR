@@ -19,7 +19,7 @@ test_that("Get website list", {
   expect_s3_class(www, "data.frame")
 })
 
-context("Can get search analytics data", {
+test_that("Can get search analytics data", {
   
   www <- list_websites()
   
@@ -29,7 +29,7 @@ context("Can get search analytics data", {
   
 })
 
-context("Can get search analytics data lots of dims with batching", {
+test_that("Can get search analytics data lots of dims with batching", {
   
   www <- list_websites()
   
