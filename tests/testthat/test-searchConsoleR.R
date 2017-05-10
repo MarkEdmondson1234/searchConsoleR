@@ -33,6 +33,9 @@ test_that("Can get search analytics data lots of dims with batching", {
   
   www <- list_websites()
   
+  ## pick a website that is in www$siteUrl
+  my_example <- www$siteUrl[[220]]
+  
   sa <- search_analytics(my_example, 
                          startDate = "2017-04-01", endDate = "2017-04-01",
                          dimensions = c("date","device", "country" ,"query","page"), 
