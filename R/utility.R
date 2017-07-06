@@ -174,7 +174,7 @@ is.valid.category.platform <- function (category, platform, include.all=FALSE) {
 check.Url <- function(url, checkProtocol=TRUE, ...){
   
   if(!is.null(url)){
-    if(checkProtocol && !grepl("http|android-app",url)){
+    if(checkProtocol && !grepl("http|android-app|sc-set",url)){
       stop("URL must include protocol, e.g. http://example.com - got:", url) 
     }
     
