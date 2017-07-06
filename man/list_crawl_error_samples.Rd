@@ -30,4 +30,3 @@ Other working with search console errors: \code{\link{crawl_errors}},
   \code{\link{error_sample_url}},
   \code{\link{fix_sample_url}}
 }
-

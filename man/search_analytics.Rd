@@ -153,4 +153,3 @@ Download your Google SEO data.
 Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}
   API docs: \url{https://developers.google.com/webmaster-tools/v3/searchanalytics/query}
 }
-

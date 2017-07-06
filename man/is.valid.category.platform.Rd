@@ -13,4 +13,3 @@ TRUE if valid, raises an error if not.
 The error type listings have certain categories/platform allowed.
 }
 \keyword{internal}
-

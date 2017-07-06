@@ -21,4 +21,3 @@ See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps/
 Other sitemap admin functions: \code{\link{delete_sitemap}},
   \code{\link{list_sitemaps}}
 }
-

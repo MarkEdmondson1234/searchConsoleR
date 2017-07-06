@@ -44,6 +44,11 @@ lookupCountryCode <- function(country.code,
 #' 
 #' @export
 scr_auth <- function(token=NULL, new_user=FALSE){
+  options(googleAuthR.client_id = getOption("searchConsoleR.client_id"))
+  options(googleAuthR.client_secret = getOption("searchConsoleR.client_secret"))
+  options(googleAuthR.scopes.selected = getOption("searchConsoleR.scope"))
+  options(googleAuthR.webapp.client_id = getOption("searchConsoleR.webapp.client_id"))
+  options(googleAuthR.webapp.client_secret = getOption("searchConsoleR.webapp.client_secret"))
   googleAuthR::gar_auth(token=token, new_user=new_user)
 }
 

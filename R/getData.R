@@ -148,12 +148,19 @@ search_analytics <- function(siteURL,
                              prettyNames = TRUE,
                              walk_data = c("byBatch","byDate","none")){
   
+  authenticated <- "Token2.0" %in% class(googleAuthR::Authentication$public_fields$token)
+  if(!authenticated){
+    stop("Not authenticated. Run scr_auth()", call. = FALSE)
+  }
+  
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
   walk_data       <- match.arg(walk_data)
   
   startDate <- as.character(startDate)
   endDate   <- as.character(endDate)  
+  
+
 
   message("Fetching search analytics for ", 
           paste("url:", siteURL, 

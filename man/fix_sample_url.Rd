@@ -38,4 +38,3 @@ Other working with search console errors: \code{\link{crawl_errors}},
   \code{\link{error_sample_url}},
   \code{\link{list_crawl_error_samples}}
 }
-

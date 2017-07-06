@@ -68,7 +68,7 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
 #' @family parsing functions
 parse_sitemaps <- function(x){
   list(sitemap = x$sitemap[, setdiff(names(x$sitemap), "contents")],
-       contents = x$sitemap$contents[[1]])
+       contents = x$sitemap$contents)
   
 }
 

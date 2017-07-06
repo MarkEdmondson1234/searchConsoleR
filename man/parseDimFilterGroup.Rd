@@ -28,4 +28,3 @@ dimension = c('country','device','page','query')
 Other search analytics: \code{\link{lookupCountryCode}}
 }
 \keyword{internal}
-

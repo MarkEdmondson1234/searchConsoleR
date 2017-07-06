@@ -23,4 +23,3 @@ Don't use this if you are using multiple APIs aside Search Console.
 \seealso{
 \code{\link[googleAuthR]{gar_auth}}
 }
-

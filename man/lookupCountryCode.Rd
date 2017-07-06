@@ -21,4 +21,3 @@ Look up the country codes
 Other search analytics: \code{\link{parseDimFilterGroup}}
 }
 \keyword{internal}
-

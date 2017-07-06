@@ -19,4 +19,3 @@ Adds website to Search Console
 Other search console website functions: \code{\link{delete_website}},
   \code{\link{list_websites}}
 }
-

@@ -21,4 +21,3 @@ Other data fetching functions: \code{\link{list_sitemaps}}
 Other search console website functions: \code{\link{add_website}},
   \code{\link{list_websites}}
 }
-
