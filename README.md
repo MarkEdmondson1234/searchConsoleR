@@ -166,7 +166,7 @@ start <- Sys.Date() - 3
 ## one days data, but change it as needed
 end <- Sys.Date() - 3 
 
-## what to download, choose between data, query, page, device, country
+## what to download, choose between date, query, page, device, country
 download_dimensions <- c('date','query')
 
 ## what type of Google search, choose between 'web', 'video' or 'image'
