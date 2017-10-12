@@ -19,7 +19,7 @@ A dataframe of $pageUrl, $last_crawled, $first_detected, $response
 \description{
 Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   other, roboted, serverError, soft404.
-  
+
   Platform is one of: mobile, smartphoneOnly or web.
 }
 \details{

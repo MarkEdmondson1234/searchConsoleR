@@ -19,14 +19,14 @@ error_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 Dataframe of $linkedFrom, with the calling URLs $last_crawled, $first_detected and a $exampleURL
 }
 \description{
-pageURL is the relative path (without the site) of the sample URL. 
-It must be one of the URLs returned by list_crawl_error_samples. 
-For example, for the URL https://www.example.com/pagename on the site https://www.example.com/, 
+pageURL is the relative path (without the site) of the sample URL.
+It must be one of the URLs returned by list_crawl_error_samples.
+For example, for the URL https://www.example.com/pagename on the site https://www.example.com/,
 the url value is pagename (string)
 
 Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   other, roboted, serverError, soft404.
-  
+
   Platform is one of: mobile, smartphoneOnly or web.
 }
 \details{
