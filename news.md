@@ -1,6 +1,6 @@
 # 0.2.1.9000
 
-* hmm
+* Added searchAppearance as a dimension option in search_analytics()
 
 # 0.2.1
 
