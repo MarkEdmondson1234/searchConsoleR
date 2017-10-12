@@ -28,7 +28,7 @@ The timestamp is converted to a date as they are only available daily.
 
 Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   other, roboted, serverError, soft404.
-  
+
   Platform is one of: mobile, smartphoneOnly or web.
 }
 \seealso{

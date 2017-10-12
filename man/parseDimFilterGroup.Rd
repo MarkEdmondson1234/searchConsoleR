@@ -13,16 +13,17 @@ parseDimFilterGroup(dfe)
 Saves the need for 3 parameters when you just have one
 }
 \details{
-dimension = c('country','device','page','query')
+dimension = c('country','device','page','query','searchAppearance')
   operator = c(`~~` = 'contains',
                `==` = 'equals',
                `!~` = 'notContains',
                 `!=` = 'notEquals)
- 
+
  expression = country: an ISO 3166-1 alpha-3 country code.
               device: 'DESKTOP','MOBILE','TABLET'
               page: not checked
               query: not checked
+              searchAppearance: 'AMP_BLUE_LINK', 'RICHCARD'
 }
 \seealso{
 Other search analytics: \code{\link{lookupCountryCode}}

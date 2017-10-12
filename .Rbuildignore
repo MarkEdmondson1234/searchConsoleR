@@ -5,3 +5,4 @@ cran-comments\.md
 .httr-oauth
 .httr-oauth.SUSPENDED
 news.md
+^\.httr-oauth$
