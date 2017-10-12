@@ -84,7 +84,8 @@ gbr_desktop_queries <-
                      "2015-07-01", "2015-08-01", 
                      c("query", "page"), 
                      dimensionFilterExp = c("device==DESKTOP","country==GBR"), 
-                     searchType="web", rowLimit = 100)
+                     searchType = "web",searchAppearance = "AMP_BLUE_LINKS",
+                     aggregationType = "byPage", rowLimit = 100))
 ```
 
 
