@@ -35,20 +35,32 @@ test_that("Can get search analytics data", {
 
 test_that("Can get search analytics data lots of dims with batching", {
   
-  sa <- search_analytics(my_example, 
+  sa1 <- search_analytics(my_example, 
                          dimensions = c("date","device", "country" ,"query","page"), 
                          walk_data = "byBatch", 
                          rowLimit = 9999)
   
-  expect_s3_class(sa, "data.frame")
+  expect_s3_class(sa1, "data.frame")
   
 })
 
+test_that("Can get search analytics data lots of dims with date", {
+  
+  sa2 <- search_analytics(my_example, 
+                         dimensions = c("date","device", "country" ,"query","page"), 
+                         walk_data = "byDate", 
+                         rowLimit = 9999)
+  
+  expect_s3_class(sa2, "data.frame")
+  
+})
+
+
 test_that("searchAppearance dimension", {
   
-  sa <- search_analytics(my_example, 
+  sa3 <- search_analytics(my_example, 
                          dimensions = c("searchAppearance"))
   
-  expect_s3_class(sa, "data.frame")
+  expect_s3_class(sa3, "data.frame")
   
 })
