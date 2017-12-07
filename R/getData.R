@@ -247,7 +247,10 @@ search_analytics <- function(siteURL,
                                                     searchAnalytics = "query"),
                                    data_parse_function = parse_search_analytics
                                    )
-
+  
+  # set this here as it may get reset if other googleAuthR packages there
+  options(googleAuthR.batch_endpoint = 'https://www.googleapis.com/batch/webmasters/v3')
+  
   if(walk_data == "byDate"){
 
     if(!'date' %in% dimensions){
