@@ -17,6 +17,7 @@ scr_auth(token = NULL, new_user = FALSE, no_auto = FALSE)
 Do OAuth2 authentication
 }
 \details{
+<<<<<<< HEAD
 Run this function first time to authenticate with Google in your browser.  
 
 After initial authentication, a \code{sc.oauth} will be saved to your working directory, where your authentication details are kept.  Keep this file safe.
@@ -25,6 +26,10 @@ If you want to reauthenticate, delete this file from your directory or run \code
 }
 \section{Multiple accounts}{
 
+=======
+This function just wraps \code{\link[googleAuthR]{gar_auth}} from googleAuthR,
+  but means you don't need to explictly load that library.
+>>>>>>> c1c8867a1f68694144be00969226e8945a807da9
 
 You can authenticate with a new auth file for each account. Supply argument \code{token} with the name of the cache file you want to use e.g. \code{scr_auth(token = "one.httr-oauth")} for one account, 
   \code{scr_auth(token = "another.httr-oauth")} for a different account.

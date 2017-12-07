@@ -84,7 +84,8 @@ gbr_desktop_queries <-
                      "2015-07-01", "2015-08-01", 
                      c("query", "page"), 
                      dimensionFilterExp = c("device==DESKTOP","country==GBR"), 
-                     searchType="web", rowLimit = 100)
+                     searchType = "web", searchAppearance = "AMP_BLUE_LINKS",
+                     aggregationType = "byPage", rowLimit = 100))
 ```
 
 
@@ -97,7 +98,8 @@ Filter can be one of:
 * 'country',
 * 'device'
 * 'page'
-* 'query')
+* 'query'
+* 'searchAppearance')
 
 Operator can be one of ```~~, ==, !~, !=``` where the symbols mean:
 
@@ -115,6 +117,11 @@ Expression for device must be one of:
 * 'MOBILE'
 * 'DESKTOP'
 * 'TABLET'
+
+Expression for searchAppearance must be one of:
+
+* 'AMP_BLUE_LINKS'
+* 'RICHCARD'
 
 You can have multiple AND filters by putting them in a character vector.  
 

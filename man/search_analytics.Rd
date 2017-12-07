@@ -6,9 +6,9 @@
 \usage{
 search_analytics(siteURL, startDate = Sys.Date() - 93, endDate = Sys.Date()
   - 3, dimensions = NULL, searchType = c("web", "video", "image"),
-  dimensionFilterExp = NULL, aggregationType = c("auto", "byPage",
-  "byProperty"), rowLimit = 1000, prettyNames = TRUE,
-  walk_data = c("byBatch", "byDate", "none"))
+  searchAppearance = NULL, dimensionFilterExp = NULL,
+  aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
+  prettyNames = TRUE, walk_data = c("byBatch", "byDate", "none"))
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -17,19 +17,19 @@ search_analytics(siteURL, startDate = Sys.Date() - 93, endDate = Sys.Date()
 
 \item{endDate}{End date of the requested date range, in YYYY-MM-DD.}
 
-\item{dimensions}{Zero or more dimensions to group results by: 
-\code{"date", "country", "device", "page" or "query"}}
+\item{dimensions}{Zero or more dimensions to group results by:
+\code{"date", "country", "device", "page" , "query" or "searchAppearance"}}
 
 \item{searchType}{Search type filter, default 'web'.}
 
-\item{dimensionFilterExp}{A character vector of expressions to filter. 
+\item{dimensionFilterExp}{A character vector of expressions to filter.
 e.g. \code{("device==TABLET", "country~~GBR")}}
 
 \item{aggregationType}{How data is aggregated.}
 
 \item{rowLimit}{How many rows, maximum is 5000.}
 
-\item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and 
+\item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and
 creates new column called countryName.}
 
 \item{walk_data}{Make multiple API calls. One of \code{("byBatch","byDate","none")}}
@@ -41,75 +41,78 @@ A dataframe with columns in order of dimensions plus metrics, with attribute "ag
 Download your Google SEO data.
 }
 \details{
-\strong{startDate}: Start date of the requested date range, in YYYY-MM-DD format, 
-   in PST time (UTC - 8:00). Must be less than or equal to the end date. 
+\strong{startDate}: Start date of the requested date range, in YYYY-MM-DD format,
+   in PST time (UTC - 8:00). Must be less than or equal to the end date.
    This value is included in the range.
-   
- \strong{endDate}: End date of the requested date range, in YYYY-MM-DD format, 
-   in PST time (UTC - 8:00). Must be greater than or equal to the start date. 
+
+ \strong{endDate}: End date of the requested date range, in YYYY-MM-DD format,
+   in PST time (UTC - 8:00). Must be greater than or equal to the start date.
    This value is included in the range.
-   
- \strong{dimensions}: [Optional] Zero or more dimensions to group results by. 
+
+ \strong{dimensions}: [Optional] Zero or more dimensions to group results by.
       \itemize{
         \item 'date'
         \item 'country'
         \item 'device'
         \item 'page'
         \item 'query'
+        \item 'searchAppearance'
       }
- The grouping dimension values are combined to create a unique key 
-   for each result row. If no dimensions are specified, 
-   all values will be combined into a single row. 
-   There is no limit to the number of dimensions that you can group by, 
+ The grouping dimension values are combined to create a unique key
+   for each result row. If no dimensions are specified,
+   all values will be combined into a single row.
+   There is no limit to the number of dimensions that you can group by,
    but you cannot group by the same dimension twice. Example: c(country, device)
- 
+
  \strong{dimensionFilterExp}:
- Results are grouped in the order that you supply these dimensions. 
+ Results are grouped in the order that you supply these dimensions.
  dimensionFilterExp expects a character vector of expressions in the form:
   ("device==TABLET", "country~~GBR", "dimension operator expression")
   \itemize{
-    \item dimension  
+    \item dimension
       \itemize{
         \item 'country'
         \item 'device'
         \item 'page'
         \item 'query'
+        \item 'searchAppearance'
       }
-    \item operator 
+    \item operator
       \itemize{
         \item '~~' meaning 'contains'
         \item '==' meaning 'equals'
         \item '!~' meaning 'notContains'
         \item '!=' meaning 'notEquals
       }
-    
-    \item expression 
+
+    \item expression
        \itemize{
          \item country: an ISO 3166-1 alpha-3 country code.
          \item device: 'DESKTOP','MOBILE','TABLET'.
          \item page: not checked, a string in page URLs without hostname.
          \item query: not checked, a string in keywords.
-       
+         \item searchAppearance: 'AMP_BLUE_LINK', 'RICHCARD'
+
        }
   }
- 
- 
+
+
  \strong{searchType}: [Optional] The search type to filter for. Acceptable values are:
  \itemize{
    \item "web": [Default] Web search results
    \item "image": Image search results
    \item "video": Video search results
  }
- 
- \strong{aggregationType}: [Optional] How data is aggregated. 
+
+ \strong{aggregationType}: [Optional] How data is aggregated.
  \itemize{
-   \item If aggregated by property, all data for the same property is aggregated; 
-   \item If aggregated by page, all data is aggregated by canonical URI. 
-   \item If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated; 
+   \item If aggregated by property, all data for the same property is aggregated;
+   \item If aggregated by page, all data is aggregated by canonical URI.
+   \item If you filter or group by page, choose auto; otherwise you can aggregate either by property or by page, depending on how you want your data calculated;
  }
-   See the API documentation to learn how data is calculated differently by site versus by page. 
+   See the API documentation to learn how data is calculated differently by site versus by page.
    Note: If you group or filter by page, you cannot aggregate by property.
-   If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error. 
+   If you specify any value other than auto, the aggregation type in the result will match the requested type, or if you request an invalid type, you will get an error.
    The API will never change your aggregation type if the requested type is invalid.
    Acceptable values are:
  \itemize{
@@ -117,7 +120,7 @@ Download your Google SEO data.
    \item "byPage": Aggregate values by URI.
    \item "byProperty": Aggregate values by property.
  }
- 
+
  \strong{batchType}: [Optional] Batching data into multiple API calls
 \itemize{
   \item byBatch Use the API call to batch
@@ -128,26 +131,26 @@ Download your Google SEO data.
 \examples{
 
 \dontrun{
- 
+
    library(searchConsoleR)
    scr_auth()
    sc_websites <- list_websites()
-   
-   gbr_desktop_queries <- 
+
+   gbr_desktop_queries <-
        search_analytics("http://www.example.com",
                          start = "2016-01-01", end = "2016-03-01",
                          dimensions = c("query", "page"),
                          dimensionsFilterExp = c("device==DESKTOP", "country==GBR"),
                          searchType = "web", rowLimit = 100)
-                         
-   batching <- 
+
+   batching <-
         search_analytics("http://www.example.com",
                          start = "2016-01-01", end = "2016-03-01",
                          dimensions = c("query", "page", "date"),
                          searchType = "web", rowLimit = 100000,
-                         walk_data = "byBatch") 
-  
-  }  
+                         walk_data = "byBatch")
+
+  }
 }
 \seealso{
 Guide to Search Analytics: \url{https://support.google.com/webmasters/answer/6155685}

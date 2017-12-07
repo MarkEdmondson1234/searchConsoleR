@@ -38,7 +38,7 @@ test_that("Can get search analytics data lots of dims with batching", {
   
   sa <- search_analytics(my_example, 
                          startDate = "2017-04-01", endDate = "2017-04-01",
-                         dimensions = c("date","device", "country" ,"query","page"), 
+                         dimensions = c("date","device", "country" ,"query","page", "searchAppearance"), 
                          walk_data = "byBatch", 
                          rowLimit = 9999)
   

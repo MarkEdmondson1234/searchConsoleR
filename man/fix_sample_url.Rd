@@ -19,18 +19,18 @@ fix_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 TRUE if successful, raises an error if not.
 }
 \description{
-pageURL is the relative path (without the site) of the sample URL. 
-It must be one of the URLs returned by list_crawl_error_samples. 
-For example, for the URL https://www.example.com/pagename on the site https://www.example.com/, 
+pageURL is the relative path (without the site) of the sample URL.
+It must be one of the URLs returned by list_crawl_error_samples.
+For example, for the URL https://www.example.com/pagename on the site https://www.example.com/,
 the url value is pagename (string)
 
 Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   other, roboted, serverError, soft404.
-  
+
   Platform is one of: mobile, smartphoneOnly or web.
 }
 \details{
-See here for details: 
+See here for details:
 https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/markAsFixed
 }
 \seealso{

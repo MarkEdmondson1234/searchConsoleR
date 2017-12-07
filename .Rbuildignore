@@ -7,3 +7,4 @@ cran-comments\.md
 news.md
 ^\.httr-oauth$
 ^sc\.oauth$
+
