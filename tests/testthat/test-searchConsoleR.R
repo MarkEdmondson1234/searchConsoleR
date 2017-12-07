@@ -1,5 +1,9 @@
 library(testthat)
 
+## Use a test website as specified in SC_TEST_WEBSITE arg
+
+my_example <- Sys.getenv("SC_TEST_WEBSITE")
+
 context("Auth")
 
 ## will only work locally at the moment
@@ -19,11 +23,11 @@ test_that("Get website list", {
   expect_s3_class(www, "data.frame")
 })
 
+context("Get search analytics")
+
 test_that("Can get search analytics data", {
   
-  www <- list_websites()
-  
-  sa <- search_analytics(www$siteUrl[[220]], dimensions = c("query","page"))
+  sa <- search_analytics(my_example, dimensions = c("query","page"))
   
   expect_s3_class(sa, "data.frame")
   
@@ -31,16 +35,19 @@ test_that("Can get search analytics data", {
 
 test_that("Can get search analytics data lots of dims with batching", {
   
-  www <- list_websites()
-  
-  ## pick a website that is in www$siteUrl
-  my_example <- www$siteUrl[[220]]
-  
   sa <- search_analytics(my_example, 
-                         startDate = "2017-04-01", endDate = "2017-04-01",
-                         dimensions = c("date","device", "country" ,"query","page", "searchAppearance"), 
+                         dimensions = c("date","device", "country" ,"query","page"), 
                          walk_data = "byBatch", 
                          rowLimit = 9999)
+  
+  expect_s3_class(sa, "data.frame")
+  
+})
+
+test_that("searchAppearance dimension", {
+  
+  sa <- search_analytics(my_example, 
+                         dimensions = c("searchAppearance"))
   
   expect_s3_class(sa, "data.frame")
   

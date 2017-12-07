@@ -1,6 +1,6 @@
 #' Do OAuth2 authentication
 #' 
-#' @param token An existing token or file location of a token to authenticate with
+#' @param token Where you want to save the auth file, or an existing token or file location of a token to authenticate with
 #' @param new_user If TRUE, reauthenticate via Google login screen
 #' @param no_auto Skip auto authentication
 #' 
