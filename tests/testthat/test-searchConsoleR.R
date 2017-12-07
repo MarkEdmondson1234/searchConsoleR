@@ -4,7 +4,7 @@ context("Auth")
 
 ## will only work locally at the moment
 test_that("Can auth", {
-  options(googleAuthR.scopes.selected = "https://www.googleapis.com/auth/webmasters")
+
   token <- scr_auth()
   
   expect_s3_class(token, "Token2.0")

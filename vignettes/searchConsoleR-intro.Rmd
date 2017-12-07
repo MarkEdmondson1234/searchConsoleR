@@ -48,23 +48,23 @@ install.packages("googleAuthR")
 library(searchConsoleR)
 ```
 
-Install searchConsoleR from github using devtools.
+Install searchConsoleR.
 
 ```
-devtools::install_github("MarkEdmondson1234/searchConsoleR")
+install.packages("searchConsoleR")
 library(searchConsoleR)
 ```
 
 Work flow always starts with authenticating with Google.
 ```
-gar_auth()
+scr_auth()
 ```
 
 Your browser window should open up and go through the Google sign in OAuth2 flow. Verify with a user that has Search Console access to the websites you want to work with.
 
 Check out the documentation of any function for a guide on what else can be done.
 ```
-?gar_auth
+?scr_auth
 ```
 
 If it works, you should see a list of your websites in the Search Console via:

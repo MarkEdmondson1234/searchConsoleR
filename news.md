@@ -1,6 +1,6 @@
 # 0.2.1.9000
 
-* hmm
+* Update authentication options for `scr_auth()` to include auto-authentication etc. from googleAuthR `0.6.2`
 
 # 0.2.1
 

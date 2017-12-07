@@ -13,7 +13,7 @@ Depends:
 License: MIT + file LICENSE
 LazyData: true
 Imports:
-    googleAuthR (>= 0.4.0),
+    googleAuthR (>= 0.6.2),
     stringr (>= 1.0.0)
 Suggests:
     shiny (>= 0.12.1),

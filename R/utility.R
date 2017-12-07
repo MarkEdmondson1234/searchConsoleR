@@ -28,29 +28,6 @@ lookupCountryCode <- function(country.code,
   code
 }
 
-#' Do OAuth2 authentication
-#' 
-#' @param token An existing OAuth2 token, if you have one.
-#' @param new_user Set to TRUE if you want to go through the authentication flow again.
-#' 
-#' @details 
-#' This function just wraps \code{\link[googleAuthR]{gar_auth}} from googleAuthR, 
-#'   but means you don't need to explictly load that library.
-#' 
-#' Don't use this if you are using multiple APIs aside Search Console.
-#'   
-#' @seealso \code{\link[googleAuthR]{gar_auth}}
-#' 
-#' 
-#' @export
-scr_auth <- function(token=NULL, new_user=FALSE){
-  options(googleAuthR.client_id = getOption("searchConsoleR.client_id"))
-  options(googleAuthR.client_secret = getOption("searchConsoleR.client_secret"))
-  options(googleAuthR.scopes.selected = getOption("searchConsoleR.scope"))
-  options(googleAuthR.webapp.client_id = getOption("searchConsoleR.webapp.client_id"))
-  options(googleAuthR.webapp.client_secret = getOption("searchConsoleR.webapp.client_secret"))
-  googleAuthR::gar_auth(token=token, new_user=new_user)
-}
 
 #' Helper function for the query dimension filters
 #' 

@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mark Edmondson" />
 
-<meta name="date" content="2016-06-24" />
+<meta name="date" content="2017-12-07" />
 
 <title>searchConsoleR demo</title>
 
@@ -32,7 +32,7 @@
 
 <h1 class="title toc-ignore">searchConsoleR demo</h1>
 <h4 class="author"><em>Mark Edmondson</em></h4>
-<h4 class="date"><em>2016-06-24</em></h4>
+<h4 class="date"><em>2017-12-07</em></h4>
 
 
 
@@ -86,14 +86,14 @@
 <p>Install googleAuthR from CRAN</p>
 <pre><code>install.packages(&quot;googleAuthR&quot;)
 library(searchConsoleR)</code></pre>
-<p>Install searchConsoleR from github using devtools.</p>
-<pre><code>devtools::install_github(&quot;MarkEdmondson1234/searchConsoleR&quot;)
+<p>Install searchConsoleR.</p>
+<pre><code>install.packages(&quot;searchConsoleR&quot;)
 library(searchConsoleR)</code></pre>
 <p>Work flow always starts with authenticating with Google.</p>
-<pre><code>gar_auth()</code></pre>
+<pre><code>scr_auth()</code></pre>
 <p>Your browser window should open up and go through the Google sign in OAuth2 flow. Verify with a user that has Search Console access to the websites you want to work with.</p>
 <p>Check out the documentation of any function for a guide on what else can be done.</p>
-<pre><code>?gar_auth</code></pre>
+<pre><code>?scr_auth</code></pre>
 <p>If it works, you should see a list of your websites in the Search Console via:</p>
 <pre><code>sc_websites &lt;- list_websites()
 sc_websites</code></pre>
@@ -143,7 +143,7 @@ sc_websites</code></pre>
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

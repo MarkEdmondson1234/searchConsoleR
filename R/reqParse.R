@@ -7,7 +7,7 @@
 #' @keywords internal
 #' @family parsing functions
 parse_search_analytics <- function(x, dim, prettyNames=TRUE){
-  
+
   the_data <- x$rows
 
   if(!is.null(dim)){
@@ -19,7 +19,7 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
     
     ## if no rows, get out of here.
     if(!nrow(dimensionCols) > 0) {
-      warning("No data found")
+      warning("No data found for supplied dates - returning NA", call. = FALSE)
       empty_df <- data.frame(matrix(NA, nrow = 1, ncol = length(dim) + 4))
       names(empty_df) <- c(dim, 'clicks','impressions','ctr','position')
       if('date' %in% dim) empty_df$date <- as.Date(NA)
@@ -45,7 +45,7 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
     if(!is.null(the_data)){
       the_df <- the_data
     } else {
-      warning("No data found")
+      warning("No data found for supplied dates - returning NA", call. = FALSE)
       empty_df <- data.frame(matrix(NA, nrow = 1, ncol = 4))
       names(empty_df) <- c('clicks','impressions','ctr','position')
 
