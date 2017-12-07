@@ -104,7 +104,8 @@ sc_websites</code></pre>
                      &quot;2015-07-01&quot;, &quot;2015-08-01&quot;, 
                      c(&quot;query&quot;, &quot;page&quot;), 
                      dimensionFilterExp = c(&quot;device==DESKTOP&quot;,&quot;country==GBR&quot;), 
-                     searchType=&quot;web&quot;, rowLimit = 100)</code></pre>
+                     searchType = &quot;web&quot;, searchAppearance = &quot;AMP_BLUE_LINKS&quot;,
+                     aggregationType = &quot;byPage&quot;, rowLimit = 100))</code></pre>
 </div>
 <div id="dimensionfilterexp" class="section level2">
 <h2>dimensionFilterExp</h2>
@@ -114,7 +115,8 @@ sc_websites</code></pre>
 <li>‘country’,</li>
 <li>‘device’</li>
 <li>‘page’</li>
-<li>‘query’)</li>
+<li>‘query’</li>
+<li>‘searchAppearance’)</li>
 </ul>
 <p>Operator can be one of <code>~~, ==, !~, !=</code> where the symbols mean:</p>
 <ul>
@@ -130,6 +132,11 @@ sc_websites</code></pre>
 <li>‘MOBILE’</li>
 <li>‘DESKTOP’</li>
 <li>‘TABLET’</li>
+</ul>
+<p>Expression for searchAppearance must be one of:</p>
+<ul>
+<li>‘AMP_BLUE_LINKS’</li>
+<li>‘RICHCARD’</li>
 </ul>
 <p>You can have multiple AND filters by putting them in a character vector.</p>
 <pre><code>c(&quot;device==DESKTOP&quot;,&quot;country==GBR&quot;)</code></pre>
