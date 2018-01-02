@@ -8,7 +8,7 @@ context("Auth")
 
 ## will only work locally at the moment
 test_that("Can auth", {
-
+  skip_on_cran()
   token <- scr_auth()
   
   expect_s3_class(token, "Token2.0")
@@ -17,7 +17,7 @@ test_that("Can auth", {
 context("Get website list")
 
 test_that("Get website list", {
-  
+  skip_on_cran()
   www <- list_websites()
   
   expect_s3_class(www, "data.frame")
@@ -26,7 +26,7 @@ test_that("Get website list", {
 context("Get search analytics")
 
 test_that("Can get search analytics data", {
-  
+  skip_on_cran()
   sa <- search_analytics(my_example, dimensions = c("query","page"))
   
   expect_s3_class(sa, "data.frame")
@@ -34,7 +34,7 @@ test_that("Can get search analytics data", {
 })
 
 test_that("Can get search analytics data lots of dims with batching", {
-  
+  skip_on_cran()
   sa1 <- search_analytics(my_example, 
                          dimensions = c("date","device", "country" ,"query","page"), 
                          walk_data = "byBatch", 
@@ -45,7 +45,7 @@ test_that("Can get search analytics data lots of dims with batching", {
 })
 
 test_that("Can get search analytics data lots of dims with date", {
-  
+  skip_on_cran()
   sa2 <- search_analytics(my_example, 
                          dimensions = c("date","device", "country" ,"query","page"), 
                          walk_data = "byDate", 
@@ -57,7 +57,7 @@ test_that("Can get search analytics data lots of dims with date", {
 
 
 test_that("searchAppearance dimension", {
-  
+  skip_on_cran()
   sa3 <- search_analytics(my_example, 
                          dimensions = c("searchAppearance"))
   
