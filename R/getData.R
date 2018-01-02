@@ -1,10 +1,3 @@
-options("googleAuthR.scopes.selected" = getOption("searchConsoleR.scope") )
-options("googleAuthR.client_id" = getOption("searchConsoleR.client_id"))
-options("googleAuthR.client_secret" = getOption("searchConsoleR.client_secret"))
-options("googleAuthR.webapp.client_id" = getOption("searchConsoleR.webapp.client_id"))
-options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.client_secret"))
-
-
 #' Query search traffic keyword data
 #'
 #' @description Download your Google SEO data.
@@ -45,7 +38,7 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #'         \item 'device'
 #'         \item 'page'
 #'         \item 'query'
-#'         \item 'searchAppearance'
+#'         \item 'searchAppearance' (can only appear on its own)
 #'       }
 #'  The grouping dimension values are combined to create a unique key
 #'    for each result row. If no dimensions are specified,
@@ -150,7 +143,6 @@ search_analytics <- function(siteURL,
                              endDate = Sys.Date() - 3,
                              dimensions = NULL,
                              searchType = c("web","video","image"),
-                             searchAppearance = NULL,
                              dimensionFilterExp = NULL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
@@ -216,8 +208,7 @@ search_analytics <- function(siteURL,
     #   up to the limit you have set
     if(rowLimit > 5000){
       message("Batching data via method: ", walk_data)
-      message("With rowLimit set to ", rowLimit ," 
-              will need up to [", (rowLimit %/% 5000) + 1, "] API calls")
+      message("With rowLimit set to ", rowLimit ," will need up to [", (rowLimit %/% 5000) + 1, "] API calls")
       rowLimit0 <- rowLimit
       rowLimit <- 5000
     } else {

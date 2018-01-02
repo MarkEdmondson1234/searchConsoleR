@@ -46,10 +46,9 @@ test_that("Can get search analytics data lots of dims with batching", {
 
 test_that("Can get search analytics data lots of dims with date", {
   skip_on_cran()
-  sa2 <- search_analytics(my_example, 
+  sa2 <- search_analytics(my_example, startDate = Sys.Date() - 10, 
                          dimensions = c("date","device", "country" ,"query","page"), 
-                         walk_data = "byDate", 
-                         rowLimit = 9999)
+                         walk_data = "byDate")
   
   expect_s3_class(sa2, "data.frame")
   

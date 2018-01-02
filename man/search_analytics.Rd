@@ -6,9 +6,9 @@
 \usage{
 search_analytics(siteURL, startDate = Sys.Date() - 93, endDate = Sys.Date()
   - 3, dimensions = NULL, searchType = c("web", "video", "image"),
-  searchAppearance = NULL, dimensionFilterExp = NULL,
-  aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
-  prettyNames = TRUE, walk_data = c("byBatch", "byDate", "none"))
+  dimensionFilterExp = NULL, aggregationType = c("auto", "byPage",
+  "byProperty"), rowLimit = 1000, prettyNames = TRUE,
+  walk_data = c("byBatch", "byDate", "none"))
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -56,7 +56,7 @@ Download your Google SEO data.
         \item 'device'
         \item 'page'
         \item 'query'
-        \item 'searchAppearance'
+        \item 'searchAppearance' (can only appear on its own)
       }
  The grouping dimension values are combined to create a unique key
    for each result row. If no dimensions are specified,

@@ -1,6 +1,6 @@
 # searchConsoleR
 
-[![CRAN](http://www.r-pkg.org/badges/version/searchConsoleR)](http://cran.r-project.org/package=searchConsoleR)
+[![CRAN](http://www.r-pkg.org/badges/version/searchConsoleR)](https://CRAN.R-project.org/package=searchConsoleR)
 [![Travis-CI Build Status](https://travis-ci.org/MarkEdmondson1234/searchConsoleR.svg?branch=master)](https://travis-ci.org/MarkEdmondson1234/searchConsoleR)
 
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
