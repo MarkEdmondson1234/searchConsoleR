@@ -167,7 +167,6 @@ search_analytics <- function(siteURL,
                 "dimensions:", paste(dimensions, collapse = " ", sep=";"),
                 "dimensionFilterExp:", paste(dimensionFilterExp, collapse = " ", sep=";"),
                 "searchType:", searchType,
-                "searchAppearance:", searchAppearance,
                 "aggregationType:", aggregationType))
 
   siteURL <- check.Url(siteURL, reserved=T)
