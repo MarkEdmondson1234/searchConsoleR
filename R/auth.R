@@ -54,10 +54,10 @@
 #' @import googleAuthR
 scr_auth <- function(token=NULL, new_user=FALSE, no_auto = FALSE){
   
-  suppressMessages(gar_set_client(system.file("clients","native.json", package = "searchConsoleR"),
-                                  scopes = "https://www.googleapis.com/auth/webmasters"))
+  gar_set_client(system.file("clients","native.json", package = "searchConsoleR"),
+                              scopes = "https://www.googleapis.com/auth/webmasters")
   
-  ## still need to set these until gar_set_client supports Shiny
+  ## needs googleAuthR > 0.6.3
   options(googleAuthR.webapp.client_id = getOption("searchConsoleR.webapp.client_id"))
   options(googleAuthR.webapp.client_secret = getOption("searchConsoleR.webapp.client_secret"))
   

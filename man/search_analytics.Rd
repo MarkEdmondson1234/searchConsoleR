@@ -27,7 +27,7 @@ e.g. \code{("device==TABLET", "country~~GBR")}}
 
 \item{aggregationType}{How data is aggregated.}
 
-\item{rowLimit}{How many rows, maximum is 5000.}
+\item{rowLimit}{How many rows to fetch.  Ignored if \code{walk_data} is "byDate"}
 
 \item{prettyNames}{If TRUE, converts SO 3166-1 alpha-3 country code to full name and
 creates new column called countryName.}
@@ -61,8 +61,11 @@ Download your Google SEO data.
  The grouping dimension values are combined to create a unique key
    for each result row. If no dimensions are specified,
    all values will be combined into a single row.
-   There is no limit to the number of dimensions that you can group by,
-   but you cannot group by the same dimension twice. Example: c(country, device)
+   There is no limit to the number of dimensions that you can group by apart from \code{searchAppearance} can only be grouped alone.
+   You cannot group by the same dimension twice. 
+   
+   Example: \code{c('country', 'device')}
+   
 
  \strong{dimensionFilterExp}:
  Results are grouped in the order that you supply these dimensions.
@@ -135,6 +138,8 @@ Download your Google SEO data.
    library(searchConsoleR)
    scr_auth()
    sc_websites <- list_websites()
+   
+   default_fetch <- search_analytics("http://www.example.com")
 
    gbr_desktop_queries <-
        search_analytics("http://www.example.com",

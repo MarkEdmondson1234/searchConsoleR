@@ -1,8 +1,8 @@
-# 0.2.1.9000
+# 0.3.0
 
 * Update authentication options for `scr_auth()` to include auto-authentication etc. from googleAuthR `0.6.2`
 * Added `searchAppearance` as a dimension option in `search_analytics()`
-
+* Remove warning if data is more than 90 days old as it will soon allow 12 months (woop)
 
 # 0.2.1
 

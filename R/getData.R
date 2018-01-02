@@ -18,7 +18,7 @@ options("googleAuthR.webapp.client_secret" = getOption("searchConsoleR.webapp.cl
 #' @param dimensionFilterExp A character vector of expressions to filter.
 #'      e.g. \code{("device==TABLET", "country~~GBR")}
 #' @param aggregationType How data is aggregated.
-#' @param rowLimit How many rows, maximum is 5000.
+#' @param rowLimit How many rows to fetch.  Ignored if \code{walk_data} is "byDate"
 #' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and
 #'   creates new column called countryName.
 #' @param walk_data Make multiple API calls. One of \code{("byBatch","byDate","none")}
@@ -169,8 +169,6 @@ search_analytics <- function(siteURL,
   startDate <- as.character(startDate)
   endDate   <- as.character(endDate)
 
-
-
   message("Fetching search analytics for ",
           paste("url:", siteURL,
                 "dates:", startDate, endDate,
@@ -188,10 +186,6 @@ search_analytics <- function(siteURL,
 
   if(any(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-3, as.Date(endDate, "%Y-%m-%d") > Sys.Date()-3)){
     warning("Search Analytics usually not available within 3 days (96 hrs) of today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
-  }
-
-  if(as.Date(startDate, "%Y-%m-%d") < Sys.Date()-93){
-    warning("Search Analytics usually not available 93 days before today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
 
   if(!is.null(dimensions) && !dimensions %in% c('date','country', 'device', 'page', 'query','searchAppearance')){
@@ -212,13 +206,24 @@ search_analytics <- function(siteURL,
     stop("Can't aggregate byProperty and include page in dimensions.")
   }
   
-
-  if(rowLimit > 5000){
+  # if batching by day, row limits make no sense so we get 5000 per day.
+  if(walk_data == "byDate"){
     message("Batching data via method: ", walk_data)
-    rowLimit0 <- rowLimit
+    message("Will fetch up to 5000 rows per day")
     rowLimit <- 5000
-  } else {
-    walk_data <- "none"
+  } else if(walk_data == "byBatch"){
+    # if batching byBatch, we set to 5000 per API call, repeating API calls
+    #   up to the limit you have set
+    if(rowLimit > 5000){
+      message("Batching data via method: ", walk_data)
+      message("With rowLimit set to ", rowLimit ," 
+              will need up to [", (rowLimit %/% 5000) + 1, "] API calls")
+      rowLimit0 <- rowLimit
+      rowLimit <- 5000
+    } else {
+      # its batched, but we can get all rows in one API call
+      walk_data <- "none"
+    }
   }
 
   ## a list of filter expressions
@@ -254,8 +259,8 @@ search_analytics <- function(siteURL,
   if(walk_data == "byDate"){
 
     if(!'date' %in% dimensions){
-      stop("To walk data per date requires 'date' to be one of the dimensions.
-           Got this: ", paste(dimensions, sep=", "))
+      warning("To walk data per date requires 'date' to be one of the dimensions. Adding it")
+      dimensions <- c("date", dimensions)
     }
 
     walk_vector <- seq(as.Date(startDate), as.Date(endDate), 1)

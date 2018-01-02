@@ -7,7 +7,7 @@
 scr_auth(token = NULL, new_user = FALSE, no_auto = FALSE)
 }
 \arguments{
-\item{token}{An existing token or file location of a token to authenticate with}
+\item{token}{Where you want to save the auth file, or an existing token or file location of a token to authenticate with}
 
 \item{new_user}{If TRUE, reauthenticate via Google login screen}
 
