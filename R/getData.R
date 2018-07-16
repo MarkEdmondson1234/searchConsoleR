@@ -200,16 +200,16 @@ search_analytics <- function(siteURL,
   # if batching by day, row limits make no sense so we get 5000 per day.
   if(walk_data == "byDate"){
     message("Batching data via method: ", walk_data)
-    message("Will fetch up to 5000 rows per day")
-    rowLimit <- 5000
+    message("Will fetch up to 25000 rows per day")
+    rowLimit <- 25000
   } else if(walk_data == "byBatch"){
-    # if batching byBatch, we set to 5000 per API call, repeating API calls
+    # if batching byBatch, we set to 25000 per API call, repeating API calls
     #   up to the limit you have set
-    if(rowLimit > 5000){
+    if(rowLimit > 25000){
       message("Batching data via method: ", walk_data)
-      message("With rowLimit set to ", rowLimit ," will need up to [", (rowLimit %/% 5000) + 1, "] API calls")
+      message("With rowLimit set to ", rowLimit ," will need up to [", (rowLimit %/% 25000) + 1, "] API calls")
       rowLimit0 <- rowLimit
-      rowLimit <- 5000
+      rowLimit <- 25000
     } else {
       # its batched, but we can get all rows in one API call
       walk_data <- "none"
@@ -267,7 +267,7 @@ search_analytics <- function(siteURL,
 
     ## byBatch uses API batching, but this pulls out less data
     ## 0 impression keywords not included.
-    walk_vector <- seq(0, rowLimit0, 5000)
+    walk_vector <- seq(0, rowLimit0, 25000)
 
     out <- googleAuthR::gar_batch_walk(search_analytics_g,
                                        walk_vector = walk_vector,

@@ -1,6 +1,6 @@
 # 0.3.0.9000
 
-* ...
+* Support up to 25,000 rows per API call (#44)
 
 # 0.3.0
 
@@ -14,7 +14,7 @@
 
 # 0.2.0
 
-* Return an empty dataframe of NAs if no resutls in fetch instead of NULL
+* Return an empty dataframe of NAs if no results in fetch instead of NULL
 * Include android-app check (#7)
 * Add `walk_data` parameter to `search_analytics` to get more data
 * Set default start and end dates in `search_analytics` to 93 days ago and 3 days ago respectively.
