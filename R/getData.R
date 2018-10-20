@@ -127,7 +127,7 @@
 #'        search_analytics("http://www.example.com",
 #'                          start = "2016-01-01", end = "2016-03-01",
 #'                          dimensions = c("query", "page"),
-#'                          dimensionsFilterExp = c("device==DESKTOP", "country==GBR"),
+#'                          dimensionFilterExp = c("device==DESKTOP", "country==GBR"),
 #'                          searchType = "web", rowLimit = 100)
 #'
 #'    batching <-
