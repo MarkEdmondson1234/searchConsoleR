@@ -36,3 +36,4 @@ Other working with search console errors: \code{\link{error_sample_url}},
   \code{\link{fix_sample_url}},
   \code{\link{list_crawl_error_samples}}
 }
+\concept{working with search console errors}

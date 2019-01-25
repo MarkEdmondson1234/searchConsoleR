@@ -138,6 +138,7 @@
 #'                          walk_data = "byBatch")
 #'
 #'   }
+#' @importFrom googleAuthR gar_api_generator gar_batch_walk gar_api_page
 search_analytics <- function(siteURL,
                              startDate = Sys.Date() - 93,
                              endDate = Sys.Date() - 3,
@@ -235,13 +236,12 @@ search_analytics <- function(siteURL,
     rowLimit = rowLimit
   )
 
-  search_analytics_g <-
-    googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
-                                   "POST",
-                                   path_args = list(sites = "siteURL",
-                                                    searchAnalytics = "query"),
-                                   data_parse_function = parse_search_analytics
-                                   )
+  search_analytics_g <- gar_api_generator("https://www.googleapis.com/webmasters/v3/",
+                                          "POST",
+                                          path_args = list(sites = "siteURL",
+                                                           searchAnalytics = "query"),
+                                          data_parse_function = parse_search_analytics)
+  
   
   # set this here as it may get reset if other googleAuthR packages there
   options(googleAuthR.batch_endpoint = 'https://www.googleapis.com/batch/webmasters/v3')
@@ -255,30 +255,45 @@ search_analytics <- function(siteURL,
 
     walk_vector <- seq(as.Date(startDate), as.Date(endDate), 1)
 
-    out <- googleAuthR::gar_batch_walk(search_analytics_g,
-                                       walk_vector = walk_vector,
-                                       gar_paths = list(sites = siteURL),
-                                       body_walk = c("startDate", "endDate"),
-                                       the_body = body,
-                                       batch_size = 1,
-                                       dim = dimensions)
+    out <- gar_batch_walk(search_analytics_g,
+                          walk_vector = walk_vector,
+                          gar_paths = list(sites = siteURL),
+                          body_walk = c("startDate", "endDate"),
+                          the_body = body,
+                          batch_size = 1,
+                          dim = dimensions)
 
   } else if(walk_data == "byBatch") {
 
     ## byBatch uses API batching, but this pulls out less data
     ## 0 impression keywords not included.
     walk_vector <- seq(0, rowLimit0, 25000)
+    
+    do_it <- TRUE
+    i <- 1
+    pages <- list()
+    while(do_it){
+      message("Page [",i,"] of max [", length(walk_vector),"] API calls")
+      this_body <- modifyList(body, list(startRow = walk_vector[i]))
+      this_page <- search_analytics_g(the_body = this_body, 
+                                     list(sites = siteURL),
+                                     dim = dimensions)
 
-    out <- googleAuthR::gar_batch_walk(search_analytics_g,
-                                       walk_vector = walk_vector,
-                                       gar_paths = list(sites = siteURL),
-                                       body_walk = "startRow",
-                                       the_body = body,
-                                       batch_size = 3,
-                                       dim = dimensions)
+      if(all(is.na(this_page[[1]]))){
+        do_it <- FALSE
+      } else {
+        message("Downloaded ", nrow(this_page), " rows")
+        pages <- rbind(pages, this_page)
+      }
+     
+      i <- i + 1
+      if(i>length(walk_vector)){
+        do_it <- FALSE
+      }
 
-
-
+    }
+    
+    out <- pages
 
   } else {
 

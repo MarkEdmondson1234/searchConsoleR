@@ -16,3 +16,4 @@ Retrieves dataframe of websites user has in Search Console
 Other search console website functions: \code{\link{add_website}},
   \code{\link{delete_website}}
 }
+\concept{search console website functions}

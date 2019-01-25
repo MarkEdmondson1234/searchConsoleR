@@ -20,4 +20,5 @@ Look up the country codes
 \seealso{
 Other search analytics: \code{\link{parseDimFilterGroup}}
 }
+\concept{search analytics}
 \keyword{internal}

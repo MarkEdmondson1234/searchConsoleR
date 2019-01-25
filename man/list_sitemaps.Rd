@@ -21,3 +21,5 @@ Other data fetching functions: \code{\link{delete_website}}
 Other sitemap admin functions: \code{\link{add_sitemap}},
   \code{\link{delete_sitemap}}
 }
+\concept{data fetching functions}
+\concept{sitemap admin functions}

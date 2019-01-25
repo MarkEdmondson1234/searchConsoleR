@@ -4,7 +4,8 @@
 \alias{fix_sample_url}
 \title{Mark As Fixed the individual sample URLs}
 \usage{
-fix_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
+fix_sample_url(siteURL, pageURL, category = "notFound",
+  platform = "web")
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -38,3 +39,4 @@ Other working with search console errors: \code{\link{crawl_errors}},
   \code{\link{error_sample_url}},
   \code{\link{list_crawl_error_samples}}
 }
+\concept{working with search console errors}

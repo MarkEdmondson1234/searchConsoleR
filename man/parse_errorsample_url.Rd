@@ -18,4 +18,5 @@ Other parsing functions: \code{\link{parse_crawlerror_sample}},
   \code{\link{parse_search_analytics}},
   \code{\link{parse_sitemaps}}
 }
+\concept{parsing functions}
 \keyword{internal}

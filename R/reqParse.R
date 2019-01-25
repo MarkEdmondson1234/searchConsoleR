@@ -55,6 +55,7 @@ parse_search_analytics <- function(x, dim, prettyNames=TRUE){
   }
 
   attr(the_df, "aggregationType") <- x$responseAggregationType
+  attr(the_df, "totalRows") <- nrow(x$rows)
 
   the_df
 

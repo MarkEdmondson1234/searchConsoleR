@@ -4,11 +4,11 @@
 \alias{search_analytics}
 \title{Query search traffic keyword data}
 \usage{
-search_analytics(siteURL, startDate = Sys.Date() - 93, endDate = Sys.Date()
-  - 3, dimensions = NULL, searchType = c("web", "video", "image"),
-  dimensionFilterExp = NULL, aggregationType = c("auto", "byPage",
-  "byProperty"), rowLimit = 1000, prettyNames = TRUE,
-  walk_data = c("byBatch", "byDate", "none"))
+search_analytics(siteURL, startDate = Sys.Date() - 93,
+  endDate = Sys.Date() - 3, dimensions = NULL, searchType = c("web",
+  "video", "image"), dimensionFilterExp = NULL,
+  aggregationType = c("auto", "byPage", "byProperty"), rowLimit = 1000,
+  prettyNames = TRUE, walk_data = c("byBatch", "byDate", "none"))
 }
 \arguments{
 \item{siteURL}{The URL of the website you have auth access to.}
@@ -145,7 +145,7 @@ Download your Google SEO data.
        search_analytics("http://www.example.com",
                          start = "2016-01-01", end = "2016-03-01",
                          dimensions = c("query", "page"),
-                         dimensionsFilterExp = c("device==DESKTOP", "country==GBR"),
+                         dimensionFilterExp = c("device==DESKTOP", "country==GBR"),
                          searchType = "web", rowLimit = 100)
 
    batching <-

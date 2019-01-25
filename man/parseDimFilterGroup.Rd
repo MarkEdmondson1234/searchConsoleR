@@ -28,4 +28,5 @@ dimension = c('country','device','page','query','searchAppearance')
 \seealso{
 Other search analytics: \code{\link{lookupCountryCode}}
 }
+\concept{search analytics}
 \keyword{internal}

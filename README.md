@@ -17,7 +17,7 @@ install.packages("googleAuthR")
 library(googleAuthR)
 ```
 
-Install `searchConsoleR` 0.2.0 from CRAN:
+Install `searchConsoleR` 0.3.0 from CRAN:
 ```r
 install.packages("searchConsoleR")
 library(searchConsoleR)
