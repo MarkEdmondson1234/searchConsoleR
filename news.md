@@ -1,6 +1,8 @@
 # 0.3.0.9000
 
 * Support up to 25,000 rows per API call (#44)
+* Change paging for `byBatch` to early exit if there is no data
+* Support `sc-domain` for URLs (#51)
 
 # 0.3.0
 
