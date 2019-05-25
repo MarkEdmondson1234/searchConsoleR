@@ -472,29 +472,7 @@ crawl_errors <- function(siteURL,
                          category="all",
                          platform=c("all","mobile","smartphoneOnly","web"),
                          latestCountsOnly = FALSE) {
-  platform <- match.arg(platform)
-  siteURL <- check.Url(siteURL, reserved = TRUE)
-
-  latestCountsOnly <- ifelse(latestCountsOnly, 'true', 'false')
-
-  ## require pre-existing token, to avoid recursion
-  if(is.valid.category.platform(category, platform, include.all = TRUE)) {
-
-    params <- list('category' = category,
-                   'latestCountsOnly' = latestCountsOnly,
-                   'platform' = platform)
-    params <- params[params != 'all']
-
-    ce <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/",
-                                         "GET",
-                                         path_args = list(sites = "siteURL",
-                                                          urlCrawlErrorsCounts = "query"),
-                                         pars_args = params,
-                                         data_parse_function = parse_crawlerrors)
-
-    ce(path_arguments = list(sites = siteURL), pars_arguments = params)
-
-  }
+  stop("Crawl errors are no longer available in the API")
 }
 
 #' Lists a site's sample URLs for crawl errors.
