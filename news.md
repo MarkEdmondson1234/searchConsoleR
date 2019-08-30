@@ -4,6 +4,7 @@
 * Change paging for `byBatch` to early exit if there is no data
 * Support `sc-domain` for URLs (#51)
 * Remove `crawl_errors()` call as no longer in API (#52)
+* Rely on new `googleAuthR>1.0.0`
 
 # 0.3.0
 
