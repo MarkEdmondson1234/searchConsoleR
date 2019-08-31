@@ -9,3 +9,4 @@ news.md
 ^sc\.oauth$
 ^issue_template\.md$
 ^revdep$
+^CRAN-RELEASE$
