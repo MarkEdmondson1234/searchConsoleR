@@ -32,8 +32,10 @@
   options(googleAuthR.batch_endpoint = 'https://www.googleapis.com/batch/webmasters/v3',
           googleAuthR.httr_oauth_cache = 'sc.oauth')
   
-  suppressMessages(googleAuthR::gar_attach_auto_auth("https://www.googleapis.com/auth/webmasters", 
-                                    environment_var = "SC_AUTH_FILE"))
+  googleAuthR::gar_attach_auto_auth("https://www.googleapis.com/auth/webmasters", 
+                                    environment_var = "GARGLE_EMAIL")
+  googleAuthR::gar_attach_auto_auth("https://www.googleapis.com/auth/webmasters", 
+                                    environment_var = "SC_AUTH_FILE")
   
   invisible()
   

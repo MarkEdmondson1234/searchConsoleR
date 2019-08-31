@@ -9,7 +9,7 @@ context("Auth")
 ## will only work locally at the moment
 test_that("Can auth", {
   skip_on_cran()
-  token <- scr_auth()
+  token <- scr_auth(email=Sys.getenv("GARGLE_EMAIL"))
   
   expect_s3_class(token, "Token2.0")
 })

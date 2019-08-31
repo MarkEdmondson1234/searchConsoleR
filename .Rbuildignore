@@ -7,4 +7,5 @@ cran-comments\.md
 news.md
 ^\.httr-oauth$
 ^sc\.oauth$
-
+^issue_template\.md$
+^revdep$

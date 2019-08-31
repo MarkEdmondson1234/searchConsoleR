@@ -1,8 +1,7 @@
 #' Do OAuth2 authentication
 #' 
 #' @param token Where you want to save the auth file, or an existing token or file location of a token to authenticate with
-#' @param new_user If TRUE, reauthenticate via Google login screen
-#' @param no_auto Skip auto authentication
+#' @param email An email you have authenticated with previously
 #' 
 #' @details
 #' 
@@ -52,21 +51,11 @@
 #' 
 #' @export
 #' @import googleAuthR
-scr_auth <- function(token=NULL, new_user=FALSE, no_auto = FALSE){
+scr_auth <- function(token=NULL, email = NULL){
   
   gar_set_client(system.file("clients","native.json", package = "searchConsoleR"),
                               scopes = "https://www.googleapis.com/auth/webmasters")
   
-  ## needs googleAuthR > 0.6.3
-  options(googleAuthR.webapp.client_id = getOption("searchConsoleR.webapp.client_id"))
-  options(googleAuthR.webapp.client_secret = getOption("searchConsoleR.webapp.client_secret"))
+  gar_auth(token=token, email=email)
   
-  if(!is.null(token)){
-    return(gar_auth(token = token))
-  }
-  
-  gar_auto_auth("https://www.googleapis.com/auth/webmasters",
-                new_user = new_user,
-                no_auto = no_auto,
-                environment_var = "SC_AUTH_FILE")
 }

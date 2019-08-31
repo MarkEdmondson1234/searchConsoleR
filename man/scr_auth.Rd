@@ -4,14 +4,12 @@
 \alias{scr_auth}
 \title{Do OAuth2 authentication}
 \usage{
-scr_auth(token = NULL, new_user = FALSE, no_auto = FALSE)
+scr_auth(token = NULL, email = NULL)
 }
 \arguments{
 \item{token}{Where you want to save the auth file, or an existing token or file location of a token to authenticate with}
 
-\item{new_user}{If TRUE, reauthenticate via Google login screen}
-
-\item{no_auto}{Skip auto authentication}
+\item{email}{An email you have authenticated with previously}
 }
 \description{
 Do OAuth2 authentication

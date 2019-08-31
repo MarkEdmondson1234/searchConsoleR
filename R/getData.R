@@ -273,7 +273,7 @@ search_analytics <- function(siteURL,
     pages <- list()
     while(do_it){
       message("Page [",i,"] of max [", length(walk_vector),"] API calls")
-      this_body <- modifyList(body, list(startRow = walk_vector[i]))
+      this_body <- utils::modifyList(body, list(startRow = walk_vector[i]))
       this_page <- search_analytics_g(the_body = this_body, 
                                      list(sites = siteURL),
                                      dim = dimensions)

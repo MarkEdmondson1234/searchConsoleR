@@ -1,4 +1,4 @@
-# 0.3.0.9000
+# 0.4.0
 
 * Support up to 25,000 rows per API call (#44)
 * Change paging for `byBatch` to early exit if there is no data
