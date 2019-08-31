@@ -25,7 +25,7 @@
 * Correct bug for error in country code.  Will now return the 'Unknown Region' if not recognised (e.g. `CXX`)
 * Add `scr_auth` function that wraps `googleAuthR::gar_auth` so you don't need to load googleAuthR explicitly.
 
-# 0.1.2 - on CRAN
+# 0.1.2
 
 * Move to using googleAuthR for authentication backend.
 
