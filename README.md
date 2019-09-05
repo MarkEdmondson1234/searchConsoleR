@@ -5,10 +5,6 @@
 
 R interface with Google Search Console (formally Google Webmaster Tools) API v3.
 
-# News
-
-Check out the [news](news.md) for latest updates.
-
 ## Setup Guide
 
 Install dependency `googleAuthR` from CRAN:

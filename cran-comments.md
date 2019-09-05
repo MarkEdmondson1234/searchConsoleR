@@ -5,3 +5,5 @@
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs
+
+This is submission 3, as the first needed to wait for googleAuthR 1.0.0 to compile, and the second had a bad link.
