@@ -1,6 +1,7 @@
 # 0.4.0.9000
 
 * Return an empty data.frame() if no websites available for the authenticated user instead of an error
+* Allow a JSON service key authentication with `scr_auth(json="your-key.json")`
 
 # 0.4.0
 

@@ -33,8 +33,6 @@
           googleAuthR.httr_oauth_cache = 'sc.oauth')
   
   googleAuthR::gar_attach_auto_auth("https://www.googleapis.com/auth/webmasters", 
-                                    environment_var = "GARGLE_EMAIL")
-  googleAuthR::gar_attach_auto_auth("https://www.googleapis.com/auth/webmasters", 
                                     environment_var = "SC_AUTH_FILE")
   
   invisible()

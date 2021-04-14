@@ -2,6 +2,7 @@
 #' 
 #' @param token Where you want to save the auth file, or an existing token or file location of a token to authenticate with
 #' @param email An email you have authenticated with previously
+#' @param json Optionally authenticate with a JSON service key instead of user authentication.  Add the service key email as a user to the Search Console.  Suitable for server scripts.
 #' 
 #' @details
 #' 
@@ -50,8 +51,12 @@
 #' @seealso \code{\link[googleAuthR]{gar_auth}}
 #' 
 #' @export
-#' @import googleAuthR
-scr_auth <- function(token=NULL, email = NULL){
+#' @importFrom googleAuthR gar_auth_service gar_set_client gar_auth
+scr_auth <- function(token=NULL, email = NULL, json = NULL){
+  
+  if(!is.null(json)){
+    return(gar_auth_service(json))
+  }
   
   gar_set_client(system.file("clients","native.json", package = "searchConsoleR"),
                               scopes = "https://www.googleapis.com/auth/webmasters")
