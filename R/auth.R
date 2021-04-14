@@ -54,12 +54,14 @@
 #' @importFrom googleAuthR gar_auth_service gar_set_client gar_auth
 scr_auth <- function(token=NULL, email = NULL, json = NULL){
   
+  the_scope <- "https://www.googleapis.com/auth/webmasters"
   if(!is.null(json)){
-    return(gar_auth_service(json))
+    return(gar_auth_service(json, scope = the_scope))
   }
   
-  gar_set_client(system.file("clients","native.json", package = "searchConsoleR"),
-                              scopes = "https://www.googleapis.com/auth/webmasters")
+  gar_set_client(system.file("clients","native.json", 
+                             package = "searchConsoleR"),
+                 scopes = the_scope)
   
   gar_auth(token=token, email=email)
   

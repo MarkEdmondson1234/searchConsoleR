@@ -4,12 +4,14 @@
 \alias{scr_auth}
 \title{Do OAuth2 authentication}
 \usage{
-scr_auth(token = NULL, email = NULL)
+scr_auth(token = NULL, email = NULL, json = NULL)
 }
 \arguments{
 \item{token}{Where you want to save the auth file, or an existing token or file location of a token to authenticate with}
 
 \item{email}{An email you have authenticated with previously}
+
+\item{json}{Optionally authenticate with a JSON service key instead of user authentication.  Add the service key email as a user to the Search Console.  Suitable for server scripts.}
 }
 \description{
 Do OAuth2 authentication
