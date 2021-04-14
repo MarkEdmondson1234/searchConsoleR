@@ -16,7 +16,8 @@ TRUE if successful, raises an error if not.
 Adds website to Search Console
 }
 \seealso{
-Other search console website functions: \code{\link{delete_website}},
-  \code{\link{list_websites}}
+Other search console website functions: 
+\code{\link{delete_website}()},
+\code{\link{list_websites}()}
 }
 \concept{search console website functions}

@@ -4,8 +4,7 @@
 \alias{list_crawl_error_samples}
 \title{Lists a site's sample URLs for crawl errors.}
 \usage{
-list_crawl_error_samples(siteURL, category = "notFound",
-  platform = "web")
+list_crawl_error_samples(siteURL, category = "notFound", platform = "web")
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -27,8 +26,9 @@ Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
 See here for details: \url{https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples}
 }
 \seealso{
-Other working with search console errors: \code{\link{crawl_errors}},
-  \code{\link{error_sample_url}},
-  \code{\link{fix_sample_url}}
+Other working with search console errors: 
+\code{\link{crawl_errors}()},
+\code{\link{error_sample_url}()},
+\code{\link{fix_sample_url}()}
 }
 \concept{working with search console errors}

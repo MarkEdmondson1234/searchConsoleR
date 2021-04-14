@@ -18,7 +18,8 @@ The country name string
 Look up the country codes
 }
 \seealso{
-Other search analytics: \code{\link{parseDimFilterGroup}}
+Other search analytics: 
+\code{\link{parseDimFilterGroup}()}
 }
 \concept{search analytics}
 \keyword{internal}

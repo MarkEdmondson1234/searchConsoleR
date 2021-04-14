@@ -17,10 +17,11 @@ parse_search_analytics(x, dim, prettyNames = TRUE)
 Parsing function for \code{\link{search_analytics}}
 }
 \seealso{
-Other parsing functions: \code{\link{parse_crawlerror_sample}},
-  \code{\link{parse_crawlerrors}},
-  \code{\link{parse_errorsample_url}},
-  \code{\link{parse_sitemaps}}
+Other parsing functions: 
+\code{\link{parse_crawlerror_sample}()},
+\code{\link{parse_crawlerrors}()},
+\code{\link{parse_errorsample_url}()},
+\code{\link{parse_sitemaps}()}
 }
 \concept{parsing functions}
 \keyword{internal}

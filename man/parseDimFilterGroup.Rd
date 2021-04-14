@@ -26,7 +26,8 @@ dimension = c('country','device','page','query','searchAppearance')
               searchAppearance: 'AMP_BLUE_LINK', 'RICHCARD'
 }
 \seealso{
-Other search analytics: \code{\link{lookupCountryCode}}
+Other search analytics: 
+\code{\link{lookupCountryCode}()}
 }
 \concept{search analytics}
 \keyword{internal}

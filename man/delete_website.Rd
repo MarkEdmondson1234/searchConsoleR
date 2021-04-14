@@ -16,10 +16,12 @@ TRUE if successful, raises an error if not.
 Deletes website in Search Console
 }
 \seealso{
-Other data fetching functions: \code{\link{list_sitemaps}}
+Other data fetching functions: 
+\code{\link{list_sitemaps}()}
 
-Other search console website functions: \code{\link{add_website}},
-  \code{\link{list_websites}}
+Other search console website functions: 
+\code{\link{add_website}()},
+\code{\link{list_websites}()}
 }
 \concept{data fetching functions}
 \concept{search console website functions}

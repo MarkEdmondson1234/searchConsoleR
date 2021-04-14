@@ -3,7 +3,6 @@
 \docType{package}
 \name{searchConsoleR}
 \alias{searchConsoleR}
-\alias{searchConsoleR-package}
 \title{searchConsoleR}
 \description{
 Provides an interface with the Google Search Console API v3, 

@@ -18,7 +18,8 @@ TRUE if successful, raises an error if not.
 See here for details: https://developers.google.com/webmaster-tools/v3/sitemaps/submit
 }
 \seealso{
-Other sitemap admin functions: \code{\link{delete_sitemap}},
-  \code{\link{list_sitemaps}}
+Other sitemap admin functions: 
+\code{\link{delete_sitemap}()},
+\code{\link{list_sitemaps}()}
 }
 \concept{sitemap admin functions}

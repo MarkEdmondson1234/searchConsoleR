@@ -314,10 +314,19 @@ search_analytics <- function(siteURL,
 #' @export
 #' @family search console website functions
 list_websites <- function() {
+  
+  f <- function(x){
+    if(is.null(x$siteEntry)){
+      message("No websites found for this authentication")
+      return(data.frame())
+    }
+    
+    x$siteEntry
+  }
 
   l <- googleAuthR::gar_api_generator("https://www.googleapis.com/webmasters/v3/sites",
                                       "GET",
-                                      data_parse_function = function(x) x$siteEntry)
+                                      data_parse_function = f)
   l()
 }
 

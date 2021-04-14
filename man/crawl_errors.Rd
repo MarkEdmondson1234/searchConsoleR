@@ -4,8 +4,12 @@
 \alias{crawl_errors}
 \title{Fetch a time-series of Googlebot crawl errors.}
 \usage{
-crawl_errors(siteURL, category = "all", platform = c("all", "mobile",
-  "smartphoneOnly", "web"), latestCountsOnly = FALSE)
+crawl_errors(
+  siteURL,
+  category = "all",
+  platform = c("all", "mobile", "smartphoneOnly", "web"),
+  latestCountsOnly = FALSE
+)
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -32,8 +36,9 @@ Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
   Platform is one of: mobile, smartphoneOnly or web.
 }
 \seealso{
-Other working with search console errors: \code{\link{error_sample_url}},
-  \code{\link{fix_sample_url}},
-  \code{\link{list_crawl_error_samples}}
+Other working with search console errors: 
+\code{\link{error_sample_url}()},
+\code{\link{fix_sample_url}()},
+\code{\link{list_crawl_error_samples}()}
 }
 \concept{working with search console errors}

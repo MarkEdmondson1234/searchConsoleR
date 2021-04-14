@@ -1,6 +1,6 @@
 # 0.4.0.9000
 
-* ...
+* Return an empty data.frame() if no websites available for the authenticated user instead of an error
 
 # 0.4.0
 

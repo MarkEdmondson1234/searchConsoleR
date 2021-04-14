@@ -4,8 +4,7 @@
 \alias{error_sample_url}
 \title{Shows details of errors for individual sample URLs}
 \usage{
-error_sample_url(siteURL, pageURL, category = "notFound",
-  platform = "web")
+error_sample_url(siteURL, pageURL, category = "notFound", platform = "web")
 }
 \arguments{
 \item{siteURL}{The URL of the website to delete. Must include protocol (http://).}
@@ -34,8 +33,9 @@ Category is one of: authPermissions, manyToOneRedirect, notFollowed, notFound,
 See here for details: https://developers.google.com/webmaster-tools/v3/urlcrawlerrorssamples/get
 }
 \seealso{
-Other working with search console errors: \code{\link{crawl_errors}},
-  \code{\link{fix_sample_url}},
-  \code{\link{list_crawl_error_samples}}
+Other working with search console errors: 
+\code{\link{crawl_errors}()},
+\code{\link{fix_sample_url}()},
+\code{\link{list_crawl_error_samples}()}
 }
 \concept{working with search console errors}
