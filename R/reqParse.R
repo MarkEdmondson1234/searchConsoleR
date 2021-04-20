@@ -1,3 +1,11 @@
+make_empty_df <- function(){
+  warning("No data found for supplied dates - returning NA", call. = FALSE)
+  the_df <- data.frame(matrix(NA, nrow = 1, ncol = 4))
+  names(the_df) <- c('clicks','impressions','ctr','position')
+  
+  the_df
+}
+
 #' Parsing function for \code{\link{search_analytics}}
 #'
 #' @param x req$content from API response
@@ -9,54 +17,58 @@
 parse_search_analytics <- function(x, dim, prettyNames=TRUE){
 
   the_data <- x$rows
-
-  if(!is.null(dim)){
-    # a bit of jiggery pokery (data processing)
-    dimensionCols <- data.frame(Reduce(rbind,
-                                       lapply(the_data$keys, function(x)
-                                         rbind(x))),
-                                row.names=NULL, stringsAsFactors = F)
-
-    ## if no rows, get out of here.
-    if(!nrow(dimensionCols) > 0) {
-      warning("No data found for supplied dates - returning NA", call. = FALSE)
-      empty_df <- data.frame(matrix(NA, nrow = 1, ncol = length(dim) + 4))
-      names(empty_df) <- c(dim, 'clicks','impressions','ctr','position')
-      if('date' %in% dim) empty_df$date <- as.Date(NA)
-      return(empty_df)
-    }
-
-    names(dimensionCols ) <- dim
-    dimensionCols <- lapply(dimensionCols, unname)
-
-    if('date' %in% names(dimensionCols)){
-      dimensionCols$date <- as.Date(dimensionCols$date)
-    }
-
-    if(all('country' %in% names(dimensionCols), prettyNames)){
-      dimensionCols$countryName <- sapply(dimensionCols$country, lookupCountryCode)
-    }
-
-    metricCols <- the_data[setdiff(names(the_data), 'keys')]
-
-    the_df <- data.frame(dimensionCols , metricCols, stringsAsFactors = F, row.names = NULL)
-
-  } else { ## no dimensions
-    if(!is.null(the_data)){
-      the_df <- the_data
+  
+  if(is.null(dim)){
+    if(is.null(the_data)){
+      the_df <- make_empty_df()
     } else {
-      warning("No data found for supplied dates - returning NA", call. = FALSE)
-      empty_df <- data.frame(matrix(NA, nrow = 1, ncol = 4))
-      names(empty_df) <- c('clicks','impressions','ctr','position')
-
-      return(empty_df)
+      the_df <- the_data
+      attr(the_df, "aggregationType") <- x$responseAggregationType
+      attr(the_df, "totalRows") <- nrow(x$rows)      
     }
-
+    
+    return(the_df)
   }
 
+
+  # a bit of jiggery pokery (data processing)
+  dimensionCols <- data.frame(
+    Reduce(rbind, lapply(the_data$keys, function(x) rbind(x))),
+    row.names=NULL, 
+    stringsAsFactors = FALSE)
+  
+  ## if no rows, get out of here.
+  if(!nrow(dimensionCols) > 0) {
+    empty_df <- make_empty_df()
+    if('date' %in% dim) empty_df$date <- as.Date(NA)
+    
+    return(empty_df)
+  }
+  
+  names(dimensionCols ) <- dim
+  dimensionCols <- lapply(dimensionCols, unname)
+  
+  if('date' %in% dim){
+    dimensionCols$date <- as.Date(dimensionCols$date)
+  }
+  
+  if(all('country' %in% dim, prettyNames)){
+    dimensionCols$countryName <- sapply(dimensionCols$country, lookupCountryCode)
+  }
+  
+  metricCols <- the_data[setdiff(names(the_data), 'keys')]
+  
+  metricCols$ctr <- as.numeric(metricCols$ctr)
+  metricCols$position <- as.numeric(metricCols$position)
+  
+  the_df <- data.frame(dimensionCols, 
+                       metricCols, 
+                       stringsAsFactors = FALSE, 
+                       row.names = NULL)
+  
   attr(the_df, "aggregationType") <- x$responseAggregationType
   attr(the_df, "totalRows") <- nrow(x$rows)
-
+  
   the_df
 
 }

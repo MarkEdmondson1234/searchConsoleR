@@ -235,11 +235,12 @@ search_analytics <- function(siteURL,
     rowLimit = rowLimit
   )
 
-  search_analytics_g <- gar_api_generator("https://www.googleapis.com/webmasters/v3/",
-                                          "POST",
-                                          path_args = list(sites = "siteURL",
-                                                           searchAnalytics = "query"),
-                                          data_parse_function = parse_search_analytics)
+  search_analytics_g <- gar_api_generator(
+    "https://www.googleapis.com/webmasters/v3/",
+    "POST",
+    path_args = list(sites = "siteURL",
+                     searchAnalytics = "query"),
+    data_parse_function = parse_search_analytics)
   
   
   # set this here as it may get reset if other googleAuthR packages there
