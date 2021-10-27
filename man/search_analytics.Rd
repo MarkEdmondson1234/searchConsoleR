@@ -9,7 +9,7 @@ search_analytics(
   startDate = Sys.Date() - 93,
   endDate = Sys.Date() - 3,
   dimensions = NULL,
-  searchType = c("web", "video", "image"),
+  searchType = c("web", "video", "image", "news", "discover", "googleNews"),
   dimensionFilterExp = NULL,
   aggregationType = c("auto", "byPage", "byProperty"),
   rowLimit = 1000,
@@ -92,7 +92,9 @@ Download your Google SEO data.
         \item '~~' meaning 'contains'
         \item '==' meaning 'equals'
         \item '!~' meaning 'notContains'
-        \item '!=' meaning 'notEquals
+        \item '!=' meaning 'notEquals'
+        \item 're' meaning 'includingRegex'
+        \item '!re' meaning 'excludingRegex'
       }
 
     \item expression
@@ -112,6 +114,9 @@ Download your Google SEO data.
    \item "web": [Default] Web search results
    \item "image": Image search results
    \item "video": Video search results
+   \item "news": "News" tab in Google Search
+   \item "googleNews": Results from news.google.com. Doesn't include results from the "news" tab in Google Search
+   \item "discover": Discover results
  }
 
  \strong{aggregationType}: [Optional] How data is aggregated.
