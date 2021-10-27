@@ -58,8 +58,8 @@ parseDimFilterGroup <- function(dfe){
                   "==" = 'equals',
                   "!~" = 'notContains',
                   "!=" = 'notEquals',
-                  "re" = "includingRegex",
-                  "!re" = "excludingRegex")
+                  "**" = "includingRegex",
+                  "!*" = "excludingRegex")
 
   ## extract variables needed
   operator <- stringr::str_extract(dfe, "[\\!=~]{2}")

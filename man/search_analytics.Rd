@@ -93,8 +93,8 @@ Download your Google SEO data.
         \item '==' meaning 'equals'
         \item '!~' meaning 'notContains'
         \item '!=' meaning 'notEquals'
-        \item 're' meaning 'includingRegex'
-        \item '!re' meaning 'excludingRegex'
+        \item '**' meaning 'includingRegex'
+        \item '!*' meaning 'excludingRegex'
       }
 
     \item expression
