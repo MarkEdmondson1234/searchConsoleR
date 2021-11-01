@@ -38,7 +38,9 @@ lookupCountryCode <- function(country.code,
 #'   operator = c(`~~` = 'contains',
 #'                `==` = 'equals',
 #'                `!~` = 'notContains',
-#'                 `!=` = 'notEquals)
+#'                 `!=` = 'notEquals'
+#'                 `**` = 'includingRegex',
+#'                 `!*` = 'excludingRegex')
 #'
 #'  expression = country: an ISO 3166-1 alpha-3 country code.
 #'               device: 'DESKTOP','MOBILE','TABLET'
@@ -62,8 +64,8 @@ parseDimFilterGroup <- function(dfe){
                   "!*" = "excludingRegex")
 
   ## extract variables needed
-  operator <- stringr::str_extract(dfe, "[\\!=~]{2}")
-  dim_ex <- stringr::str_split_fixed(dfe, "[\\!=~]{2}", n=2)
+  operator <- stringr::str_extract(dfe, "[\\!=~\\*]{2}")
+  dim_ex <- stringr::str_split_fixed(dfe, "[\\!=~\\*]{2}", n=2)
 
   ## remove whitespace apart from expression
   dim_ex[1] <- stringr::str_replace_all(dim_ex[1]," ","")

@@ -9,7 +9,7 @@
 #'      \code{"date", "country", "device", "page" , "query" or "searchAppearance"}
 #' @param searchType Search type filter, default 'web'.
 #' @param dimensionFilterExp A character vector of expressions to filter.
-#'      e.g. \code{("device==TABLET", "country~~GBR")}
+#'      e.g. \code{("device==TABLET", "country~~GBR", "query**^a")}
 #' @param aggregationType How data is aggregated.
 #' @param rowLimit How many rows to fetch.  Ignored if \code{walk_data} is "byDate"
 #' @param prettyNames If TRUE, converts SO 3166-1 alpha-3 country code to full name and
