@@ -36,10 +36,45 @@ inspection <- function(inspectionUrl,
   
   f <- gar_api_generator(
     endpoint, "POST", 
-    data_parse_function = function(x) x,
+    data_parse_function = parse_inspection,
     checkTrailingSlash = FALSE
   )
   
   f(the_body = body)
   
+}
+
+parse_inspection <- function(x){
+  o <- x[["inspectionResult"]]
+  
+  o$indexStatusResult$lastCrawlTime <- RFC_convert(o$indexStatusResult$lastCrawlTime)
+  
+  structure(o, class = "inspectionResult")
+  
+}
+
+#' @export
+print.inspectionResult <- function(x, ...){
+  cat("==SearchConsoleInspectionResult==\n")
+  cat("inspectionResultLink: ", x$inspectionResultLink)
+  
+  if(!is.null(x$indexStatusResult)){
+    cat("\n===indexStatusResult===\n")
+    print(x$indexStatusResult)
+  }
+  
+  if(!is.null(x$ampResult)){
+    cat("\n===AmpResult===\n")
+    print(x$ampResult)
+  }
+  
+  if(!is.null(x$mobileUsabilityResult)){
+    cat("\n===MobileUsabilityResult===\n")
+    print(x$mobileUsabilityResult)
+  }
+  
+  if(!is.null(x$richResultsResult)){
+    cat("\n===richResults===\n")
+    print(x$richResultsResult)
+  }
 }
