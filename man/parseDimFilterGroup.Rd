@@ -17,7 +17,9 @@ dimension = c('country','device','page','query','searchAppearance')
   operator = c(`~~` = 'contains',
                `==` = 'equals',
                `!~` = 'notContains',
-                `!=` = 'notEquals)
+                `!=` = 'notEquals'
+                `**` = 'includingRegex',
+                `!*` = 'excludingRegex')
 
  expression = country: an ISO 3166-1 alpha-3 country code.
               device: 'DESKTOP','MOBILE','TABLET'

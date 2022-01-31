@@ -30,7 +30,7 @@ search_analytics(
 \item{searchType}{Search type filter, default 'web'.}
 
 \item{dimensionFilterExp}{A character vector of expressions to filter.
-e.g. \code{("device==TABLET", "country~~GBR")}}
+e.g. \code{("device==TABLET", "country~~GBR", "query**^a")}}
 
 \item{aggregationType}{How data is aggregated.}
 
