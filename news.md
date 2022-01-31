@@ -3,6 +3,8 @@
 * Return an empty data.frame() if no websites available for the authenticated user instead of an error
 * Allow a JSON service key authentication with `scr_auth(json="your-key.json")`
 * Make sure ctr and position columns are always float numerics class.
+* Add inspection API (#73) via `inspection()`)
+* Add regex support for `search_analytics()` via `**` and `!*`
 
 # 0.4.0
 
