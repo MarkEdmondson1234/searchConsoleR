@@ -10,3 +10,6 @@ news.md
 ^issue_template\.md$
 ^revdep$
 ^CRAN-RELEASE$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

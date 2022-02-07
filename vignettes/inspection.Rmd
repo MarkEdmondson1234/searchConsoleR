@@ -1,0 +1,147 @@
+---
+title: "Google URL Inspection API with R"
+---
+
+## Google URL Inspection API
+
+The URL Inspection Tool allows you to inspect the status of URLs within Google's Search Index.
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/Pe_-TkdbXN0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+The API for this functionality is available from early 2022 with [documentation here](https://developers.google.com/webmaster-tools/v1/urlInspection.index/inspect).
+
+## Using the URL Inspection API in R
+
+To get this information within R, you can use the `inspection()` function newly introduced in version `searchConsoleR v0.5.0`.
+
+The function needs two arguments - the URL to inspect and the siteUrl of a website you have access to.  You can copy this from the `list_websites()` results.
+
+```r
+library(searchConsoleR)  # load library
+
+# auth with email that has access to website
+scr_auth()
+
+# list the websites you have access to
+websites <- list_websites()
+websites
+#                                           siteUrl permissionLevel
+#1                   https://example.website.com/      siteFullUser
+#2                  sc-domain:code.markedmondson.me       siteOwner
+```
+
+You can then query each URL of your website in `inspection()`:
+
+```r
+results <- inspection("https://code.markedmondson.me/searchConsoleR/",
+                      siteUrl = "sc-domain:code.markedmondson.me")
+```
+
+The results vary depending on what is available in the API:
+
+```
+==SearchConsoleInspectionResult==
+inspectionResultLink:  https://search.google.com/search-console/inspect?resource_id=sc-domain:code.markedmondson.me&id=MQGXKOglhDYSizSgJrYmwQ&utm_medium=link&utm_source=api
+===indexStatusResult===
+$verdict
+[1] "PASS"
+
+$coverageState
+[1] "Indexed, not submitted in sitemap"
+
+$robotsTxtState
+[1] "ALLOWED"
+
+$indexingState
+[1] "INDEXING_ALLOWED"
+
+$lastCrawlTime
+[1] "2022-01-24 22:24:14 UTC"
+
+$pageFetchState
+[1] "SUCCESSFUL"
+
+$googleCanonical
+[1] "https://code.markedmondson.me/searchConsoleR/"
+
+$referringUrls
+[1] "https://www.zldoty.com/feed/"
+
+$crawledAs
+[1] "MOBILE"
+
+
+===MobileUsabilityResult===
+$verdict
+[1] "PASS"
+
+```
+
+## Quotas and limits
+
+The current limits for the index inspections API is:
+
+* 2000 Queries per day
+* 600 Queries per minute
+
+If using this API a lot, you may hit these limits sooner if you are using the default clientId that comes with the package.  In that case, it is advised to use your own clientId to send the hits through, which involves creating your own OAuth2 app in Google Cloud Platform. See the [`googleAuthR` setup website](https://code.markedmondson.me/googleAuthR/articles/setup.html) for details on this.  You don't need to set any scopes which are saved for Cloud services.  An example of its usage is in the 'Speeding up queries' section below
+
+You may instead also want to use a service account instead of your own email, which is recommended for professional use.  In that case you can authenticate via a JSON service key (note not the same JSON as the ClientId) that will set the clientId for you and accessible via `scr_auth(json = "file_location_client.json")`
+
+
+## Speeding up queries
+
+The responses can be quite slow if you are requesting many URLs in bulk.  Keeping in mind the quotas, you can speed it up by using parallelization via the `future.apply()` package
+
+```r
+library(searchConsoleR)
+
+## the top URLs to fetch all at once found via `search_analytics()`
+urls <- search_analytics("sc-domain:code.markedmondson.me", dimensions = "page")
+top10 <- head(urls$page, 10)
+top10
+# [1] "https://code.markedmondson.me/googleAnalyticsR/"                                             
+# [2] "https://code.markedmondson.me/googleAnalyticsR/articles/reporting-ga4.html"                  
+# [3] "https://code.markedmondson.me/googleAnalyticsR/articles/v4.html"                             
+# [4] "https://code.markedmondson.me/gtm-serverside-webhooks/"                                      
+# [5] "https://code.markedmondson.me/r-on-kubernetes-serverless-shiny-r-apis-and-scheduled-scripts/"
+# [6] "https://code.markedmondson.me/googleAnalyticsR/articles/setup.html"                          
+# [7] "https://code.markedmondson.me/gtm-serverside-cloudrun/"                                      
+# [8] "https://code.markedmondson.me/shiny-cloudrun/"                                               
+# [9] "https://code.markedmondson.me/4-ways-schedule-r-scripts-on-google-cloud-platform/"           
+#[10] "https://code.markedmondson.me/data-privacy-gtm/" 
+
+```
+
+When using quota from the `inspection()` API, it is polite to use your own clientId by pointing to your clientId JSON via `googleAuthR::gar_set_client()`
+
+
+```r
+# loop over the top10 for inspection in parallel manner
+library(future.apply)
+plan(multisession)
+
+googleAuthR::gar_set_client("path_to_your_clientid.json")
+#✓ Setting client.id from path_to_your_clientid.json
+
+f <- function(url, siteUrl){
+  # need to auth non-interactivly in each parallel session
+  scr_auth(email = "me@markedmondson.me")  # or better - json
+  message("Inspection URL:", url)
+  inspection(url, siteUrl)
+}
+
+## makes 10 API calls at once
+all_data <- future_lapply(top10, f, siteUrl = "sc-domain:code.markedmondson.me")
+
+# see list of 10 results
+str(all_data, 1)
+
+# extract data from the list
+lapply(all_data, function(x) x$indexStatusResult)
+
+# make a vector of a field via unlist()
+unlist(lapply(all_data, function(x) as.character(x$indexStatusResult$lastCrawlTime)))
+```
+
+`x$indexStatusResult$lastCrawlTime` is parsed to an R dateTime class `POSIXct` so you can use `as.character()` to turn it into a string, but it may be preferable for keeping it in class `POSIXct` when plotting the data.

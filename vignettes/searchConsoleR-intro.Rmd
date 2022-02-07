@@ -99,16 +99,18 @@ Filter can be one of:
 * 'device'
 * 'page'
 * 'query'
-* 'searchAppearance')
+* 'searchAppearance'
 
-Operator can be one of ```~~, ==, !~, !=``` where the symbols mean:
+Operator can be one of ```~~, ==, !~, !=, **, !*``` where the symbols mean:
 
 * `~~` : 'contains',
 * `==` : 'equals',
 * `!~` : 'notContains',
-* `!=` : 'notEquals')
+* `!=` : 'notEquals'
+* `**` : 'regex'
+* `!*` : 'notRegex'
 
-Expression for page or query if freeform.
+Expression for page or query is freeform.
 
 Expression for country must be the three letter country code as per the [the ISO 3166-1 alpha-3] standard. e.g. GBR
 

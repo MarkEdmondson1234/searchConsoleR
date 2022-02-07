@@ -40,6 +40,8 @@ inspection <- function(inspectionUrl,
     checkTrailingSlash = FALSE
   )
   
+  default_project_message()
+  
   f(the_body = body)
   
 }
@@ -77,4 +79,32 @@ print.inspectionResult <- function(x, ...){
     cat("\n===richResults===\n")
     print(x$richResultsResult)
   }
+}
+
+
+is_default_project <- function(){
+  
+  # if no service auth then its not using default client.id #324
+  if(googleAuthR::gar_has_token()){
+    token <- googleAuthR::gar_token()
+    if(!is.null(token$auth_token$secrets) &&
+       token$auth_token$secrets$type == "service_account") return(FALSE)
+  }
+  
+  # if set web json then its shiny #333
+  if(!is.null(getOption("googleAuthR.webapp.client_id")) &&
+     getOption("googleAuthR.webapp.client_id") != ""){
+    return(FALSE)
+  }
+  
+  getOption("googleAuthR.client_id") %in% c("858905045851-iuv6uhh34fqmkvh4rq31l7bpolskdo7h.apps.googleusercontent.com")
+}
+
+default_project_message <- function(){
+  
+  if(is_default_project()){
+    cli::cli_alert_info("Default Google Project for searchConsoleR is set.  \n This is shared with all searchConsoleR users and only has 2000 query quota per day. \n If making a lot of Inspection API calls, please consider setting your own ClientId from your own Google Project \n")
+    
+  }
+  
 }

@@ -1,0 +1,13 @@
+title: "searchConsoleR"
+url: https://code.markedmondson.me/searchConsoleR/
+development:
+  mode: auto
+authors:
+  name: Mark Edmondson
+  href: https://code.markedmondson.me
+home:
+  strip_header: true
+template:
+  params:
+    bootswatch: paper
+    ganalytics: G-43MDXK6CLZ
