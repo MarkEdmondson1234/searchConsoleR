@@ -55,7 +55,7 @@ parseDimFilterGroup <- function(dfe){
   ## get lookup data
   country.codes <- ISO_3166_1$Alpha_3
   devices <- c('DESKTOP','MOBILE','TABLET')
-  searchAppearance <- c('AMP_BLUE_LINK', 'RICHCARD')
+  searchAppearance <- c('AMP_BLUE_LINK', 'AMP_TOP_STORIES', 'RICHCARD', 'PAGE_EXPERIENCE', 'ORGANIC_SHOPPING', 'REVIEW_SNIPPET', 'VIDEO', 'WEBLITE')
   op_symbol <-  c("~~" = 'contains',
                   "==" = 'equals',
                   "!~" = 'notContains',
@@ -98,7 +98,7 @@ parseDimFilterGroup <- function(dfe){
   }
 
   if(dim_ex[1] == "searchAppearance" && !dim_ex[2] %in% searchAppearance ){
-    stop("searchAppearance dimension indicated, but searchAppearance not one of AMP_BLUE_LINK or RICHCARD (no quotes). Got this:   ", dim_ex[2])
+    stop("searchAppearance dimension indicated, but searchAppearance not one of AMP_BLUE_LINK, AMP_TOP_STORIES, RICHCARD, PAGE_EXPERIENCE, ORGANIC_SHOPPING, REVIEW_SNIPPET, VIDEO or WEBLITE (no quotes). Got this:   ", dim_ex[2])
   }
   list(dimension = dim_ex[1],
        operator  = unname(op_symbol[operator]),
