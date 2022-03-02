@@ -123,7 +123,13 @@ Expression for device must be one of:
 Expression for searchAppearance must be one of:
 
 * 'AMP_BLUE_LINKS'
+* 'AMP_TOP_STORIES'
 * 'RICHCARD'
+* 'PAGE_EXPERIENCE'
+* 'ORGANIC_SHOPPING'
+* 'REVIEW_SNIPPET'
+* 'VIDEO'
+* 'WEBLITE'
 
 You can have multiple AND filters by putting them in a character vector.  
 

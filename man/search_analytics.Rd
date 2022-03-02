@@ -103,7 +103,7 @@ Download your Google SEO data.
          \item device: 'DESKTOP','MOBILE','TABLET'.
          \item page: not checked, a string in page URLs without hostname.
          \item query: not checked, a string in keywords.
-         \item searchAppearance: 'AMP_BLUE_LINK', 'RICHCARD'
+         \item searchAppearance: 'AMP_BLUE_LINK', 'AMP_TOP_STORIES', 'RICHCARD', 'PAGE_EXPERIENCE', 'ORGANIC_SHOPPING', 'REVIEW_SNIPPET', 'VIDEO', 'WEBLITE'
 
        }
   }
