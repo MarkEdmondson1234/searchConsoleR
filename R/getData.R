@@ -184,7 +184,7 @@ search_analytics <- function(siteURL,
     warning("Search Analytics usually not available within 3 days (96 hrs) of today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
 
-  if(!is.null(dimensions) && !dimensions %in% c('date','country', 'device', 'page', 'query','searchAppearance')){
+  if(!is.null(dimensions) && !all(dimensions %in% c('date','country', 'device', 'page', 'query','searchAppearance'))){
     stop("dimension must be NULL or one or more of 'date','country', 'device', 'page', 'query', 'searchAppearance'.
          Got this: ", paste(dimensions, sep=", "))
   }
