@@ -231,6 +231,15 @@ c("device==DESKTOP","country==GBR", "page!=/home", "query!~brandterm")
 
 ```OR``` filters aren't yet supported in the API.
 
+## The dataState parameter
+
+In this parameter could be used for downloading fresh data.
+
+* `final` : response will contains just final data
+* `all`   : response will contains also fresh data from lattest days
+
+In default state search_analytics function works with `final` state. Be careful with the interpretation of fresh data. They get progressively more accurate as they become final data.
+
 ## Using your own Google API project 
 
 As default `searchConsoleR` uses its own Google API project to grant requests, but if you want to use your own keys:

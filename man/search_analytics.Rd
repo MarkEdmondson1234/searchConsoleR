@@ -14,7 +14,8 @@ search_analytics(
   aggregationType = c("auto", "byPage", "byProperty"),
   rowLimit = 1000,
   prettyNames = TRUE,
-  walk_data = c("byBatch", "byDate", "none")
+  walk_data = c("byBatch", "byDate", "none"),
+  dataState = c("final", "all")
 )
 }
 \arguments{
@@ -141,6 +142,12 @@ Download your Google SEO data.
   \item byBatch Use the API call to batch
   \item byData Runs a call over each day in the date range.
   \item none No batching
+ }
+
+ \strong{dataState}: [Optional] Which data should be downloaded from the GSC
+ \itemize{
+   \item "final": [Default] Response will include only final data
+   \item "all": Response will include fresh data (they may not be fully calculated)
  }
 }
 \examples{
