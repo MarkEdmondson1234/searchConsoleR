@@ -118,6 +118,12 @@
 #'   \item none No batching
 #'  }
 #'
+#'  \strong{dataState}: [Optional] Which data should be downloaded from the GSC
+#'  \itemize{
+#'    \item "final": [Default] Response will include only final data
+#'    \item "all": Response will include fresh data (they may not be fully calculated)
+#'  }
+#'
 #' @examples
 #'
 #' \dontrun{
@@ -153,7 +159,8 @@ search_analytics <- function(siteURL,
                              aggregationType = c("auto","byPage","byProperty"),
                              rowLimit = 1000,
                              prettyNames = TRUE,
-                             walk_data = c("byBatch","byDate","none")){
+                             walk_data = c("byBatch","byDate","none"),
+                             dataState = c("final", "all")){
 
   if(!googleAuthR::gar_has_token()){
     stop("Not authenticated. Run scr_auth()", call. = FALSE)
@@ -162,6 +169,7 @@ search_analytics <- function(siteURL,
   searchType      <- match.arg(searchType)
   aggregationType <- match.arg(aggregationType)
   walk_data       <- match.arg(walk_data)
+  dataState       <- match.arg(dataState)
 
   startDate <- as.character(startDate)
   endDate   <- as.character(endDate)
@@ -180,8 +188,12 @@ search_analytics <- function(siteURL,
     stop("dates not in correct %Y-%m-%d format. Got these:", startDate, " - ", endDate)
   }
 
-  if(any(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-3, as.Date(endDate, "%Y-%m-%d") > Sys.Date()-3)){
+  if(any(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-3, as.Date(endDate, "%Y-%m-%d") > Sys.Date()-3) && dataState == "final"){
     warning("Search Analytics usually not available within 3 days (96 hrs) of today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
+  }
+  
+  if(any(as.Date(startDate, "%Y-%m-%d") > Sys.Date()-3, as.Date(endDate, "%Y-%m-%d") > Sys.Date()-3) && dataState == "all"){
+    warning("Search Analytics working with \"fresh data\" which could not be complet in last three days before today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
 
   if(!is.null(dimensions) && !all(dimensions %in% c('date','country', 'device', 'page', 'query','searchAppearance'))){
@@ -228,7 +240,8 @@ search_analytics <- function(siteURL,
       )
     ),
     aggregationType = aggregationType,
-    rowLimit = rowLimit
+    rowLimit = rowLimit,
+    dataState = dataState
   )
 
   search_analytics_g <- gar_api_generator(
