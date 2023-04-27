@@ -196,12 +196,12 @@ search_analytics <- function(siteURL,
     warning("Search Analytics working with \"fresh data\" which could not be complet in last three days before today(",Sys.Date(),"). Got:", startDate, " - ", endDate)
   }
 
-  if(!is.null(dimensions) && !all(dimensions %in% c('date','country', 'device', 'page', 'query','searchAppearance'))){
+  if(!is.null(dimensions) & !all(dimensions %in% c('date','country', 'device', 'page', 'query','searchAppearance'))){
     stop("dimension must be NULL or one or more of 'date','country', 'device', 'page', 'query', 'searchAppearance'.
          Got this: ", paste(dimensions, sep=", "))
   }
 
-  if(aggregationType %in% c("byProperty") && 'page' %in% dimensions ){
+  if(aggregationType %in% c("byProperty") & 'page' %in% dimensions ){
     stop("Can't aggregate byProperty and include page in dimensions.")
   }
   
